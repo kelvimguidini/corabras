@@ -1,0 +1,8 @@
+/nbproject
+/.project
+node_modules
+.tmp
+.idea
+
+
+coverage/*

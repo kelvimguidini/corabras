@@ -1,0 +1,161 @@
+
+
+<link href='/js/fullcalendar/lib/main.css' rel='stylesheet' />
+<script src='/js/fullcalendar/lib/main.js'></script>
+<script src='/js/fullcalendar/lib/locales/pt-br.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listMonth'
+        },
+        height: '100%',
+        locale: 'pt-br',
+        dayMaxEvents: true,
+        navLinks: true,
+        dayMaxEvents: true,
+        businessHours: false, // display business hours
+        expandRows: true,
+        nowIndicator: false,
+        
+        eventClick:  function(event, jsEvent, view) {
+            
+            $.ajax({
+                type: "POST",
+                url: "<?php echo $this->url('carregardadoscarga'); ?>"+event.event.extendedProps.description,
+                success: function(data) { 
+                    $('#modalTitle').html(event.event.title);
+        	        $('#modalBody').html(data);
+                    $('#fullCalModal').modal();
+                }
+            });
+
+        },
+
+        events: [
+
+        <?php 
+        foreach($this->carregamentos as $carregamento){
+            echo "{";
+            $peso = 0;
+            foreach($carregamento["vendas"] as $vendas){
+                foreach($vendas["produtos"] as $prod){
+                    switch ($prod["modelo"]) {
+	                    case 'Super Max':
+		                    $peso += 3.9 * $prod["quantidade"];
+		                    break;
+	                    case 'Max':
+		                    $peso += 5.5 * $prod["quantidade"];
+		                    break;
+	                    case 'Espigão':
+		                    $peso += 4 * $prod["quantidade"];
+		                    break;
+	                    case 'Coppo Venetto':
+		                    $peso += 4.7 * $prod["quantidade"];
+		                    break;
+	                    case 'Inicial':
+		                    $peso += 3 * $prod["quantidade"];
+		                    break;
+	                    case '03 vias':
+		                    $peso += 5 * $prod["quantidade"];
+		                    break;
+	                    case '04 vias':
+		                    $peso += 5 * $prod["quantidade"];
+		                    break;
+	                    case 'Capa Lateral':
+		                    $peso += 4 * $prod["quantidade"];
+		                    break;
+	                    case 'Policarbonato Max':
+		                    $peso += 1 * $prod["quantidade"];
+		                    break;
+	                    case 'Policarbonato Coppo':
+		                    $peso += 1 * $prod["quantidade"];
+		                    break;
+	                    case 'Policarbonato Fit':
+		                    $peso += 1 * $prod["quantidade"];
+		                    break;
+	                    case 'Manta Termica':
+		                    $peso += 1 * $prod["quantidade"];
+		                    break;
+	                    case 'Frete':
+		                    $peso += 1 * $prod["quantidade"];
+		                    break;
+                    }
+                }
+            }
+            echo "title: '".$carregamento["motorista"]." - ".number_format($peso, 0, ',', '.')." kg',";
+            echo "description: '".$carregamento["id"]."',";
+            echo "start: '".$carregamento["data"]->format('Y-m-d')."T".$carregamento["saida"]->format('H:i:s')."',";
+            echo "end: '".$carregamento["data"]->format('Y-m-d')."T".$carregamento["retorno"]->format('H:i:s')."',";
+            switch ($carregamento["motorista"]) {
+	            case 'Fábio':
+		            echo "color: 'blue'";
+		            break;
+	            case 'Jairo':
+		            echo "color: 'pink'";
+		            break;
+	            case 'Cesar':
+		            echo "color: 'red'";
+		            break;
+	            case 'Robson':
+		            echo "color: 'green'";
+		            break;
+	            default:
+		            echo "color: 'black'";
+		            break;
+            }
+
+            echo "},";
+        }
+        ?>
+        ]
+    });
+
+    calendar.render();
+  });
+
+</script>
+<style>
+
+
+
+  #calendar-container {
+    position: fixed;
+    top: 80px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .fc-header-toolbar {
+    /*
+    the calendar will be butting up against the edges,
+    but let's scoot in the header's buttons
+    */
+    padding-top: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+</style>  <div id='calendar-container'>
+    <div id='calendar'></div>
+  </div><div id="fullCalModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Fechar</span></button>
+                <h4 id="modalTitle" class="modal-title"></h4>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>$('body').on('click',".venda", function(){	        if($(this).hasClass('glyphicon-plus')){		        $(this).removeClass('glyphicon-plus');		        $(this).addClass('glyphicon-minus');    	        var id = "#tabela_prod_"+$(this).attr("id");    	        $(id).show();	        }else{		        $(this).removeClass('glyphicon-minus');		        $(this).addClass('glyphicon-plus');		        var id = "#tabela_prod_"+$(this).attr("id");		        $(id).hide();	        }        });</script>

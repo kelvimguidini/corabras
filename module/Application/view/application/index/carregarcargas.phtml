@@ -1,0 +1,9 @@
+<?php
+            if(isset($this->result) && count($this->result) > 0){?>
+                <div class="alert alert-<?php echo $this->result["tipo_mens"];?>">
+    	            <?php echo $this->result["resp"];?> 
+                </div>
+            <?php 
+            }?><div id="top" class="row">	<div class="col-sm-3">		<h2>Lista de Carregamentos</h2>	</div></div><!-- /#top --><hr />
+<div id="list" class="row">	<div class="table-responsive col-md-12">		<table class="table table-striped" cellspacing="0" cellpadding="0" id="lista_cargas">			<thead>				<tr>					<th>Data</th>					<th>Saída</th>					<th>Retorno</th>					<th>Motorista</th>					<th>Situação</th>				</tr>			</thead>			<tbody>			      <?php foreach ($this->lista as $f): ?>                  <tr>					<td><?php echo $f->getData(); ?></td>					<td><?php echo $f->getSaida(); ?></td>					<td><?php echo $f->getRetorno(); ?></td>					<td><?php echo $f->getMotorista(); ?></td>					<td><?php echo $f->getSituacao(); ?></td>				</tr>                <?php endforeach; ?>			</tbody>		</table>	</div></div><!-- /#list -->
+<script type="text/javascript">	$(document).ready( function () {		$('#lista_cargas').DataTable({    		"language": {                "url": "https://cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json"    		}		});	} );</script>

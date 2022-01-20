@@ -1,0 +1,484 @@
+<h3 class="page-header">Cadastro de vendas</h3>
+
+<div class="alert alert-info">
+    <span>Ao salvar, será feito o downlaod de um PDF com os ítens gravados.</span>
+</div>
+<div id="msg">
+</div>
+
+<form method="post">
+  <div class="row">
+
+    <div class="form-group col-md-3 col-sm-12 has-feedback">
+      <label for="data">Nome do Vendedor</label> 
+      <input type="text" class="form-control" value="<?php echo ($this->venda != null)? $this->venda->getNome_vendedor() : ''; ?>" required name="vendedor"> 
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Nome</label>
+      <input type="text" class="form-control" required name="nome" value="<?php echo ($this->venda != null)? $this->venda->getNome() : ''; ?>" > 
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+
+        <label for="data" class="radio-inline">
+          <input type="radio" name="documento" value="cpf" checked><b> CPF ou</b>
+        </label>
+        <label for="data" class="radio-inline">
+          <input type="radio" name="documento" value="cnpj"><b> CNPJ</b>
+        </label>
+      <input type="text" class="form-control" required id="cpfcnpj" style="margin-top: 4px;" name="cpfcnpj" value="<?php echo ($this->venda != null)? $this->venda->getCpfcnpj() : ''; ?>"> 
+    </div>
+    
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Endereço</label> 
+      <input type="text" class="form-control" required name="endereco" value="<?php echo ($this->venda != null)? $this->venda->getEndereco() : ''; ?>"> 
+    </div>
+    
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Telefone do Cliente</label>
+      <input type="text" class="form-control" id="telefone" required name="telefone" value="<?php echo ($this->venda != null)? $this->venda->getTelefone() : ''; ?>"> 
+    </div>
+    
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Contato na Empresa</label>
+      <input type="text" class="form-control" name="contato" value="<?php echo ($this->venda != null)? $this->venda->getContato() : ''; ?>"> 
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Cidade</label> 
+      <select name="cidade" required id="cidade" class="form-control">
+        <option value="">- Selecione -</option>
+        <?php foreach ($this->cidades as $c){ ?>
+          <option value="<?php echo $c->getNome();?>" <?php echo ($this->venda != null && $this->venda->getCidade() == $c->getNome())? ' selected' : '' ;?>><?php echo $c->getNome()?></option>
+        <?php }?>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="row">
+  
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Data Entrega</label> 
+      <input type="text" class="form-control calendario" required name="data_entrega" value="<?php echo ($this->venda != null)? $this->venda->getData_entrega() : ''; ?>"> 
+      <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+    </div>
+        
+    <div class="form-group col-md-2 col-sm-12">
+      <label for="nota_fiscal">Nota Fiscal</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="nota_fiscal" value="Sim" <?php echo ($this->venda != null && $this->venda->getNota_fiscal())? ' checked' : '' ;?>> Sim
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="nota_fiscal" value="Não" <?php echo ($this->venda != null && !$this->venda->getNota_fiscal()) || $this->venda == null ? ' checked' : '' ;?>> Não
+        </label>
+      </div>
+    </div>
+    <div class="form-group col-md-2 col-sm-12">
+      <label for="nota_fiscal">Tipo Nota Fiscal</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="tipo_nota_fiscal" value="Normal" <?php echo ($this->venda != null && $this->venda->getTipo_nf() == 'No')? ' checked' : '' ;?>> Normal
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="tipo_nota_fiscal" value="Baixa" <?php echo (($this->venda != null && $this->venda->getTipo_nf() != 'No') || $this->venda == null)? ' checked' : '' ;?>> Baixa
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="pagamento">Pagamento</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="pagamento" value="EN" <?php echo ($this->venda != null && $this->venda->getPagamento() == 'EN')? ' checked' : '' ;?>> Na Entrega
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="pagamento" value="AN" <?php echo ($this->venda != null && $this->venda->getPagamento() == 'AN')? ' checked' : '' ;?>> Antecipado
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="forma_pagamento">Forma de Pagamento</label> 
+      <select class="form-control" id="forma_pagamento" required name="forma_pagamento">
+        <option value="">- Selecione -</option>
+        <option value="AV" <?php echo ($this->venda != null && $this->venda->getForma_pagamento() == 'AV')? ' selected' : '' ;?>>À Vista</option>
+        <option value="CH" <?php echo ($this->venda != null && $this->venda->getForma_pagamento() == 'CH')? ' selected' : '' ;?>>Cheque</option>
+        <option value="TR" <?php echo ($this->venda != null && $this->venda->getForma_pagamento() == 'TR')? ' selected' : '' ;?>>Transferência</option>
+        <option value="OU" <?php echo ($this->venda != null && $this->venda->getForma_pagamento() == 'OU')? ' selected' : '' ;?>>Outros</option>
+      </select>
+    </div>
+
+    <div id="obs" class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="observacao">Forma de pagamento</label> 
+      <input type="text" class="form-control" id="observacao" name="observacao" value="<?php echo ($this->venda != null)? $this->venda->getOutra() : ''; ?>"> 
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12">
+      <label for="urgente">Urgente</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="urgente" value="Sim" <?php echo ($this->venda != null && $this->venda->getUrgente() == 'Sim')? ' checked' : '' ;?>> Sim
+        </label>
+        <label class="radio-inline">
+          <input type="radio" required name="urgente" value="Não" <?php echo ($this->venda != null && $this->venda->getUrgente() != 'Sim') || $this->venda == null ? ' checked' : '' ;?>> Não
+        </label>
+      </div>
+    </div>  
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-2 col-sm-12">
+      <label for="urgente">Entregar / Retirar</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="envio" value="Entregar" <?php echo ($this->venda != null && ($this->venda->getEnvio() || $this->venda->getEnvio() == null )) ? ' checked' : '' ;?>> Entregar
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="envio" value="Retirar" <?php echo ($this->venda != null && $this->venda->getEnvio() === false ) ? ' checked' : '' ;?>> Retirar
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group col-md-2 col-sm-12">
+      <label for="urgente">Entregar no mesmo endereço</label> 
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" required name="outroendereco" value="Sim" <?php echo ($this->venda != null && $this->venda->getLocalEntrega() || $this->venda->getLocalEntrega() == null) ? ' checked' : '' ;?>> Sim
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="outroendereco" value="Não" <?php echo ($this->venda != null && $this->venda->getLocalEntrega() === false) ? ' checked' : '' ;?>> Não
+        </label>
+      </div>
+    </div>
+
+    <div id="endereco_entrega" class="form-group col-md-2 col-sm-12 has-feedback">
+      <label for="data">Endereço Entrega</label> 
+      <input type="text" class="form-control" name="endereco_entrega" value="<?php echo ($this->venda != null)? $this->venda->getEnderecoEntrega() : ''; ?>"> 
+    </div>
+  </div>
+
+  <div class="row">
+    
+    <div class="form-group col-md-6 col-sm-12">
+      <label for="observacao">Observação</label> 
+      <textarea class="form-control" id="obs" name="obs"><?php echo ($this->venda != null)? $this->venda->getObs() : ''; ?></textarea>
+    </div>
+    
+  </div>
+
+
+  <div id="produtos">  
+    <?php 
+    $qtd_prod=0;
+
+    if($this->produtos != null){
+
+      $key=0;
+      foreach ($this->produtos as $p){
+        $key++;
+        ?>
+
+        <input type="hidden" value="<?php echo $p->getId();?>" class="hdd" name="id_produto_[]">
+        <div class="row item-pedido" id="a_<?php echo $p->getId();?>" data-id="<?php echo $p->getId();?>">
+
+          <hr>
+
+          <div class="form-group col-md-3">
+            <label for="modelo_<?php echo $p->getId();?>">Modelo</label> 
+            <select class="form-control" name="modelo_<?php echo $p->getId();?>">
+              <option value="" <?php ($p->getModelo() == '')? 'Selected' : '' ;?>>- Selecione -</option>
+              <option value="Super Max" <?php if($p->getModelo() == 'Super Max')echo 'selected';?>>Super Max</option>
+              <option value="Max" <?php if($p->getModelo() == 'Max')echo 'selected';?>>Max</option>
+              <option value="Coppo Venetto" <?php if($p->getModelo() == 'Coppo Venetto')echo 'selected';?>>Coppo Venetto</option>
+              <option value="Espigão" <?php if($p->getModelo() == 'Espigão')echo 'selected';?>>Espigão</option>
+              <option value="Inicial" <?php if($p->getModelo() == 'Inicial')echo 'selected';?>>Inicial</option>
+              <option value="03 vias" <?php if($p->getModelo() == '03 vias')echo 'selected';?>>03 vias</option>
+              <option value="04 vias" <?php if($p->getModelo() == '04 vias')echo 'selected';?>>04 vias</option>
+              <option value="Capa Lateral" <?php if($p->getModelo() == 'Capa Lateral')echo 'selected';?>>Capa Lateral</option>
+              <option value="Policarbonato Max" <?php if($p->getModelo() == 'Policarbonato Max')echo 'selected';?>>Policarbonato Max</option>
+              <option value="Policabornato Coppo" <?php if($p->getModelo() == 'Policabornato Coppo')echo 'selected';?>>Policabornato Coppo</option>
+              <option value="Policabornato Fit" <?php if($p->getModelo() == 'Policabornato Fit')echo 'selected';?>>Policabornato Fit</option>
+              <option value="Manta Termica" <?php if($p->getModelo() == 'Manta Termica')echo 'selected';?>>Manta Termica</option>
+              <option value="Frete" <?php if($p->getModelo() == 'Frete')echo 'selected';?>>Frete</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-2">
+            <label for="cor_<?php echo $p->getId();?>">Cor</label> 
+            <select class="form-control" name="cor_<?php echo $p->getId();?>">
+              <option value="" <?php echo ($p->getCor() == '')? 'Selected' : '' ;?>>- Selecione -</option>
+              <option value="Cinza Pérola" <?php echo ($p->getCor() == 'Cinza Pérola')? 'Selected' : '' ;?>>Cinza Pérola</option>
+              <option value="Grafite" <?php echo ($p->getCor() == 'Grafite')? 'Selected' : '' ;?>>Grafite</option>
+              <option value="Ocre" <?php echo ($p->getCor() == 'Ocre')? 'Selected' : '' ;?>>Ocre</option>
+              <option value="Marrom" <?php echo ($p->getCor() == 'Marrom')? 'Selected' : '' ;?>>Marrom</option>
+              <option value="Mostarda" <?php echo ($p->getCor() == 'Mostarda')? 'Selected' : '' ;?>>Mostarda</option>
+              <option value="Vermelha" <?php echo ($p->getCor() == 'Vermelha')? 'Selected' : '' ;?>>Vermelha</option>
+              <option value="Salmão" <?php echo ($p->getCor() == 'Salmão')? 'Selected' : '' ;?>>Salmão</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-2">
+            <label for="quantidade_<?php echo $p->getId();?>">Quantidade</label> 
+            <input type="number" placeholder="Informe a Quantidade" value="<?php echo $p->getQuantidade()?>" class="form-control quantidade" name="quantidade_<?php echo $p->getId();?>" id="quantidade_<?php echo $p->getId();?>">
+          </div>
+
+          <div class="form-group col-md-2">
+            <label for="valor_<?php echo $p->getId();?>">Valor</label> 
+            <input type="text" placeholder="Informe o Valor unitário" data-thousands="." data-decimal="," value="<?php echo $p->getValor()?>" class="form-control valor" name="valor_<?php echo $p->getId();?>" id="valor_<?php echo $p->getId();?>">
+          </div>
+
+          <div class="form-group col-md-2">
+            <label for="valortotal_<?php echo $p->getId();?>">Total</label>
+            <input type="text" disabled placeholder="Valor total" data-thousands="." required="" data-decimal="," class="form-control valor" name="total_<?php echo $p->getId();?>" id="total_<?php echo $p->getId();?>">
+          </div>
+
+          <div class="form-group col-md-1">
+            <i class="glyphicon glyphicon-trash red icone" onclick="removerItem('a_<?php echo $p->getId();?>')"></i>
+          </div>
+
+        </div>
+      <?php
+      }
+      $qtd_prod=$key;
+    }
+    ?>
+
+  </div>
+
+  <hr />
+
+
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <p class='pull-right'>Total Geral: R$ <input type="text" disabled="" data-thousands="." required="" data-decimal="," class="form-control" id="total"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+        
+  <span class="btn btn-success" id="add-produto">Add Produto</span>
+  
+      <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+      <button type="button" onclick="window.history.back();" class="btn btn-default pull-right">Cancelar</button>
+    </div>
+  </div>
+
+  <input type="hidden" id="qtd_produtos" name="qtd_produtos" value="<?=$qtd_prod?>">
+</form>
+
+
+<link href="/css/select2.min.css" rel="stylesheet" />
+<script src="/js/select2.min.js"></script>
+<script>
+$(document).ready(function () {
+
+  $("#cpfcnpj").mask("999.999.999-99");
+
+  $('#cidade').select2();
+
+  <?php echo ($this->venda != null && $this->venda->getForma_pagamento() == 'OU')? ' $(\'#obs\').show();' : '$(\'#obs\').hide();' ;?>
+
+  $('#forma_pagamento').change(function(){
+    if($(this).val() == "OU"){
+      $('#obs').show();
+    }else{
+      $('#obs').hide();
+    }
+  });
+  
+  $("#telefone").mask("(99) 99999-9999");
+  <?php if($this->venda == null || ($this->venda != null && $this->venda->getLocalEntrega() || $this->venda->getLocalEntrega() == null)){
+    echo "$('#endereco_entrega').hide();";
+  }
+  ?>
+  
+
+  $('input[type=radio][name=outroendereco]').change(function(){
+    if(this.value == "Não"){
+      $('#endereco_entrega').show();
+    }else{
+      $('#endereco_entrega').hide();
+    }
+  });
+
+  $('body').on('focus',".calendario", function(){
+    $(this).datepicker({
+      dateFormat: 'dd/mm/yy',
+      dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+      dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+      dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+      monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+      monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+      nextText: 'Próximo',
+      prevText: 'Anterior'
+    });
+  });
+
+  $('#add-produto').click(function(){
+    var qtd_produtos = $('#qtd_produtos').val();
+    qtd_produtos++;
+  
+    $('#qtd_produtos').val(qtd_produtos);
+    var produtos = $('#produtos');
+
+    var row = $('<div>').addClass('row item-pedido').attr({id: 'a_'+qtd_produtos, 'data-id': qtd_produtos});
+
+    row.append('<hr />');
+    
+    var inputHidden = $('<input type="hidden">').addClass('hdd').attr({name: 'id_produto_[]'}).attr({value: qtd_produtos})
+  
+    row.append(inputHidden);
+    
+  
+    //MODELO
+    var modelo = $('<div>').addClass('form-group col-md-3');
+    var labelModelo = $('<label>').attr({for: 'modelo_'+qtd_produtos}).text('Modelo');
+    var selectModelo = $('<select>').addClass('form-control').attr({name: 'modelo_'+qtd_produtos, id: 'cientes_id', required: true})
+              .append('<option value="">- Selecione -</option>')
+              .append('<option value="Super Max">Super Max</option>')
+                .append('<option value="Max">Max</option>')
+                .append('<option value="Coppo Venetto">Coppo Venetto</option>')
+                .append('<option value="Espigão">Espigão</option>')
+                .append('<option value="Inicial">Inicial</option>')
+                .append('<option value="03 vias">03 vias</option>')
+                .append('<option value="04 vias">04 vias</option>')
+                .append('<option value="Capa Lateral">Capa Lateral</option>')
+                .append('<option value="Policarbonato Max">Policarbonato Max</option>')
+                .append('<option value="Policabornato Coppo">Policabornato Coppo</option>')
+                .append('<option value="Policabornato Fit">Policabornato Fit</option>')
+                .append('<option value="Manta Termica">Manta Termica</option>')
+                .append('<option value="Frete">Frete</option>');
+
+    modelo.append(labelModelo);
+    modelo.append(selectModelo);
+    row.append(modelo);
+
+    //COR
+    var cor = $('<div>').addClass('form-group col-md-2');
+    var labelCor = $('<label>').attr({for: 'cor_'+qtd_produtos}).text('Cor');
+    var selectCor = $('<select>').addClass('form-control').attr({name: 'cor_'+qtd_produtos, required: true})
+          .append('<option value="" >- Selecione -</option>')
+          .append('<option value="Cinza Pérola">Cinza Pérola</option>')
+          .append('<option value="Grafite">Grafite</option>')
+          .append('<option value="Ocre">Ocre</option>')
+          .append('<option value="Marrom">Marrom</option>')
+          .append('<option value="Mostarda">Mostarda</option>')
+          .append('<option value="Vermelha">Vermelha</option>')
+          .append('<option value="Salmão">Salmão</option>')
+
+    cor.append(labelCor);
+    cor.append(selectCor);
+    row.append(cor);
+
+    //QUANTIDADE  
+    var quantidade = $('<div>').addClass('form-group col-md-2');
+    var labelQuantidade = $('<label>').attr({for: 'quantidade_'+qtd_produtos}).text('Quantidade');
+    var inputQuantidade = $('<input type="number" placeholder="Informe a Quantidade" required>').addClass('form-control quantidade').attr({name: 'quantidade_'+qtd_produtos}).attr({id: 'quantidade_'+qtd_produtos})
+  
+    quantidade.append(labelQuantidade);
+    quantidade.append(inputQuantidade);
+    row.append(quantidade);
+
+
+    //VALOR
+    var valor = $('<div>').addClass('form-group col-md-2');
+    var labelvalor = $('<label>').attr({for: 'valor_'+qtd_produtos}).text('Valor');
+    var inputvalor = $('<input type="text" placeholder="Informe o Valor unitário" data-thousands="." required data-decimal=",">').addClass('form-control valor').attr({name: 'valor_'+qtd_produtos}).attr({id: 'valor_'+qtd_produtos})
+      
+    valor.append(labelvalor);
+    valor.append(inputvalor);
+    row.append(valor);
+
+    //TOTAL
+    var total = $('<div>').addClass('form-group col-md-2');
+    var labeltotal = $('<label>').attr({for: 'valortotal_'+qtd_produtos}).text('Total');
+    var inputtotal = $('<input type="text" disabled placeholder="Valor total" data-thousands="." required data-decimal=",">').addClass('form-control valor').attr({name: 'total_'+qtd_produtos}).attr({id: 'total_'+qtd_produtos})
+  
+    total.append(labeltotal);
+    total.append(inputtotal);
+    row.append(total);
+
+    //Lixeira
+    var lixeira = $('<div>').addClass('form-group col-md-1');
+    var ivalor = $('<i onclick="removerItem(\'a_'+qtd_produtos+'\')">').addClass('glyphicon glyphicon-trash red icone');
+  
+    lixeira.append(ivalor);
+    row.append(lixeira);
+  
+    produtos.append(row);
+
+    $(".valor").maskMoney();
+    
+    $(".valor").focusout(function () { Totalizar() });
+    $(".quantidade").focusout(function () { Totalizar() });
+
+  });
+
+  $(".valor").maskMoney();
+
+  $(".valor").focusout(function () { Totalizar() });
+  $(".quantidade").focusout(function () { Totalizar() });
+
+  $("input[name ='documento']").click(function(){
+    try {
+      $("#cpfcnpj").unmask();
+    } catch (e) {}
+    //alert($(this).val());
+    if($(this).val() == 'cpf'){
+      $("#cpfcnpj").mask("999.999.999-99");
+    } else {
+      $("#cpfcnpj").mask("99.999.999/9999-99");
+    }
+
+    // ajustando foco
+    var elem = this;
+    setTimeout(function(){
+      // mudo a posição do seletor
+      elem.selectionStart = elem.selectionEnd = 10000;
+    }, 0);
+    // reaplico o valor para mudar o foco
+    var currentValue = $(this).val();
+    $(this).val('');
+    $(this).val(currentValue);
+  });
+  
+  Totalizar();
+});
+  function removerItem(id){
+    if(confirm("Deseja realmente remover este item?"))
+    {
+          $('#'+id).remove();
+          $( "#msg" ).addClass("alert alert-success").text("Produto removido com sucesso!");
+      var qtd = $('#qtd_produtos').val();
+      $('#qtd_produtos').val(qtd-1);
+      Totalizar();
+    }
+  }
+
+  function Totalizar() {
+    var totalG = 0;
+    $( ".item-pedido" ).each(function( index ) {
+      var i = $(this).attr('data-id');
+            var valor = parseFloat($("#valor_"+i).val() != '' ? $("#valor_"+i).val().replace('.', '').replace(',', '.') : 0);
+            var quantidade = parseInt($('#quantidade_'+i).val() != '' ? $('#quantidade_'+i).val() : 0);
+      var total = (valor * quantidade);
+      total = parseFloat(total.toFixed(2));
+      
+      $('#total_'+i).val(total);
+      $('#total_'+i).maskMoney();
+      $('#total_'+i).trigger('mask.maskMoney');
+      totalG += total;
+    });
+
+        $('#total').val(parseFloat(totalG.toFixed(2)));
+        $('#total').maskMoney();
+        $('#total').trigger('mask.maskMoney');
+    }
+
+</script>
