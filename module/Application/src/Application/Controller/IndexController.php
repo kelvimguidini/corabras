@@ -564,7 +564,7 @@ class IndexController extends AbstractActionController
                   where s3.venda = (
                       select max(v3.id) from Application\Model\Venda v3 where v3.carga is not null
                   )
-                  and s3.situacao = 'Carregamento'
+                  and s3.situacao = 'Excluidos'
               )
           )
       )
