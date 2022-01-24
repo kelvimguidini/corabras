@@ -538,7 +538,7 @@ class IndexController extends AbstractActionController
 
     $data_atual = date("Y/m/d");
 
-    $query = <<<END
+    $query = "
       select c from Application\Model\Carga c
       where (c.situacao = 'Carregamento' or c.situacao = 'Entrega')
         and c.id in(
@@ -567,8 +567,7 @@ class IndexController extends AbstractActionController
                   and s3.situacao = 'Excluidos'
               )
           )
-      )
-    END;
+      )";
 
     $_cargas_combo = $em->createQuery($query);
     $cargas_combo = $_cargas_combo->getArrayResult();
