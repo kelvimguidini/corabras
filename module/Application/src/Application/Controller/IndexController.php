@@ -537,8 +537,40 @@ class IndexController extends AbstractActionController
     );
 
     $data_atual = date("Y/m/d");
-    $_cargas_combo = $em->createQuery('select c from Application\Model\Carga c where (c.situacao = \'Carregamento\' or c.situacao = \'Entrega\') and c.id in (select distinct IDENTITY(v.carga) from Application\Model\Venda v  where IDENTITY(v.carga) is not null and v.id not in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Excluidos\'))');
 
+    $query = <<<END
+      select c from Application\Model\Carga c
+      where (c.situacao = 'Carregamento' or c.situacao = 'Entrega')
+        and c.id in(
+          select max(v.carga)
+          from Application\Model\Venda v
+          where
+              v.carga is not null
+              and v.id not in(
+                  select
+                      max(s.venda)
+                  from Application\Model\Situacao s
+                  where s.id = (
+                      select max(s1.id)
+                      from Application\Model\Situacao s1
+                      where s1.venda = (
+                          select max(v2.id) from Application\Model\Venda v2 where v2.carga is not null
+                      )
+                  )
+              and v.id not in(
+                  select
+                      max(s3.venda)
+                  from Application\Model\Situacao s3
+                  where s3.venda = (
+                      select max(v3.id) from Application\Model\Venda v3 where v3.carga is not null
+                  )
+                  and s3.situacao = 'Carregamento'
+              )
+          )
+      )
+    END;
+
+    $_cargas_combo = $em->createQuery($query);
     $cargas_combo = $_cargas_combo->getArrayResult();
 
     $_cargas = $em->createQuery('select c from Application\Model\Carga c ');
