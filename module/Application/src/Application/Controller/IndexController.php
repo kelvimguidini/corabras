@@ -514,10 +514,10 @@ class IndexController extends AbstractActionController
     } else {
 
       $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.data_cadastro DESC, v.id DESC')
-        ->setMaxResults(100);
+        ->setMaxResults(50);
       $vendas = $db->getArrayResult();
 
-      $filtro = array('next' =>  100, 'preview' => -100, 'situacao' => $situ);
+      $filtro = array('next' =>  50, 'preview' => -50, 'situacao' => $situ);
     }
 
     $vendasId = array();
@@ -542,32 +542,22 @@ class IndexController extends AbstractActionController
       select c from Application\Model\Carga c
       where (c.situacao = 'Carregamento' or c.situacao = 'Entrega')
         and c.id in(
-          select max(v.carga)
+          select distinct IDENTITY(v.carga)
           from Application\Model\Venda v
           where
               v.carga is not null
               and v.id not in(
                   select
-                      max(s.venda)
+                  IDENTITY(s.venda)
                   from Application\Model\Situacao s
                   where s.id = (
                       select max(s1.id)
                       from Application\Model\Situacao s1
-                      where s1.venda = (
-                          select max(v2.id) from Application\Model\Venda v2 where v2.carga is not null
-                      )
+                      where s1.venda = v.id
                   )
-              and v.id not in(
-                  select
-                      max(s3.venda)
-                  from Application\Model\Situacao s3
-                  where s3.venda = (
-                      select max(v3.id) from Application\Model\Venda v3 where v3.carga is not null
-                  )
-                  and s3.situacao = 'Excluidos'
+                  and s.situacao = 'Excluidos'
               )
-          )
-      )";
+          )";
 
     $_cargas_combo = $em->createQuery($query);
     $cargas_combo = $_cargas_combo->getArrayResult();

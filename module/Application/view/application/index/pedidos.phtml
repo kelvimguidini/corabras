@@ -188,7 +188,7 @@ if(isset($this->result) && count($this->result) > 0){?>
 			    <label for="limite">Exibir</label> 
 
 			    <select name="limite" class="form-control">
-				    <option value="100" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 100)echo 'selected';?>>100 Registros</option>
+				    <option value="50" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 50)echo 'selected';?>>50 Registros</option>
 				    <option value="1000" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 1000)echo 'selected';?>>1000 Registros</option>
 				    <option value="0" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 0)echo 'selected';?>>Todos Os Registros</option>
 			    </select>
