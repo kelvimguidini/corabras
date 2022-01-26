@@ -132,6 +132,21 @@ class Venda
      */
      public $situacoes;
 
+     
+	/**
+	 * @ORM\Column(type="string", length=50)
+	 */
+    public $situacao;
+
+    
+	public function getSituacao() {
+        return $this->situacao;
+    }
+
+    public function setSituacao($val) {
+        $this->situacao = $val;
+    }
+
 
 	public function getCarga() {
         return $this->carga;

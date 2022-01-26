@@ -88,6 +88,8 @@ class IndexController extends AbstractActionController
         $venda->setEnderecoEntrega($endereco_entrega);
         $venda->setObs($obs);
         $venda->setContato($contato);
+        
+        $venda->setSituacao("Recebido");
 
         $cesta = array();
 
@@ -128,14 +130,14 @@ class IndexController extends AbstractActionController
           return $this->redirect()->toRoute('pedidos');
         }
 
-        $situ = new \Application\Model\Situacao();
+        // $situ = new \Application\Model\Situacao();
 
-        $situ->setData(date("d/m/Y"));
-        $situ->setSituacao("Recebido");
-        $situ->setVenda($venda);
+        // $situ->setData(date("d/m/Y"));
+        // $situ->setSituacao("Recebido");
+        // $situ->setVenda($venda);
 
-        $em->persist($situ);
-        $em->flush();
+        // $em->persist($situ);
+        // $em->flush();
 
         $result["html"] = $this->gerarPdfComprovante($cesta);
       } catch (ExceptionEvent $e) {
@@ -267,17 +269,20 @@ class IndexController extends AbstractActionController
 
         $venda = $db->getSingleResult();
 
+        $venda->setSituacao($situacao);
 
         if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
           $venda->setCarga($carga);
 
           $em->persist($venda);
           $em->flush();
-        }
-        if ($situacao == 'Recebido') {
+        }else if ($situacao == 'Recebido') {
           $cargaTemp = $venda->getCarga()->getId();
           $venda->setCarga(null);
 
+          $em->persist($venda);
+          $em->flush();
+        }else{
           $em->persist($venda);
           $em->flush();
         }
@@ -310,19 +315,19 @@ class IndexController extends AbstractActionController
         }
 
 
-        $s = $em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
-        $em->remove($s);
-        $em->flush();
+        // $s = $em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
+        // $em->remove($s);
+        // $em->flush();
 
-        $situ = new \Application\Model\Situacao();
+        // $situ = new \Application\Model\Situacao();
 
 
-        $situ->setData(date("d/m/Y"));
-        $situ->setSituacao($situacao);
-        $situ->setVenda($venda);
+        // $situ->setData(date("d/m/Y"));
+        // $situ->setSituacao($situacao);
+        // $situ->setVenda($venda);
 
-        $em->persist($situ);
-        $em->flush();
+        // $em->persist($situ);
+        // $em->flush();
       }
 
       $result["resp"] = "Tramitado com sucesso!";
@@ -367,6 +372,7 @@ class IndexController extends AbstractActionController
       $venda->setTelefone($vendaOld->getTelefone());
       $venda->setContato($vendaOld->getContato());
       $venda->setAberto(true);
+      $venda->setSituacao("Recebido");
 
       $venda->setEnvio($vendaOld->getEnvio());
       $venda->setLocalEntrega($vendaOld->getLocalEntrega());
@@ -376,14 +382,14 @@ class IndexController extends AbstractActionController
       $em->persist($venda);
       $em->flush();
 
-      $situ = new \Application\Model\Situacao();
+      // $situ = new \Application\Model\Situacao();
 
-      $situ->setData(date("d/m/Y"));
-      $situ->setSituacao("Recebido");
-      $situ->setVenda($venda);
+      // $situ->setData(date("d/m/Y"));
+      // $situ->setSituacao();
+      // $situ->setVenda($venda);
 
-      $em->persist($situ);
-      $em->flush();
+      // $em->persist($situ);
+      // $em->flush();
 
       $i = 0;
       foreach ($produtos as $prod) {
@@ -426,11 +432,7 @@ class IndexController extends AbstractActionController
     $offSet = $this->params()->fromRoute("offset", 0);
     $situ = $this->params()->fromRoute("situacao", "Recebido");
 
-    $dbSub = $em->createQuery("select st.situacao from Application\Model\Situacao st where st.situacao = '$situ' ORDER BY st.data ASC")
-      ->setMaxResults(1);
-    $dbSubResult = $dbSub->getArrayResult()[0]['situacao'];
-
-    $where = "where '$situ' = '$dbSubResult' ";
+    $where = "where v.situacao = '$situ' ";
 
     $filtro = array();
     if ($request->isPost()) {
@@ -538,27 +540,14 @@ class IndexController extends AbstractActionController
 
     $data_atual = date("Y/m/d");
 
-    $query = "
-      select c from Application\Model\Carga c
-      where (c.situacao = 'Carregamento' or c.situacao = 'Entrega')
-        and c.id in(
-          select distinct IDENTITY(v.carga)
-          from Application\Model\Venda v
-          where
-              v.carga is not null
-              and v.id not in(
-                  select
-                  IDENTITY(s.venda)
-                  from Application\Model\Situacao s
-                  where s.id = (
-                      select max(s1.id)
-                      from Application\Model\Situacao s1
-                      where s1.venda = v.id
-                  )
-                  and s.situacao = 'Excluidos'
-              )
-          )";
-
+    $query = "select c from Application\Model\Carga c
+        where (c.situacao = 'Carregamento' or c.situacao = 'Entrega') 
+        and c.id in (
+          select distinct IDENTITY(v.carga) 
+          from Application\Model\Venda v 
+          where v.carga is not null and v.situacao <> 'Excluidos'
+        )";
+    
     $_cargas_combo = $em->createQuery($query);
     $cargas_combo = $_cargas_combo->getArrayResult();
 
