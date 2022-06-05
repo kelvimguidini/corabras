@@ -21,11 +21,13 @@
 							<tr class="linha">			      				<td><i class="glyphicon glyphicon-plus venda no_print" id="<?= $v['id'];?>"></i></td>			      				<td><?= $v['data_cadastro']->format('d/m/Y');?></td>								<td><?= $v['data_para_entrega']->format('d/m/Y');?></td>
 								<?php 								$prod = array();								$quantidadeTotal=0;								$qtdFit=0;								$qtdEspig=0;								$qtdMax=0;								$qtdCoppo=0;								$qtdIni=0;								$qtd03v=0;								$qtd04v=0;								$qtdCapa=0;								$valorTotal=0;								$peso = 0;                            								foreach ($v["produtos"] as $p){
 									$quantidadeTotal += $p['quantidade'];									switch ($p['modelo']) {
-										case 'Max':   
+										case 'Max': 
+										case 'Max RESINADA':  
 											$qtdMax += $p['quantidade'];
 											$peso += 5.5 * $p['quantidade'];
 											break;
 										case 'Coppo Venetto':
+										case 'Coppo Venetto RESINADA':
 											$qtdCoppo += $p['quantidade'];
 											$peso += 4.7 * $p['quantidade'];
 											break;
@@ -46,6 +48,7 @@
 											$peso += 5 * $p['quantidade'];
 											break;
 										case 'Super Max':
+										case 'Super Max RESINADA':
 											$qtdFit += $p['quantidade'];
 											$peso += 3.9 * $p['quantidade'];
 											break;

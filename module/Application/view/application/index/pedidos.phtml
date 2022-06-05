@@ -411,11 +411,13 @@ if(isset($this->result) && count($this->result) > 0){?>
 
 			                          $quantidadeTotal += $p->getQuantidade();
 			                          switch ($p->getModelo()) {
-	                                    case 'Max':   
+	                                    case 'Max':
+										case 'Max RESINADA':   
 		                                    $qtdMax += $p->getQuantidade();
                                             $peso += 5.5 * $p->getQuantidade();
 		                                    break;
 	                                    case 'Coppo Venetto':
+										case 'Coppo Venetto RESINADA':
 		                                    $qtdCoppo += $p->getQuantidade();
                                             $peso += 4.7 * $p->getQuantidade();
 		                                    break;
@@ -436,6 +438,7 @@ if(isset($this->result) && count($this->result) > 0){?>
                                             $peso += 5 * $p->getQuantidade();
 		                                    break;
                                         case 'Super Max':
+										case 'Super Max RESINADA':
                                             $qtdFit += $p->getQuantidade();
 		                                    $peso += 3.9 * $p->getQuantidade();
 		                                    break;
