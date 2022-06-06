@@ -144,6 +144,9 @@ if(isset($this->result) && count($this->result) > 0){?>
                     <option value="Super Max" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Super Max')echo 'selected';?>>Super Max</option>
                     <option value="Max" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max')echo 'selected';?>>Max</option>
                     <option value="Coppo Venetto" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo Venetto')echo 'selected';?>>Coppo Venetto</option>
+					<option value="Super Max RESINADA" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Super Max RESINADA')echo 'selected';?>>Super Max RESINADA</option>
+					<option value="Max RESINADA" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max RESINADA')echo 'selected';?>>max RESINADA</option>
+					<option value="Coppo RESINADA" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo RESINADA')echo 'selected';?>>Coppo RESINADA</option>
                     <option value="Espigão" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Espigão')echo 'selected';?>>Espigão</option>
                     <option value="Inicial" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Inicial')echo 'selected';?>>Inicial</option>
                     <option value="03 vias" <?php if(isset($this->filtro['modelo']) && $this->filtro['modelo'] == '03 vias')echo 'selected';?>>03 vias</option>
@@ -408,11 +411,13 @@ if(isset($this->result) && count($this->result) > 0){?>
 
 			                          $quantidadeTotal += $p->getQuantidade();
 			                          switch ($p->getModelo()) {
-	                                    case 'Max':   
+	                                    case 'Max':
+										case 'Max RESINADA':   
 		                                    $qtdMax += $p->getQuantidade();
                                             $peso += 5.5 * $p->getQuantidade();
 		                                    break;
 	                                    case 'Coppo Venetto':
+										case 'Coppo Venetto RESINADA':
 		                                    $qtdCoppo += $p->getQuantidade();
                                             $peso += 4.7 * $p->getQuantidade();
 		                                    break;
@@ -433,6 +438,7 @@ if(isset($this->result) && count($this->result) > 0){?>
                                             $peso += 5 * $p->getQuantidade();
 		                                    break;
                                         case 'Super Max':
+										case 'Super Max RESINADA':
                                             $qtdFit += $p->getQuantidade();
 		                                    $peso += 3.9 * $p->getQuantidade();
 		                                    break;
