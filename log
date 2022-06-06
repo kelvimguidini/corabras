@@ -6886,3 +6886,23 @@
 [Thu Mar 24 16:27:42.446693 2022] [php7:notice] [pid 10952:tid 1860] [client 127.0.0.1:65236] PHP Notice:  compact(): Undefined variable: extras in D:\\Projetos\\Sites_Finalizados\\corabras\\vendor\\zendframework\\zend-view\\src\\Helper\\HeadLink.php on line 403, referer: http://local.corabras.com/
 [Thu Mar 24 16:27:42.446693 2022] [php7:notice] [pid 10952:tid 1860] [client 127.0.0.1:65236] PHP Notice:  compact(): Undefined variable: extras in D:\\Projetos\\Sites_Finalizados\\corabras\\vendor\\zendframework\\zend-view\\src\\Helper\\HeadLink.php on line 403, referer: http://local.corabras.com/
 127.0.0.1 - - [24/Mar/2022:16:27:42 -0300] "GET /favicon.ico HTTP/1.1" 404 4622
+[Thu Jun 02 15:57:53.051226 2022] [php7:notice] [pid 19080:tid 1900] [client 127.0.0.1:57242] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port) :-(
+127.0.0.1 - - [02/Jun/2022:15:57:52 -0300] "GET / HTTP/1.1" 200 22036
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/timepicker-master/jquery.ui.timepicker.css?v=0.3.3 HTTP/1.1" 200 1816
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/jquery.dataTables.min.css HTTP/1.1" 200 13901
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/jquery-ui.css HTTP/1.1" 200 33233
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/bootstrap-theme.min.css HTTP/1.1" 200 23414
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/style.css HTTP/1.1" 200 3928
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/bootstrap.min.css HTTP/1.1" 200 121205
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /css/select2.min.css HTTP/1.1" 200 15276
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/jquery-3.1.0.min.js HTTP/1.1" 200 86355
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/excellentexport/dist/excellentexport.js HTTP/1.1" 200 882560
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/bootstrap.min.js HTTP/1.1" 200 37051
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/jquery-ui.js HTTP/1.1" 200 539419
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/jquery.dataTables.min.js HTTP/1.1" 200 82070
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/jquery.mask.min.js HTTP/1.1" 200 10622
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/timepicker-master/jquery.ui.timepicker.js?v=0.3.3 HTTP/1.1" 200 68141
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/jquery.maskMoney.js HTTP/1.1" 200 25597
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /js/select2.min.js HTTP/1.1" 200 67751
+127.0.0.1 - - [02/Jun/2022:15:57:54 -0300] "GET /fonts/glyphicons-halflings-regular.woff2 HTTP/1.1" 200 18028
+127.0.0.1 - - [02/Jun/2022:15:57:55 -0300] "GET /img/favicon.ico HTTP/1.1" 200 1354
