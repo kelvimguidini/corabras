@@ -13,7 +13,7 @@
 .modal-content {
   border-radius: 0;
 }</style><script>$('#entregue').click(function(){	$('#tramitar').submit();});</script><div id="top" class="row">	<div class="col-sm-3">		<h2>Roteiro da entrega</h2>	</div></div><!-- /#top --><hr />
-<div id="list" class="row yesprint">	<div class="table-responsive col-md-12">	<form method="post" id="tramitar" action="<?=$this->url('tramitar'); ?>">		<input type="hidden" value="Entrega" name="situacao" />				    <table class="table table-striped table table-sm-responsive" cellspacing="0" cellpadding="0" id="lista_vendas">			    <thead>				    <tr>					    <th class="no_print"></th>					    <th>Data Cadastro</th>					    <th>Data Entrega</th>					    <th>Nome</th>                        <th>Cidade</th>					    <th>Vendedor</th>					    <th>Super</th>					    <th>Max</th>					    <th>Coppo</th>					    <th>ESP</th>					    <th>Ini</th>					    <th>03v</th>					    <th>04v</th>					    <th>Capa</th>					    <th>Peso</th>					    <th>Valor</th>					    <th class="no_print"></th>				    </tr>			    </thead>			    <tbody>
+<div id="list" class="row yesprint">	<div class="table-responsive col-md-12">	<form method="post" id="tramitar" action="<?=$this->url('tramitar'); ?>">		<input type="hidden" value="Entrega" name="situacao" />				    <table class="table table-striped table table-sm-responsive" cellspacing="0" cellpadding="0" id="lista_vendas">			    <thead>				    <tr>					    <th class="no_print"></th>					    <th>Data Cadastro</th>					    <th>Data Entrega</th>					    <th>Nome</th>                        <th>Cidade</th>					    <th>Vendedor</th>					    <th>Cor</th>					    <th>Super</th>					    <th>Max</th>					    <th>Coppo</th>					    <th>ESP</th>					    <th>Ini</th>					    <th>03v</th>					    <th>04v</th>					    <th>Capa</th>					    <th>Peso</th>					    <th>Valor</th>					    <th class="no_print"></th>				    </tr>			    </thead>			    <tbody>
 					<?php 					$qtdTotalGeral = 0;					$valorGeral = 0;
 			        foreach ($this->lista as $c){						foreach ($c["vendas"] as $v){												if(! is_array($v)){								$v = (array)$v;
 							}							$id = $v['id'];
@@ -75,7 +75,8 @@
 	                    			                        $valorTotal += floatval(str_replace(',', '.', $p['valor'])) * $p['quantidade'];								}															$valorGeral += $valorTotal;								$qtdTotalGeral += $quantidadeTotal;								?>
 								<td><?php echo substr($v['nome'], 0, 30);?></td>
 								<td><?php echo substr($v['cidade'], 0, 30);?></td>
-								<td><?php echo substr($v['nome_vendedor'], 0, 10);?></td>
+								<td><echo substr($v['nome_vendedor'], 0, 10);?>?php </td>
+								<td><echo substr($p['cor'], 0, 10);?></td>
 								<td><?=$qtdFit ?></td>								<td><?=$qtdMax ?></td>								<td><?=$qtdCoppo ?></td>								<td><?=$qtdEspig ?></td>								<td><?=$qtdIni ?></td>								<td><?=$qtd03v ?></td>								<td><?=$qtd04v ?></td>								<td><?=$qtdCapa ?></td>								<td><?php echo number_format($peso, 0, ',', '.');?>kg</td>								<td>R$ <?php echo number_format($valorTotal, 2, ',', '.');?></td>    							<td>                                    <?php                                    if($v["envio"]){                                        echo "<span title=\"Entregar\" class=\"label label-warning\"> E </span>";
                                     }else{                                        echo "<span title=\"Retirar\" class=\"label label-success\"> R </span>";
                                     }                                    if($v["urgente"] == 'Sim'){                                        echo "<span title=\"Urgente\" class=\"label label-danger\"> U </span>";
