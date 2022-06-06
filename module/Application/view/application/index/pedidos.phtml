@@ -266,6 +266,7 @@ if(isset($this->result) && count($this->result) > 0){?>
 					    <th>Nome</th>
                         <th>Cidade</th>
 					    <th>Vendedor</th>
+						<th>Cor</th>
 					    <th>Super</th>
 					    <th>Max</th>
 					    <th>Coppo</th>
@@ -345,6 +346,7 @@ if(isset($this->result) && count($this->result) > 0){?>
 					            <th>Nome</th>
                                 <th>Cidade</th>
 					            <th>Vendedor</th>
+								<th>Cor</th>
 					            <th>Super</th>
 					            <th>Max</th>
 					            <th>Coppo</th>
@@ -473,6 +475,7 @@ if(isset($this->result) && count($this->result) > 0){?>
 					            <td><?php echo substr($v['nome'], 0, 30);?></td>
 					            <td><?php echo substr($v['cidade'], 0, 30);?></td>
 					            <td><?php echo substr($v['nome_vendedor'], 0, 10);?></td>
+								<td><?php echo substr($p['cor'], 0, 10);?></td>
 					            <td><?=$qtdFit ?></td>
 					            <td><?=$qtdMax ?></td>
 					            <td><?=$qtdCoppo ?></td>
