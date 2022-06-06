@@ -1,28 +1,88 @@
 <?php
-            if(isset($this->result) && count($this->result) > 0){?>
-                <div class="alert alert-<?php echo $this->result["tipo_mens"];?>">
-    	            <?php echo $this->result["resp"];?> 
-                </div>
-            <?php 
-            }?><style>.modal-dialog {
-  width: 90%;
-  height: 90%;
-  padding: 0;
-}
+if (isset($this->result) && count($this->result) > 0) { ?>
+	<div class="alert alert-<?php echo $this->result["tipo_mens"]; ?>">
+		<?php echo $this->result["resp"]; ?>
+	</div>
+<?php
+} ?><style>
+	.modal-dialog {
+		width: 90%;
+		height: 90%;
+		padding: 0;
+	}
 
-.modal-content {
-  border-radius: 0;
-}</style><script>$('#entregue').click(function(){	$('#tramitar').submit();});</script><div id="top" class="row">	<div class="col-sm-3">		<h2>Roteiro da entrega</h2>	</div></div><!-- /#top --><hr />
-<div id="list" class="row yesprint">	<div class="table-responsive col-md-12">	<form method="post" id="tramitar" action="<?=$this->url('tramitar'); ?>">		<input type="hidden" value="Entrega" name="situacao" />				    <table class="table table-striped table table-sm-responsive" cellspacing="0" cellpadding="0" id="lista_vendas">			    <thead>				    <tr>					    <th class="no_print"></th>					    <th>Data Cadastro</th>					    <th>Data Entrega</th>					    <th>Nome</th>                        <th>Cidade</th>					    <th>Vendedor</th>					    <th>Cor</th>					    <th>Super</th>					    <th>Max</th>					    <th>Coppo</th>					    <th>ESP</th>					    <th>Ini</th>					    <th>03v</th>					    <th>04v</th>					    <th>Capa</th>					    <th>Peso</th>					    <th>Valor</th>					    <th class="no_print"></th>				    </tr>			    </thead>			    <tbody>
-					<?php 					$qtdTotalGeral = 0;					$valorGeral = 0;
-			        foreach ($this->lista as $c){						foreach ($c["vendas"] as $v){												if(! is_array($v)){								$v = (array)$v;
-							}							$id = $v['id'];
-							$valorTotalComissao = 0;?>
-							<tr class="linha">			      				<td><i class="glyphicon glyphicon-plus venda no_print" id="<?= $v['id'];?>"></i></td>			      				<td><?= $v['data_cadastro']->format('d/m/Y');?></td>								<td><?= $v['data_para_entrega']->format('d/m/Y');?></td>
-								<?php 								$prod = array();								$quantidadeTotal=0;								$qtdFit=0;								$qtdEspig=0;								$qtdMax=0;								$qtdCoppo=0;								$qtdIni=0;								$qtd03v=0;								$qtd04v=0;								$qtdCapa=0;								$valorTotal=0;								$peso = 0;                            								foreach ($v["produtos"] as $p){
-									$quantidadeTotal += $p['quantidade'];									switch ($p['modelo']) {
-										case 'Max': 
-										case 'Max RESINADA':  
+	.modal-content {
+		border-radius: 0;
+	}
+</style>
+<script>
+	$('#entregue').click(function() {
+		$('#tramitar').submit();
+	});
+</script>
+<div id="top" class="row">
+	<div class="col-sm-3">
+		<h2>Roteiro da entrega</h2>
+	</div>
+</div><!-- /#top -->
+<hr />
+<div id="list" class="row yesprint">
+	<div class="table-responsive col-md-12">
+		<form method="post" id="tramitar" action="<?= $this->url('tramitar'); ?>"> <input type="hidden" value="Entrega" name="situacao" />
+			<table class="table table-striped table table-sm-responsive" cellspacing="0" cellpadding="0" id="lista_vendas">
+				<thead>
+					<tr>
+						<th class="no_print"></th>
+						<th>Data Cadastro</th>
+						<th>Data Entrega</th>
+						<th>Nome</th>
+						<th>Cidade</th>
+						<th>Vendedor</th>
+						<th>Cor</th>
+						<th>Super</th>
+						<th>Max</th>
+						<th>Coppo</th>
+						<th>ESP</th>
+						<th>Ini</th>
+						<th>03v</th>
+						<th>04v</th>
+						<th>Capa</th>
+						<th>Peso</th>
+						<th>Valor</th>
+						<th class="no_print"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php $qtdTotalGeral = 0;
+					$valorGeral = 0;
+					foreach ($this->lista as $c) {
+						foreach ($c["vendas"] as $v) {
+							if (!is_array($v)) {
+								$v = (array)$v;
+							}
+							$id = $v['id'];
+							$valorTotalComissao = 0; ?>
+							<tr class="linha">
+								<td><i class="glyphicon glyphicon-plus venda no_print" id="<?= $v['id']; ?>"></i></td>
+								<td><?= $v['data_cadastro']->format('d/m/Y'); ?></td>
+								<td><?= $v['data_para_entrega']->format('d/m/Y'); ?></td>
+								<?php $prod = array();
+								$quantidadeTotal = 0;
+								$qtdFit = 0;
+								$qtdEspig = 0;
+								$qtdMax = 0;
+								$qtdCoppo = 0;
+								$qtdIni = 0;
+								$qtd03v = 0;
+								$qtd04v = 0;
+								$qtdCapa = 0;
+								$valorTotal = 0;
+								$peso = 0;
+								foreach ($v["produtos"] as $p) {
+									$quantidadeTotal += $p['quantidade'];
+									switch ($p['modelo']) {
+										case 'Max':
+										case 'Max RESINADA':
 											$qtdMax += $p['quantidade'];
 											$peso += 5.5 * $p['quantidade'];
 											break;
@@ -72,113 +132,171 @@
 											$peso += 1 * $p['quantidade'];
 											break;
 									}
-	                    			                        $valorTotal += floatval(str_replace(',', '.', $p['valor'])) * $p['quantidade'];								}															$valorGeral += $valorTotal;								$qtdTotalGeral += $quantidadeTotal;								?>
-								<td><?php echo substr($v['nome'], 0, 30);?></td>
-								<td><?php echo substr($v['cidade'], 0, 30);?></td>
-								<td><echo substr($v['nome_vendedor'], 0, 10);?>?php </td>
-								<td><echo substr($p['cor'], 0, 10);?></td>
-								<td><?=$qtdFit ?></td>								<td><?=$qtdMax ?></td>								<td><?=$qtdCoppo ?></td>								<td><?=$qtdEspig ?></td>								<td><?=$qtdIni ?></td>								<td><?=$qtd03v ?></td>								<td><?=$qtd04v ?></td>								<td><?=$qtdCapa ?></td>								<td><?php echo number_format($peso, 0, ',', '.');?>kg</td>								<td>R$ <?php echo number_format($valorTotal, 2, ',', '.');?></td>    							<td>                                    <?php                                    if($v["envio"]){                                        echo "<span title=\"Entregar\" class=\"label label-warning\"> E </span>";
-                                    }else{                                        echo "<span title=\"Retirar\" class=\"label label-success\"> R </span>";
-                                    }                                    if($v["urgente"] == 'Sim'){                                        echo "<span title=\"Urgente\" class=\"label label-danger\"> U </span>";
-                                    }                                    $isColorido = false;                                    foreach ($v["produtos"] as $p){                				        if($p['cor'] != 'Cinza Pérola'){                                            $isColorido = true;                                        }                                    }                                    if($isColorido){                                        echo "<span title=\"Colorido\" class=\"label label-primary\"> C </span>";                                    }                                                                    ?>								</td>							</tr>				            <tr>
-					        <td colspan="19" id="tabela_prod_<?=$v['id'];?>" style="display:none">                                <table border="1" width='100%' style='border-collapse: collapse;'>
-				                    <thead>
-					                    <tr>
-						                    <th>Vendedor:</th>
-						                    <td colspan="2"><?= $v['nome_vendedor'];?></td>
-						                    <th>Data Cadastro:</th>
-						                    <td><?php echo $v['data_cadastro']->format('d/m/Y');?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Nome Cliente:</th>
-						                    <td colspan="2"><?= $v['nome'];?></td>
-						                    <th>Documento:</th>
-						                    <td><?= $v['cpfcnpj'];?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Telefone do Cliente:</th>
-						                    <td colspan="2"><?= $v['telefone'];?></td>
-											<th>Contato:</th>
-						                    <td><?= $v['contato'];?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Endereço:</th>
-						                    <td colspan="2"><?=$v['endereco']?></td>
+									$valorTotal += floatval(str_replace(',', '.', $p['valor'])) * $p['quantidade'];
+								}
+								$valorGeral += $valorTotal;
+								$qtdTotalGeral += $quantidadeTotal;								?>
+								<td><?php echo substr($v['nome'], 0, 30); ?></td>
+								<td><?php echo substr($v['cidade'], 0, 30); ?></td>
+								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
+								<td><?php echo substr($p['cor'], 0, 10); ?></td>
+								<td><?= $qtdFit ?></td>
+								<td><?= $qtdMax ?></td>
+								<td><?= $qtdCoppo ?></td>
+								<td><?= $qtdEspig ?></td>
+								<td><?= $qtdIni ?></td>
+								<td><?= $qtd03v ?></td>
+								<td><?= $qtd04v ?></td>
+								<td><?= $qtdCapa ?></td>
+								<td><?php echo number_format($peso, 0, ',', '.'); ?>kg</td>
+								<td>R$ <?php echo number_format($valorTotal, 2, ',', '.'); ?></td>
+								<td> <?php if ($v["envio"]) {
+											echo "<span title=\"Entregar\" class=\"label label-warning\"> E </span>";
+										} else {
+											echo "<span title=\"Retirar\" class=\"label label-success\"> R </span>";
+										}
+										if ($v["urgente"] == 'Sim') {
+											echo "<span title=\"Urgente\" class=\"label label-danger\"> U </span>";
+										}
+										$isColorido = false;
+										foreach ($v["produtos"] as $p) {
+											if ($p['cor'] != 'Cinza Pérola') {
+												$isColorido = true;
+											}
+										}
+										if ($isColorido) {
+											echo "<span title=\"Colorido\" class=\"label label-primary\"> C </span>";
+										}                                                                    ?> </td>
+							</tr>
+							<tr>
+								<td colspan="19" id="tabela_prod_<?= $v['id']; ?>" style="display:none">
+									<table border="1" width='100%' style='border-collapse: collapse;'>
+										<thead>
+											<tr>
+												<th>Vendedor:</th>
+												<td colspan="2"><?= $v['nome_vendedor']; ?></td>
+												<th>Data Cadastro:</th>
+												<td><?php echo $v['data_cadastro']->format('d/m/Y'); ?></td>
+											</tr>
+											<tr>
+												<th>Nome Cliente:</th>
+												<td colspan="2"><?= $v['nome']; ?></td>
+												<th>Documento:</th>
+												<td><?= $v['cpfcnpj']; ?></td>
+											</tr>
+											<tr>
+												<th>Telefone do Cliente:</th>
+												<td colspan="2"><?= $v['telefone']; ?></td>
+												<th>Contato:</th>
+												<td><?= $v['contato']; ?></td>
+											</tr>
+											<tr>
+												<th>Endereço:</th>
+												<td colspan="2"><?= $v['endereco'] ?></td>
 
-						                    <th>Cidade:</th>
-						                    <td><?=$v['cidade']?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Data Entrega:</th>
-						                    <td colspan="2"><?php echo $v['data_para_entrega']->format('d/m/Y');?></td>
-						                    <th>Urgente:</th>
-						                    <td><?php echo $v['urgente'];?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Tipo Nota Fiscal:</th>
-						                    <td colspan="2"><?php echo $v['tipo_nf']=='No'? "Normal": "Baixa";?></td>
+												<th>Cidade:</th>
+												<td><?= $v['cidade'] ?></td>
+											</tr>
+											<tr>
+												<th>Data Entrega:</th>
+												<td colspan="2"><?php echo $v['data_para_entrega']->format('d/m/Y'); ?></td>
+												<th>Urgente:</th>
+												<td><?php echo $v['urgente']; ?></td>
+											</tr>
+											<tr>
+												<th>Tipo Nota Fiscal:</th>
+												<td colspan="2"><?php echo $v['tipo_nf'] == 'No' ? "Normal" : "Baixa"; ?></td>
 
-						                    <th>Nota Fiscal:</th>
-						                    <td><?php echo $v['nota_fiscal']? "Sim": "Não";?></td>
-					                    </tr>
-					                    <tr>
-						                    <th>Forma de Pagamento:</th>
-						                    <td colspan="2">
-                                                                                                    <?php 			                                        switch($v['forma_pagamento']){
-				                                        case "AV":
-					                                        echo "À Vista";
-					                                        break;
-				                                        case "CH":
-					                                        echo "Cheque";
-					                                        break;
-				                                        case "TR":
-					                                        echo "Transferência";
-					                                        break;
-				                                        case "OU":
-					                                        echo $v['descricao_outra_forma_pagamento'];
-					                                        break;
-			                                        }?>                                             
-                                            </td>
+												<th>Nota Fiscal:</th>
+												<td><?php echo $v['nota_fiscal'] ? "Sim" : "Não"; ?></td>
+											</tr>
+											<tr>
+												<th>Forma de Pagamento:</th>
+												<td colspan="2">
+													<?php switch ($v['forma_pagamento']) {
+														case "AV":
+															echo "À Vista";
+															break;
+														case "CH":
+															echo "Cheque";
+															break;
+														case "TR":
+															echo "Transferência";
+															break;
+														case "OU":
+															echo $v['descricao_outra_forma_pagamento'];
+															break;
+													} ?>
+												</td>
 
-						                    <th>Pagamento:</th>
-						                    <td>                                                                                                    <?php 			                                        switch($v['pagamento']){
-				                                        case "EN":
-					                                        echo "Na Entrega";
-					                                        break;
-				                                        case "AN":
-					                                        echo "Antecipado";
-					                                        break;
-			                                        }?>                                                
-                                            </td>
-					                    </tr>
-					                    <tr>
-						                    <th>Endereço Entrega:</th>
-						                    <td colspan="4">                                                                                                    <?php                                                     if($v['envio']){                                                        if($v['local_entrega']){
-                                                            echo $v['endereco'];
-				                                        }
-                                                        else{
-                                                            echo $v['endereco_entrega'];
-				                                        }                                                    }else{                                                        echo "Retirar";
-                                                    }                                                    ?>                                                
-                                            </td>
-					                    </tr>
+												<th>Pagamento:</th>
+												<td> <?php switch ($v['pagamento']) {
+															case "EN":
+																echo "Na Entrega";
+																break;
+															case "AN":
+																echo "Antecipado";
+																break;
+														} ?>
+												</td>
+											</tr>
+											<tr>
+												<th>Endereço Entrega:</th>
+												<td colspan="4"> <?php if ($v['envio']) {
+																		if ($v['local_entrega']) {
+																			echo $v['endereco'];
+																		} else {
+																			echo $v['endereco_entrega'];
+																		}
+																	} else {
+																		echo "Retirar";
+																	}                                                    ?>
+												</td>
+											</tr>
 
-					                    <tr>
-						                    <th >Observação:</th>
-						                    <td colspan="4">                                                <?= $v['obs']?>
-                                            </td>
-					                    </tr>
-			                        <thead>
-		                        </table>                                  
-					            <?php                                if(count($v["produtos"])){?>                                    <table class="table table-striped table-sm-responsive">							            <thead>                                            <tr>                                                <th>Modelo</th>									            <th>Cor</th>									            <th>Quantidade</th>									            <th>Valor</th>									            <th>Valor Total</th>									            <th><span class="qtd_desm_<?= $v['id'];?>" style="display:none">Quantidade a ser separado</span></th>								            </tr>							            </thead>							            <tbody>                                            <?php foreach ($v["produtos"] as $p){?>                				                <tr>                                                    <td><?php echo $p['modelo']; ?></td>                					                <td><?php echo $p['cor']; ?></td>                					                <td><?php echo $p['quantidade']; ?></td>                					                <td>R$ <?php echo $p['valor'] ?></td>                					                <td>R$ <?php echo number_format(floatval(str_replace(',', '.', $p['valor'])) * $p['quantidade'],2, ',', '.');?></td>                					                <td><input type="number" class="qtd_desm_<?= $v['id'];?>" style="display:none" id="<?php echo $p['id']; ?>" max="<?php echo $p['quantidade']; ?>" /></td>								                </tr>                                                            			                <?php } ?>                                            <tr>                                                <th colspan="4">Total</th>                                                <th>R$ <?php echo number_format(floatval($valorTotal),2, ',', '.'); ?></th>                                                <th></th>								            </tr>							            </tbody>						                                            </table>                                
-	                                <div class="row">
+											<tr>
+												<th>Observação:</th>
+												<td colspan="4"> <?= $v['obs'] ?>
+												</td>
+											</tr>
+											<thead>
+									</table>
+									<?php if (count($v["produtos"])) { ?> <table class="table table-striped table-sm-responsive">
+											<thead>
+												<tr>
+													<th>Modelo</th>
+													<th>Cor</th>
+													<th>Quantidade</th>
+													<th>Valor</th>
+													<th>Valor Total</th>
+													<th><span class="qtd_desm_<?= $v['id']; ?>" style="display:none">Quantidade a ser separado</span></th>
+												</tr>
+											</thead>
+											<tbody> <?php foreach ($v["produtos"] as $p) { ?> <tr>
+														<td><?php echo $p['modelo']; ?></td>
+														<td><?php echo $p['cor']; ?></td>
+														<td><?php echo $p['quantidade']; ?></td>
+														<td>R$ <?php echo $p['valor'] ?></td>
+														<td>R$ <?php echo number_format(floatval(str_replace(',', '.', $p['valor'])) * $p['quantidade'], 2, ',', '.'); ?></td>
+														<td><input type="number" class="qtd_desm_<?= $v['id']; ?>" style="display:none" id="<?php echo $p['id']; ?>" max="<?php echo $p['quantidade']; ?>" /></td>
+													</tr> <?php } ?> <tr>
+													<th colspan="4">Total</th>
+													<th>R$ <?php echo number_format(floatval($valorTotal), 2, ',', '.'); ?></th>
+													<th></th>
+												</tr>
+											</tbody>
+										</table>
+										<div class="row">
 
-                                        <div class="col-md-8 col-sm-12">			                                <span>Obs: <b><?= $v["obs"]; ?></b></span>		                                </div>
+											<div class="col-md-8 col-sm-12"> <span>Obs: <b><?= $v["obs"]; ?></b></span> </div>
 
-                                    </div>
-                  
-                                <?php }
-			           						}					}                   ?>
-			    </tbody>		    </table>	    </div>
+										</div>
+
+							<?php }
+								}
+							}                   ?>
+				</tbody>
+			</table>
+	</div>
 	</form>
-    </div><!-- /#list -->
+</div><!-- /#list -->

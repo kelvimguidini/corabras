@@ -88,7 +88,7 @@ class IndexController extends AbstractActionController
         $venda->setEnderecoEntrega($endereco_entrega);
         $venda->setObs($obs);
         $venda->setContato($contato);
-        
+
         $venda->setSituacao("Recebido");
 
         $cesta = array();
@@ -276,13 +276,13 @@ class IndexController extends AbstractActionController
 
           $em->persist($venda);
           $em->flush();
-        }else if ($situacao == 'Recebido') {
+        } else if ($situacao == 'Recebido') {
           $cargaTemp = $venda->getCarga()->getId();
           $venda->setCarga(null);
 
           $em->persist($venda);
           $em->flush();
-        }else{
+        } else {
           $em->persist($venda);
           $em->flush();
         }
@@ -506,7 +506,7 @@ class IndexController extends AbstractActionController
         $where .= " and v.data_para_entrega = '" . $dataEnrega . "'";
       }
       //\Zend\Debug\Debug::dump($where);
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.data_cadastro DESC, v.id DESC');
+      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, v.data_para_entrega ASC');
       if ($limite > 0) {
         $db->setFirstResult($offSet);
         $db->setMaxResults($limite);
@@ -515,7 +515,7 @@ class IndexController extends AbstractActionController
       $vendas = $db->getArrayResult();
     } else {
 
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.data_cadastro DESC, v.id DESC')
+      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, v.data_para_entrega ASC')
         ->setMaxResults(50);
       $vendas = $db->getArrayResult();
 
@@ -547,7 +547,7 @@ class IndexController extends AbstractActionController
           from Application\Model\Venda v 
           where v.carga is not null and v.situacao <> 'Excluidos'
         )";
-    
+
     $_cargas_combo = $em->createQuery($query);
     $cargas_combo = $_cargas_combo->getArrayResult();
 
@@ -562,7 +562,7 @@ class IndexController extends AbstractActionController
     session_start();
 
     $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
-    $db = $em->createQuery('select c, v, p from Application\Model\Carga c LEFT JOIN c.vendas v LEFT JOIN v.produtos p');
+    $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 

@@ -36,7 +36,7 @@ class Venda extends \Application\Model\Venda implements \Doctrine\ORM\Proxy\Prox
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array('nome_vendedor' => NULL, 'nome' => NULL, 'cpfcnpj' => NULL, 'endereco' => NULL, 'cidade' => NULL, 'data_cadastro' => NULL, 'data_para_entrega' => NULL, 'nota_fiscal' => NULL, 'tipo_nf' => NULL, 'pagamento' => NULL, 'forma_pagamento' => NULL, 'descricao_outra_forma_pagamento' => NULL, 'telefone' => NULL, 'contato' => NULL, 'urgente' => NULL, 'envio' => NULL, 'endereco_entrega' => NULL, 'obs' => NULL, 'local_entrega' => NULL, 'ja_aberto' => NULL, 'carga' => NULL, 'produtos' => NULL, 'situacoes' => NULL);
+    public static $lazyPropertiesDefaults = array('nome_vendedor' => NULL, 'nome' => NULL, 'cpfcnpj' => NULL, 'endereco' => NULL, 'cidade' => NULL, 'data_cadastro' => NULL, 'data_para_entrega' => NULL, 'nota_fiscal' => NULL, 'tipo_nf' => NULL, 'pagamento' => NULL, 'forma_pagamento' => NULL, 'descricao_outra_forma_pagamento' => NULL, 'telefone' => NULL, 'contato' => NULL, 'urgente' => NULL, 'envio' => NULL, 'endereco_entrega' => NULL, 'obs' => NULL, 'local_entrega' => NULL, 'ja_aberto' => NULL, 'carga' => NULL, 'produtos' => NULL, 'situacoes' => NULL, 'situacao' => NULL);
 
 
 
@@ -46,7 +46,7 @@ class Venda extends \Application\Model\Venda implements \Doctrine\ORM\Proxy\Prox
      */
     public function __construct($initializer = null, $cloner = null)
     {
-        unset($this->nome_vendedor, $this->nome, $this->cpfcnpj, $this->endereco, $this->cidade, $this->data_cadastro, $this->data_para_entrega, $this->nota_fiscal, $this->tipo_nf, $this->pagamento, $this->forma_pagamento, $this->descricao_outra_forma_pagamento, $this->telefone, $this->contato, $this->urgente, $this->envio, $this->endereco_entrega, $this->obs, $this->local_entrega, $this->ja_aberto, $this->carga, $this->produtos, $this->situacoes);
+        unset($this->nome_vendedor, $this->nome, $this->cpfcnpj, $this->endereco, $this->cidade, $this->data_cadastro, $this->data_para_entrega, $this->nota_fiscal, $this->tipo_nf, $this->pagamento, $this->forma_pagamento, $this->descricao_outra_forma_pagamento, $this->telefone, $this->contato, $this->urgente, $this->envio, $this->endereco_entrega, $this->obs, $this->local_entrega, $this->ja_aberto, $this->carga, $this->produtos, $this->situacoes, $this->situacao);
 
         $this->__initializer__ = $initializer;
         $this->__cloner__      = $cloner;
@@ -108,7 +108,7 @@ class Venda extends \Application\Model\Venda implements \Doctrine\ORM\Proxy\Prox
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'nome_vendedor', 'nome', 'cpfcnpj', 'endereco', 'cidade', 'data_cadastro', 'data_para_entrega', 'nota_fiscal', 'tipo_nf', 'pagamento', 'forma_pagamento', 'descricao_outra_forma_pagamento', 'telefone', 'contato', 'urgente', 'envio', 'endereco_entrega', 'obs', 'local_entrega', 'ja_aberto', 'carga', 'produtos', 'situacoes');
+            return array('__isInitialized__', 'id', 'nome_vendedor', 'nome', 'cpfcnpj', 'endereco', 'cidade', 'data_cadastro', 'data_para_entrega', 'nota_fiscal', 'tipo_nf', 'pagamento', 'forma_pagamento', 'descricao_outra_forma_pagamento', 'telefone', 'contato', 'urgente', 'envio', 'endereco_entrega', 'obs', 'local_entrega', 'ja_aberto', 'carga', 'produtos', 'situacoes', 'situacao');
         }
 
         return array('__isInitialized__', 'id');
@@ -133,7 +133,7 @@ class Venda extends \Application\Model\Venda implements \Doctrine\ORM\Proxy\Prox
                 }
             };
 
-            unset($this->nome_vendedor, $this->nome, $this->cpfcnpj, $this->endereco, $this->cidade, $this->data_cadastro, $this->data_para_entrega, $this->nota_fiscal, $this->tipo_nf, $this->pagamento, $this->forma_pagamento, $this->descricao_outra_forma_pagamento, $this->telefone, $this->contato, $this->urgente, $this->envio, $this->endereco_entrega, $this->obs, $this->local_entrega, $this->ja_aberto, $this->carga, $this->produtos, $this->situacoes);
+            unset($this->nome_vendedor, $this->nome, $this->cpfcnpj, $this->endereco, $this->cidade, $this->data_cadastro, $this->data_para_entrega, $this->nota_fiscal, $this->tipo_nf, $this->pagamento, $this->forma_pagamento, $this->descricao_outra_forma_pagamento, $this->telefone, $this->contato, $this->urgente, $this->envio, $this->endereco_entrega, $this->obs, $this->local_entrega, $this->ja_aberto, $this->carga, $this->produtos, $this->situacoes, $this->situacao);
         }
     }
 
@@ -218,6 +218,28 @@ class Venda extends \Application\Model\Venda implements \Doctrine\ORM\Proxy\Prox
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getSituacao()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSituacao', array());
+
+        return parent::getSituacao();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSituacao($val)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSituacao', array($val));
+
+        return parent::setSituacao($val);
+    }
+
     /**
      * {@inheritDoc}
      */
