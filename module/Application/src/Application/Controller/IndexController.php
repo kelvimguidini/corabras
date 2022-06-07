@@ -434,6 +434,12 @@ class IndexController extends AbstractActionController
 
     $where = "where v.situacao = '$situ' ";
 
+    if ($situ == "Recebido" || $situ == "Entrega") {
+      $direcao = " v.data_para_entrega ASC";
+    } else {
+      $direcao = " v.data_cadastro DESC";
+    }
+
     $filtro = array();
     if ($request->isPost()) {
       $cliente = mb_strtoupper($request->getPost("nome"), $encoding);
@@ -506,7 +512,7 @@ class IndexController extends AbstractActionController
         $where .= " and v.data_para_entrega = '" . $dataEnrega . "'";
       }
       //\Zend\Debug\Debug::dump($where);
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, v.data_para_entrega ASC');
+      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, ' . $direcao);
       if ($limite > 0) {
         $db->setFirstResult($offSet);
         $db->setMaxResults($limite);
@@ -515,7 +521,7 @@ class IndexController extends AbstractActionController
       $vendas = $db->getArrayResult();
     } else {
 
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, v.data_para_entrega ASC')
+      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, ' . $direcao)
         ->setMaxResults(50);
       $vendas = $db->getArrayResult();
 
