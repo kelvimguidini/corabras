@@ -382,6 +382,7 @@ class IndexController extends AbstractActionController
       $em->persist($venda);
       $em->flush();
 
+
       // $situ = new \Application\Model\Situacao();
 
       // $situ->setData(date("d/m/Y"));
@@ -391,176 +392,191 @@ class IndexController extends AbstractActionController
       // $em->persist($situ);
       // $em->flush();
 
-      $i = 0;
-      foreach ($produtos as $prod) {
+      foreach ($produtos as $idProduto => $qtd) {
+        if (!is_null($qtd) && $qtd !== '') {
+          $prodOld = $em->getRepository("Application\Model\Produto")->find($idProduto);
 
-        if (!is_null($prod)) {
-
-          $prodOld = $em->getRepository("Application\Model\Produto")->find($i);
 
           $produto = new \Application\Model\Produto();
 
           $produto->setModelo($prodOld->getModelo());
           $produto->setCor($prodOld->getCor());
-          $produto->setQuantidade($prod);
+          $produto->setQuantidade($qtd);
           $produto->setValor($prodOld->getValor());
           $produto->setVenda($venda);
 
           $em->persist($produto);
-          $prodOld->setquantidade($prodOld->getQuantidade() - $prod);
+          $prodOld->setquantidade($prodOld->getQuantidade() - $qtd);
 
           $em->persist($prodOld);
           $em->flush();
         }
-        $i++;
       }
+    } else {
+      return new ViewModel(array('resp' => 'Erro ao desmembrar! Por favor tente novamente.'));
     }
     return new ViewModel(array('resp' => 'Tramitado com sucesso!'));
   }
-
   public function pedidosAction()
   {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
     session_start();
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $encoding = mb_internal_encoding();
+    try {
+      $encoding = mb_internal_encoding();
+      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $request = $this->getRequest();
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
-    $request = $this->getRequest();
+      $offSet = $this->params()->fromRoute("offset", 0);
+      $situ = $this->params()->fromRoute("situacao", "Recebido");
 
-    $offSet = $this->params()->fromRoute("offset", 0);
-    $situ = $this->params()->fromRoute("situacao", "Recebido");
+      $limitePadrao = 50;
+      $limite = $request->isPost() ? (int) $request->getPost("limite", $limitePadrao) : $limitePadrao;
 
-    $where = "where v.situacao = '$situ' ";
+      // Define a ordenação conforme a situação
+      $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
 
-    if ($situ == "Recebido" || $situ == "Entrega") {
-      $direcao = " v.data_para_entrega ASC";
-    } else {
-      $direcao = " v.data_cadastro DESC";
-    }
+      $qb = $em->createQueryBuilder();
+      $qb->select('v', 'c')
+        ->from('Application\Model\Venda', 'v')
+        ->leftJoin('v.carga', 'c')
+        ->where('v.situacao = :situacao')
+        ->setParameter('situacao', $situ)
+        ->orderBy('v.ja_aberto', 'ASC')
+        ->addOrderBy($direcao, 'ASC')
+        ->setFirstResult($offSet)
+        ->setMaxResults($limite);
 
-    $filtro = array();
-    if ($request->isPost()) {
-      $cliente = mb_strtoupper($request->getPost("nome"), $encoding);
-      $cpfCnpj = $request->getPost("cpfcnpj");
-      $cidade = $request->getPost("cidade");
-      $dataEnrega = $request->getPost("data_entrega");
-      $vendedor = mb_strtoupper($request->getPost("vendedor"), $encoding);
-      $modelo = $request->getPost("modelo");
-
-      $entregar = isset($_POST['envio']) && in_array('Entregar', $_POST['envio']);
-      $retirar = isset($_POST['envio']) && in_array('Retirar', $_POST['envio']);
-
-      $urgente = isset($_POST['urgente']) &&  in_array('Sim', $_POST['urgente']);
-      $naoUrgente = isset($_POST['urgente']) &&  in_array('Não', $_POST['urgente']);
-
-      $limite = $request->getPost("limite");
-
-      $filtro = array(
-        'nome' => $cliente,
-        'cpfcnpj' => $cpfCnpj,
-        'cidade' => $cidade,
-        'data_entrega' => $dataEnrega,
-        'vendedor' => $vendedor,
-        'modelo' => $modelo,
-        'Entregar' => $entregar,
-        'Retirar' => $retirar,
-        'urgente' => $urgente,
-        'naoUrgente' => $naoUrgente,
-
-        'limite' => $limite,
+      $filtro = [
         'next' => $offSet + $limite,
         'preview' => $offSet - $limite,
-        'situacao' => $situ
+        'situacao' => $situ,
+        'limite' => $limite,
+      ];
+
+      // -------------------- FILTROS (POST) --------------------
+      if ($request->isPost()) {
+
+        $cliente   = mb_strtoupper($request->getPost("nome"), $encoding);
+        $cpfCnpj   = $request->getPost("cpfcnpj");
+        $cidade    = $request->getPost("cidade");
+        $dataEnt   = $request->getPost("data_entrega");
+        $vendedor  = mb_strtoupper($request->getPost("vendedor"), $encoding);
+        $modelo    = $request->getPost("modelo");
+
+        $entregar     = isset($_POST['envio']) && in_array('Entregar', $_POST['envio']);
+        $retirar      = isset($_POST['envio']) && in_array('Retirar', $_POST['envio']);
+        $urgente      = isset($_POST['urgente']) && in_array('Sim', $_POST['urgente']);
+        $naoUrgente   = isset($_POST['urgente']) && in_array('Não', $_POST['urgente']);
+
+        $filtro += [
+          'nome' => $cliente,
+          'cpfcnpj' => $cpfCnpj,
+          'cidade' => $cidade,
+          'data_entrega' => $dataEnt,
+          'vendedor' => $vendedor,
+          'modelo' => $modelo,
+          'Entregar' => $entregar,
+          'Retirar' => $retirar,
+          'urgente' => $urgente,
+          'naoUrgente' => $naoUrgente,
+        ];
+
+        if ($cliente) {
+          $qb->andWhere('UPPER(v.nome) LIKE :cliente')->setParameter('cliente', "%$cliente%");
+        }
+        if ($cpfCnpj) {
+          $qb->andWhere('v.cpfcnpj = :cpfCnpj')->setParameter('cpfCnpj', $cpfCnpj);
+        }
+        if ($cidade) {
+          $qb->andWhere('v.cidade = :cidade')->setParameter('cidade', $cidade);
+        }
+        if ($vendedor) {
+          $qb->andWhere('UPPER(v.nome_vendedor) LIKE :vendedor')->setParameter('vendedor', "%$vendedor%");
+        }
+        if ($modelo) {
+          $qb->join('v.produtos', 'p')
+            ->andWhere('p.modelo = :modelo')
+            ->setParameter('modelo', $modelo);
+        }
+
+        // Urgência
+        if ($urgente xor $naoUrgente) {
+          $qb->andWhere('v.urgente = :urgente')
+            ->setParameter('urgente', $urgente ? 'Sim' : 'Não');
+        }
+
+        // Tipo de envio
+        if ($entregar xor $retirar) {
+          $qb->andWhere('v.envio = :envio')
+            ->setParameter('envio', $entregar ? true : false);
+        }
+
+        // Data de entrega
+        if ($dataEnt) {
+          $dataObj = \DateTime::createFromFormat('d/m/Y', $dataEnt);
+          if ($dataObj) {
+            $qb->andWhere('v.data_para_entrega = :dataEntrega')
+              ->setParameter('dataEntrega', $dataObj->format('Y-m-d'));
+          }
+        }
+      }
+
+      // -------------------- EXECUÇÃO --------------------
+      $vendas = $qb->getQuery()->getArrayResult();
+
+      // -------------------- PRODUTOS RELACIONADOS --------------------
+      $produtos = [];
+      if (!empty($vendas)) {
+        $vendasId = array_column($vendas, 'id');
+        $qbProd = $em->createQueryBuilder();
+        $qbProd->select('p')
+          ->from('Application\Model\Produto', 'p')
+          ->where('p.venda IN (:vendas)')
+          ->setParameter('vendas', $vendasId);
+
+        // Retorna objetos Produto
+        $produtos = $qbProd->getQuery()->getResult();
+      }
+
+      // -------------------- OUTRAS CONSULTAS (pode cachear) --------------------
+      $cidades = $em->getRepository("Application\Model\Cidade")
+        ->findBy([], ['nome' => 'ASC']);
+
+      $queryCargasCombo = $em->createQuery(
+        "SELECT c FROM Application\Model\Carga c 
+         WHERE (c.situacao IN ('Carregamento','Entrega'))
+         AND c.id IN (
+             SELECT DISTINCT IDENTITY(v.carga)
+             FROM Application\Model\Venda v
+             WHERE v.carga IS NOT NULL
+             AND v.situacao <> 'Excluidos'
+         )"
       );
+      $cargas_combo = $queryCargasCombo->getArrayResult();
 
+      $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c')
+        ->getArrayResult();
 
-      if ($cliente != "") {
-        $where .= " and v.nome like '%$cliente%'";
-      }
-      if ($cpfCnpj != "") {
-        $where .= " and v.cpfcnpj = '$cpfCnpj'";
-      }
-      if ($cidade != "") {
-        $where .= " and v.cidade = '$cidade'";
-      }
-      if ($vendedor != "") {
-        $where .= " and v.nome_vendedor like '%$vendedor%'";
-      }
-      if ($modelo != "") {
-        $where .= " and v.id in (select IDENTITY(p.venda) from Application\Model\Produto p where p.modelo = '$modelo')";
-      }
-      if (!$urgente) {
-        $where .= " and v.urgente = 'Não'";
-      }
-      if (!$naoUrgente) {
-        $where .= " and v.urgente = 'Sim'";
-      }
-      if (!$entregar) {
-        $where .= " and v.envio = false";
-      }
-      if (!$retirar) {
-        $where .= " and v.envio = 1";
-      }
-      if ($dataEnrega != null) {
-        $ano = substr($dataEnrega, 6);
-        $mes = substr($dataEnrega, 3, -5);
-        $dia = substr($dataEnrega, 0, -8);
-        $dataEnrega = $ano . "-" . $mes . "-" . $dia;
+      $data_atual = date("Y/m/d");
 
-        $where .= " and v.data_para_entrega = '" . $dataEnrega . "'";
-      }
-      //\Zend\Debug\Debug::dump($where);
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, ' . $direcao);
-      if ($limite > 0) {
-        $db->setFirstResult($offSet);
-        $db->setMaxResults($limite);
-      }
-
-      $vendas = $db->getArrayResult();
-    } else {
-
-      $db = $em->createQuery('select v, c from Application\Model\Venda v LEFT JOIN v.carga c ' . $where . ' order By v.ja_aberto ASC, ' . $direcao)
-        ->setMaxResults(50);
-      $vendas = $db->getArrayResult();
-
-      $filtro = array('next' =>  50, 'preview' => -50, 'situacao' => $situ);
+      return new ViewModel([
+        'vendas' => $vendas,
+        'filtro' => $filtro,
+        'produtos' => $produtos,
+        'cargas' => $cargas,
+        'cargas_combo' => $cargas_combo,
+        'cidades' => $cidades,
+        'data_atual' => $data_atual,
+      ]);
+    } catch (\Exception $e) {
+      \Zend\Debug\Debug::dump($e->getMessage());
+      \Zend\Debug\Debug::dump($e->getTraceAsString());
+      exit;
     }
-
-    $vendasId = array();
-    foreach ($vendas as $key => $value) {
-      array_push($vendasId, $value["id"]);
-    }
-
-    $db = $em->createQuery('select p FROM Application\Model\Produto p WHERE p.venda IN (:v)');
-    $db->setParameter('v', $vendasId);
-
-    $produtos = $db->getResult();
-    //\Zend\Debug\Debug::dump($produtos);
-
-    $cidades = $em->getRepository("Application\Model\Cidade")->findBy(
-      array(),
-      array('nome' => 'ASC')
-    );
-
-    $data_atual = date("Y/m/d");
-
-    $query = "select c from Application\Model\Carga c
-        where (c.situacao = 'Carregamento' or c.situacao = 'Entrega') 
-        and c.id in (
-          select distinct IDENTITY(v.carga) 
-          from Application\Model\Venda v 
-          where v.carga is not null and v.situacao <> 'Excluidos'
-        )";
-
-    $_cargas_combo = $em->createQuery($query);
-    $cargas_combo = $_cargas_combo->getArrayResult();
-
-    $_cargas = $em->createQuery('select c from Application\Model\Carga c ');
-    $cargas = $_cargas->getArrayResult();
-
-    return new ViewModel(array('vendas' => $vendas, 'filtro' => $filtro, 'produtos' => $produtos, 'cargas' => $cargas, 'cargas_combo' => $cargas_combo, 'cidades' => $cidades));
   }
 
   public function carregamentoAction()

@@ -1,0 +1,60 @@
+name: Deploy ZF2 via FTP
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Instalar PHP 8.1 (usado pelo Zend Framework 2)
+      - name: Setup PHP (8.1)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl, pdo_mysql, curl, dom, xml, json
+
+      # 3️⃣ Instalar dependências do Composer
+      - name: Install PHP dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
+
+
+      # 5️⃣ Limpar arquivos desnecessários antes do deploy
+      - name: Cleanup unnecessary files
+        run: |
+          rm -rf node_modules
+          rm -rf tests
+          rm -rf .git
+          rm -f .env
+          rm -f vite.config.js
+
+      # 6️⃣ Upload via FTP (FTPS)
+      - name: Upload Files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          timeout: 30000
+          local-dir: ./ 
+          server-dir: /www/
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/tests/**
+            **/vendor/**
+            **/storage/**
+            **/public/storage/**
+            **/tmp/**
+            **/.env**
+            **vite.config.js**
+            **nginx.conf**

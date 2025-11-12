@@ -417,6 +417,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								$qtdCapa = 0;
 								$valorTotal = 0;
 								$peso = 0;
+								$cor = "";
 
 								foreach ($this->produtos as $p) {
 
@@ -429,11 +430,13 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 											case 'Max RESINADA':
 												$qtdMax += $p->getQuantidade();
 												$peso += 5.5 * $p->getQuantidade();
+												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Coppo Venetto':
 											case 'Coppo Venetto RESINADA':
 												$qtdCoppo += $p->getQuantidade();
 												$peso += 4.7 * $p->getQuantidade();
+												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Capa Lateral':
 												$qtdCapa += $p->getQuantidade();
@@ -455,6 +458,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 											case 'Super Max RESINADA':
 												$qtdFit += $p->getQuantidade();
 												$peso += 3.9 * $p->getQuantidade();
+												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Espigão':
 												$qtdEspig += $p->getQuantidade();
@@ -487,7 +491,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?php echo substr($v['nome'], 0, 30); ?></td>
 								<td><?php echo substr($v['cidade'], 0, 30); ?></td>
 								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
-								<td><?php echo substr($p->cor, 0, 10); ?></td>
+								<td><?php echo substr($cor, 0, 10); ?></td>
 								<td><?= $qtdFit ?></td>
 								<td><?= $qtdMax ?></td>
 								<td><?= $qtdCoppo ?></td>
@@ -792,23 +796,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 		});
 	});
 
-	$('#saidah').timepicker({
-		hourText: 'Hora',
-		minuteText: 'Minutos',
-		showPeriod: false,
-		showPeriodLabels: false,
-		interval: 60
-	});
-
-	$('#retornoh').timepicker({
-		hourText: 'Hora',
-		minuteText: 'Minutos',
-		showPeriod: false,
-		showPeriodLabels: false,
-
-	});
-
-
 	function proximo() {
 		$("#filtros").attr("action", "<?php echo $this->url('pedidos', array('offset' => $this->filtro['next'], 'situacao' => $this->filtro['situacao'])); ?>");
 		$("#filtros").submit();
@@ -831,7 +818,13 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 			produtos[$(this).attr("id")] = $(this).val();
 		});
 
-		var jsonString = JSON.stringify(produtos);
+		var produtosLimpos = {};
+		for (let key in produtos) {
+			if (produtos[key] !== undefined && produtos[key] !== null && produtos[key] !== '') {
+				produtosLimpos[key] = produtos[key];
+			}
+		}
+		var jsonString = JSON.stringify(produtosLimpos);
 
 		$.ajax({
 			type: "POST",
@@ -846,18 +839,33 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 			}
 		});
 	}
-
-	$("#carga-modal").on('shown.bs.modal', function() {
-		$.ajax({
-			type: "POST",
-			url: "<?php echo $this->url('carregarcargas'); ?>",
-			success: function(data) {
-				$('#cargas_lista').html(data);
-			}
-		});
-	});
-
 	$(document).ready(function() {
+
+		// $('#saidah').timepicker({
+		// 	hourText: 'Hora',
+		// 	minuteText: 'Minutos',
+		// 	showPeriod: false,
+		// 	showPeriodLabels: false,
+		// 	interval: 60
+		// });
+
+		// $('#retornoh').timepicker({
+		// 	hourText: 'Hora',
+		// 	minuteText: 'Minutos',
+		// 	showPeriod: false,
+		// 	showPeriodLabels: false,
+
+		// });
+
+		$("#carga-modal").on('shown.bs.modal', function() {
+			$.ajax({
+				type: "POST",
+				url: "<?php echo $this->url('carregarcargas'); ?>",
+				success: function(data) {
+					$('#cargas_lista').html(data);
+				}
+			});
+		});
 
 		$('#cidade').select2();
 		$(".time").mask("99:99");

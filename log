@@ -7154,3 +7154,34 @@
 127.0.0.1 - - [06/Jun/2022:11:33:16 -0300] "POST /carregardadoscarga/1150 HTTP/1.1" 200 8605
 127.0.0.1 - - [06/Jun/2022:11:35:06 -0300] "POST /carregardadoscarga/1149 HTTP/1.1" 200 13355
 127.0.0.1 - - [06/Jun/2022:11:35:36 -0300] "POST /carregardadoscarga/1150 HTTP/1.1" 200 5687
+[Mon Aug 15 11:13:25.669255 2022] [php7:notice] [pid 13220:tid 1912] [client 127.0.0.1:51159] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port) :-(
+127.0.0.1 - - [15/Aug/2022:11:13:23 -0300] "GET /pedidos HTTP/1.1" 302 -
+[Mon Aug 15 11:13:27.083152 2022] [php7:notice] [pid 13220:tid 1912] [client 127.0.0.1:51159] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port) :-(
+127.0.0.1 - - [15/Aug/2022:11:13:26 -0300] "GET /login/ HTTP/1.1" 200 3377
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/timepicker-master/jquery.ui.timepicker.css?v=0.3.3 HTTP/1.1" 200 1816
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /css/bootstrap-theme.min.css HTTP/1.1" 200 23414
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /css/jquery.dataTables.min.css HTTP/1.1" 200 13901
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/jquery-3.1.0.min.js HTTP/1.1" 200 86355
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /css/jquery-ui.css HTTP/1.1" 200 33233
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /css/style.css HTTP/1.1" 200 3928
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/bootstrap.min.js HTTP/1.1" 200 37051
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /css/bootstrap.min.css HTTP/1.1" 200 121205
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/jquery.mask.min.js HTTP/1.1" 200 10622
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/jquery-ui.js HTTP/1.1" 200 539419
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/jquery.maskMoney.js HTTP/1.1" 200 25597
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/excellentexport/dist/excellentexport.js HTTP/1.1" 200 882560
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/timepicker-master/jquery.ui.timepicker.js?v=0.3.3 HTTP/1.1" 200 68141
+127.0.0.1 - - [15/Aug/2022:11:13:28 -0300] "GET /js/jquery.dataTables.min.js HTTP/1.1" 200 82070
+127.0.0.1 - - [15/Aug/2022:11:13:32 -0300] "GET /img/favicon.ico HTTP/1.1" 200 1354
+[Mon Aug 15 11:14:20.574067 2022] [php7:notice] [pid 13220:tid 1912] [client 127.0.0.1:51208] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port) :-(, referer: http://local.corabras.com/login/
+127.0.0.1 - - [15/Aug/2022:11:14:20 -0300] "POST /login/ HTTP/1.1" 302 -
+[Mon Aug 15 11:14:20.868320 2022] [php7:notice] [pid 13220:tid 1912] [client 127.0.0.1:51208] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: 127.0.0.1:9003 (through xdebug.client_host/xdebug.client_port) :-(, referer: http://local.corabras.com/login/
+127.0.0.1 - - [15/Aug/2022:11:14:20 -0300] "GET /pedidos/ HTTP/1.1" 200 233292
+127.0.0.1 - - [15/Aug/2022:11:14:23 -0300] "GET /css/select2.min.css HTTP/1.1" 200 15276
+127.0.0.1 - - [15/Aug/2022:11:14:23 -0300] "GET /img/plus.png HTTP/1.1" 200 945
+127.0.0.1 - - [15/Aug/2022:11:14:23 -0300] "GET /js/select2.min.js HTTP/1.1" 200 67751
+127.0.0.1 - - [15/Aug/2022:11:14:23 -0300] "GET /fonts/glyphicons-halflings-regular.woff2 HTTP/1.1" 200 18028
+127.0.0.1 - - [15/Aug/2022:11:14:24 -0300] "GET /css/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 200 74
+127.0.0.1 - - [15/Aug/2022:11:14:24 -0300] "GET /css/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 200 86
+127.0.0.1 - - [15/Aug/2022:11:14:24 -0300] "GET /css/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 200 81
+127.0.0.1 - - [15/Aug/2022:11:14:24 -0300] "GET /css/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 200 88
