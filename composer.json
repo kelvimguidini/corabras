@@ -1,15 +1,20 @@
 {
-    "name": "zendframework/skeleton-application",
-    "description": "Skeleton Application for ZF2",
-    "license": "BSD-3-Clause",
-    "keywords": [
-        "framework",
-        "zf2"
-    ],
-    "homepage": "http://framework.zend.com/",
     "require": {
-        "php": ">=5.5",
-        "zendframework/zendframework": "~2.5",
-        "doctrine/doctrine-orm-module": "0.8.*"
+        "php": "^8.2",
+        "laminas/laminas-mvc": "^3.8",
+        "laminas/laminas-config": "^3.10",
+        "laminas/laminas-zendframework-bridge": "^1.8",
+        "laminas/laminas-db": "^2.20",
+        "laminas/laminas-form": "^3.23",
+        "laminas/laminas-validator": "^2.65",
+        "laminas/laminas-view": "^2.43",
+        "doctrine/doctrine-module": "^6.3",
+        "doctrine/doctrine-orm-module": "^6.3",
+        "laminas/laminas-i18n": "^2.31",
+        "laminas/laminas-router": "^3.16",
+        "laminas/laminas-cache": "^3.13",
+        "laminas/laminas-filter": "^2.42",
+        "laminas/laminas-session": "^2.25",
+        "laminas/laminas-log": "^2.15"
     }
 }

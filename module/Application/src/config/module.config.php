@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -13,7 +14,7 @@ return array(
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
@@ -23,7 +24,7 @@ return array(
                 ),
             ),
             'editar' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => array(
                     'route'    => '/home[/:id][/]',
                     'defaults' => array(
@@ -33,7 +34,7 @@ return array(
                 ),
             ),
             'login' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/login/',
                     'defaults' => array(
@@ -43,7 +44,7 @@ return array(
                 ),
             ),
             'tramitar' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/tramitar/',
                     'defaults' => array(
@@ -53,13 +54,13 @@ return array(
                 ),
             ),
             'pedidos' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => array(
                     'route' => '/pedidos[/:offset][/:situacao][/]',
                     'constraints' => array(
                         'offset' => '[0-9]+',
                         'situacao' => '[a-zA-Z0-9_-]+',
-                     ),
+                    ),
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
                         'action' => 'pedidos',
@@ -67,7 +68,7 @@ return array(
                 ),
             ),
             'carregamento' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => array(
                     'route' => '/carregamento[/]',
                     'defaults' => array(
@@ -77,7 +78,7 @@ return array(
                 ),
             ),
             'cadastrarcarga' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => array(
                     'route' => '/cadastrarcarga[/:id][/]',
                     'defaults' => array(
@@ -87,7 +88,7 @@ return array(
                 ),
             ),
             'carregarcargas' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => [
                     'route' => '/carregarcargas/',
                     'defaults' => [
@@ -97,7 +98,7 @@ return array(
                 ],
             ],
             'carregardadoscarga' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => [
                     'route' => '/carregardadoscarga[/:id][/]',
                     'defaults' => [
@@ -106,9 +107,9 @@ return array(
                     ],
                 ],
             ],
-            
+
             'cadastrarcidade' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => [
                     'route' => '/cadastrarcliente[/:id][/]',
                     'defaults' => [
@@ -118,7 +119,7 @@ return array(
                 ],
             ],
             'excluircidade' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => [
                     'route' => '/excluircidade[/:id][/]',
                     'defaults' => [
@@ -128,7 +129,7 @@ return array(
                 ],
             ],
             'imprimir' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Laminas\Router\Http\Segment',
                 'options' => [
                     'route' => '/imprimir[/:id][/]',
                     'defaults' => [
@@ -138,7 +139,7 @@ return array(
                 ],
             ],
             'sair' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/sair/',
                     'defaults' => array(
@@ -148,7 +149,7 @@ return array(
                 ),
             ),
             'desmembrar' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Laminas\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/desmembrar/',
                     'defaults' => array(
@@ -161,11 +162,11 @@ return array(
     ),
     'service_manager' => array(
         'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
+            'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Laminas\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-            'translator' => 'Zend\Mvc\Service\TranslatorServiceFactory',
+            'translator' => 'Laminas\Mvc\Service\TranslatorServiceFactory',
         ),
     ),
     'translator' => array(
@@ -202,8 +203,7 @@ return array(
     // Placeholder for console routes
     'console' => array(
         'router' => array(
-            'routes' => array(
-            ),
+            'routes' => array(),
         ),
     ),
     'doctrine' => array(

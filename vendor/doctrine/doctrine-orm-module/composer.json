@@ -1,67 +1,90 @@
 {
     "name": "doctrine/doctrine-orm-module",
-    "description": "Zend Framework 2 Module that provides Doctrine ORM functionality",
-    "type": "library",
+    "description": "Laminas Module that provides Doctrine ORM functionality",
     "license": "MIT",
+    "type": "library",
     "keywords": [
         "doctrine",
         "orm",
         "module",
-        "zf2"
+        "laminas"
     ],
-    "homepage": "http://www.doctrine-project.org/",
-    "authors": [
-        {
-            "name": "Kyle Spraggs",
-            "email": "theman@spiffyjr.me",
-            "homepage": "http://www.spiffyjr.me/"
-        },
-        {
-            "name": "Marco Pivetta",
-            "email": "ocramius@gmail.com",
-            "homepage": "http://marco-pivetta.com/"
-        },
-        {
-            "name": "Evan Coury",
-            "email": "me@evancoury.com",
-            "homepage": "http://blog.evan.pro/"
-        },
-        {
-            "name": "Guilherme Blanco",
-            "email": "guilhermeblanco@hotmail.com"
-        }
-    ],
+    "homepage": "https://www.doctrine-project.org/",
     "require": {
-        "php":                               ">=5.3.3",
-        "doctrine/doctrine-module":          "0.8.*",
-        "doctrine/orm":                      ">=2.4,<2.6-dev",
-        "doctrine/dbal":                     ">=2.4,<2.6-dev",
-        "zendframework/zend-stdlib":         ">=2.2",
-        "zendframework/zend-mvc":            ">=2.2",
-        "zendframework/zend-servicemanager": ">=2.2"
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "ext-json": "*",
+        "doctrine/dbal": "^3.3.2",
+        "doctrine/doctrine-laminas-hydrator": "^3.2.0",
+        "doctrine/doctrine-module": "^6.3.0",
+        "doctrine/event-manager": "^2.0.0",
+        "doctrine/orm": "^2.13.0",
+        "doctrine/persistence": "^3.0.0",
+        "laminas/laminas-eventmanager": "^3.5.0",
+        "laminas/laminas-modulemanager": "^2.11.0",
+        "laminas/laminas-mvc": "^3.3.5",
+        "laminas/laminas-paginator": "^2.13.0",
+        "laminas/laminas-servicemanager": "^3.17.0",
+        "laminas/laminas-stdlib": "^3.13.0",
+        "psr/container": "^1.1.2",
+        "symfony/console": "^6.1.2 || ^7.0.0"
     },
     "require-dev": {
-        "zendframework/zendframework":        "2.*",
-        "doctrine/data-fixtures":             "1.0.*",
-        "zendframework/zend-developer-tools": "*",
-        "doctrine/migrations":                "1.*",
-        "phpunit/phpunit":                    ">=3.7",
-        "squizlabs/php_codesniffer":          "1.4.*"
+        "doctrine/annotations": "^2.0.0",
+        "doctrine/coding-standard": "^12.0.0",
+        "doctrine/data-fixtures": "^2.0.1",
+        "doctrine/migrations": "^3.8.0",
+        "laminas/laminas-cache-storage-adapter-filesystem": "^2.0",
+        "laminas/laminas-cache-storage-adapter-memory": "^2.0",
+        "laminas/laminas-developer-tools": "^2.3.0",
+        "laminas/laminas-i18n": "^2.23.0",
+        "laminas/laminas-serializer": "^2.12.0",
+        "phpstan/phpstan": "^2.0.4",
+        "phpstan/phpstan-phpunit": "^2.0.3",
+        "phpunit/phpunit": "^10.5.40"
+    },
+    "conflict": {
+        "doctrine/data-fixtures": "<2.0",
+        "doctrine/migrations": "<3.8",
+        "laminas/laminas-form": "<3.10"
     },
     "suggest": {
-        "zendframework/zend-form":            "if you want to use form elements backed by Doctrine",
-        "zendframework/zend-developer-tools": "zend-developer-tools if you want to profile operations executed by the ORM during development",
-        "doctrine/migrations":                "doctrine migrations if you want to keep your schema definitions versioned"
+        "doctrine/migrations": "doctrine migrations if you want to keep your schema definitions versioned",
+        "laminas/laminas-developer-tools": "laminas-developer-tools if you want to profile operations executed by the ORM during development",
+        "laminas/laminas-form": "if you want to use form elements backed by Doctrine"
     },
-    "minimum-stability": "dev",
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "DoctrineORMModule\\": "src/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.8.x-dev"
+    "autoload-dev": {
+        "psr-4": {
+            "DoctrineORMModuleTest\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "DoctrineORMModule\\ConfigProvider",
+            "module": "DoctrineORMModule"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@phpstan",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "phpstan": "phpstan analyse",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover=coverage.xml"
     }
 }

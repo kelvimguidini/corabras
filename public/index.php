@@ -1,6 +1,7 @@
 <?php
-use Zend\Mvc\Application;
-use Zend\Stdlib\ArrayUtils;
+
+use Laminas\Mvc\Application;
+use Laminas\Stdlib\ArrayUtils;
 //error_reporting(0);
 
 /**
@@ -8,9 +9,9 @@ use Zend\Stdlib\ArrayUtils;
  * to the application root now.
  */
 chdir(dirname(__DIR__));
-  
+
 session_save_path(__DIR__ . '/../sessions');
-  
+
 // Decline static file requests back to the PHP built-in webserver
 if (php_sapi_name() === 'cli-server') {
     $path = realpath(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
@@ -26,9 +27,9 @@ include __DIR__ . '/../vendor/autoload.php';
 if (! class_exists(Application::class)) {
     throw new RuntimeException(
         "Unable to load application.\n"
-        . "- Type `composer install` if you are developing locally.\n"
-        . "- Type `vagrant ssh -c 'composer install'` if you are using Vagrant.\n"
-        . "- Type `docker-compose run zf composer install` if you are using Docker.\n"
+            . "- Type `composer install` if you are developing locally.\n"
+            . "- Type `vagrant ssh -c 'composer install'` if you are using Vagrant.\n"
+            . "- Type `docker-compose run zf composer install` if you are using Docker.\n"
     );
 }
 

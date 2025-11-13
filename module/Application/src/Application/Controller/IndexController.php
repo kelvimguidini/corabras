@@ -8,13 +8,13 @@
 
 namespace Application\Controller;
 
-use Zend\Cache\Storage\ExceptionEvent;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
-use Zend\View\Model\ViewModel;
-use Zend\Session\Storage\SessionStorage;
-use Zend\Session\SessionManager;
-use Zend\Session\Container;
+use Laminas\Cache\Storage\ExceptionEvent;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Mvc\Controller\Plugin\FlashMessenger;
+use Laminas\View\Model\ViewModel;
+use Laminas\Session\Storage\SessionStorage;
+use Laminas\Session\SessionManager;
+use Laminas\Session\Container;
 use Dompdf\Dompdf;
 
 
@@ -261,7 +261,7 @@ class IndexController extends AbstractActionController
 
         $carga = $db->getSingleResult();
       }
-      //\Zend\Debug\Debug::dump($carga);
+      //\Laminas\Debug\Debug::dump($carga);
       foreach ($array_tramitar as $item_tramitar) {
 
         $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
@@ -286,7 +286,7 @@ class IndexController extends AbstractActionController
           $em->persist($venda);
           $em->flush();
         }
-        //\Zend\Debug\Debug::dump($cargaTemp );
+        //\Laminas\Debug\Debug::dump($cargaTemp );
         if (($venda->getCarga() != null && $venda->getCarga()->getId() != null) || $cargaTemp != null) {
 
           $idCargaTemp = $cargaTemp != null ? $cargaTemp : $venda->getCarga()->getId();
@@ -303,7 +303,7 @@ class IndexController extends AbstractActionController
             $db2 = $em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
             $carga2 = $db2->getArrayResult();
 
-            //\Zend\Debug\Debug::dump($carga2);
+            //\Laminas\Debug\Debug::dump($carga2);
             if (count($carga2) == 0) {
               $c = $em->getRepository("Application\Model\Carga")->find($idCargaTemp);
               $c->setSituacao($situacao);
@@ -573,8 +573,8 @@ class IndexController extends AbstractActionController
         'data_atual' => $data_atual,
       ]);
     } catch (\Exception $e) {
-      \Zend\Debug\Debug::dump($e->getMessage());
-      \Zend\Debug\Debug::dump($e->getTraceAsString());
+      \Laminas\Debug\Debug::dump($e->getMessage());
+      \Laminas\Debug\Debug::dump($e->getTraceAsString());
       exit;
     }
   }
@@ -588,7 +588,7 @@ class IndexController extends AbstractActionController
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 
-    //\Zend\Debug\Debug::dump($cargas);
+    //\Laminas\Debug\Debug::dump($cargas);
     return new ViewModel(array('carregamentos' => $cargas));
   }
 
@@ -660,7 +660,7 @@ class IndexController extends AbstractActionController
 
   public function gerarPdfComprovante($produtos)
   {
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
 
     if (isset($produtos[0]->venda)) {
 
@@ -857,8 +857,8 @@ class IndexController extends AbstractActionController
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    //\Zend\Debug\Debug::dump($pedido);
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    //\Laminas\Debug\Debug::dump($pedido);
+    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
 
     $html = "
         <style type=\"text/css\">
@@ -983,7 +983,7 @@ class IndexController extends AbstractActionController
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
 
 
     $qtd_total = 0;

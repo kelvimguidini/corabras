@@ -11,8 +11,8 @@
 
 namespace Symfony\Component\Console\Helper;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * An implementation of InputAwareInterface for Helpers.
@@ -21,12 +21,9 @@ use Symfony\Component\Console\Input\InputAwareInterface;
  */
 abstract class InputAwareHelper extends Helper implements InputAwareInterface
 {
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setInput(InputInterface $input)
+    public function setInput(InputInterface $input): void
     {
         $this->input = $input;
     }

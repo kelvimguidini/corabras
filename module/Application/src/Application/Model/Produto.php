@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Application\Model;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -8,29 +9,29 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Produto
 {
-    
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue("AUTO")
      * @ORM\Column(type="integer")
      */
     public $id;
-    
+
     /**
      * @ORM\Column(type="string", length=25)
      */
     public $modelo;
-        
+
     /**
      * @ORM\Column(type="string", length=20)
      */
     public $cor;
-    
+
     /**
      * @ORM\Column(type="integer")
      */
     public $quantidade;
-    
+
     /**
      * @ORM\Column(type="decimal")
      */
@@ -42,58 +43,69 @@ class Produto
      * @ORM\JoinColumn(name="id_venda")
      */
     public $venda;
-  
-    public function getId() {
+
+    public function getId()
+    {
         return $this->id;
     }
-    
-    public function setId($id) {
+
+    public function setId($id)
+    {
         $this->id = $id;
     }
-    
-    public function getVenda() {
+
+    public function getVenda()
+    {
         return $this->venda;
     }
-    
-    public function setVenda($venda) {
+
+    public function setVenda($venda)
+    {
         $this->venda = $venda;
     }
-    
-    public function getModelo() {
+
+    public function getModelo()
+    {
         return $this->modelo;
     }
-    
-    public function setModelo($modelo) {
+
+    public function setModelo($modelo)
+    {
         $this->modelo = $modelo;
     }
-    
-    public function getCor() {
+
+    public function getCor()
+    {
         return $this->cor;
     }
-    
-    public function setCor($cor) {
+
+    public function setCor($cor)
+    {
         $this->cor = $cor;
     }
-    
-    public function getQuantidade() {
+
+    public function getQuantidade()
+    {
         return $this->quantidade;
     }
-    
-    public function setQuantidade($quantidade) {
+
+    public function setQuantidade($quantidade)
+    {
         $this->quantidade = $quantidade;
     }
-    
-    public function getValor() {
+
+    public function getValor()
+    {
         $source = array('.');
         $replace = array(',');
         return str_replace($source, $replace, $this->valor);
     }
-    
-    public function setValor($valor) {
+
+    public function setValor($valor)
+    {
         $source = array('.', ',');
         $replace = array('', '.');
-//         \Zend\Debug\Debug::dump(str_replace($source, $replace, $valor));
+        //         \Laminas\Debug\Debug::dump(str_replace($source, $replace, $valor));
         $this->valor = str_replace($source, $replace, $valor);
     }
-    
 }
