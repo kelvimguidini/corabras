@@ -54,7 +54,7 @@ class IndexController extends AbstractActionController
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $lista = $em->getRepository("Application\Model\Venda")->findAll();
         return new ViewModel(array('lista' => $lista));
     }
@@ -66,7 +66,7 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('login');
         }
         $idVenda = $this->params()->fromRoute("id", 0);
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
         $request = $this->getRequest();
         $clientes = $em->getRepository("Application\Model\Cliente")->findAll();
@@ -142,7 +142,7 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('login');
         }
         $id = $this->params()->fromRoute("id", 0);
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $venda = $em->getRepository("Application\Model\Venda")->find($id);
         $em->remove($venda);
         $em->flush();
@@ -154,7 +154,7 @@ class IndexController extends AbstractActionController
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
         $request = $this->getRequest();
 
@@ -180,7 +180,7 @@ class IndexController extends AbstractActionController
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $lista = $em->getRepository("Application\Model\Cliente")->findAll();
         $view = new ViewModel(array('lista' => $lista));
         $view->setTerminal(true);
@@ -195,7 +195,7 @@ class IndexController extends AbstractActionController
         }
         $id = $this->params()->fromRoute("id", 0);
 
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $cliente = $em->getRepository("Application\Model\Cliente")->find($id);
         $em->remove($cliente);
         $em->flush();
@@ -211,7 +211,7 @@ class IndexController extends AbstractActionController
         }
         $id = $this->params()->fromRoute("id", 0);
 
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $prod = $em->getRepository("Application\Model\Produto")->find($id);
         $em->remove($prod);
         $em->flush();
@@ -229,7 +229,7 @@ class IndexController extends AbstractActionController
         }
         $id = $this->params()->fromRoute("id", 0);
 
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $venda = $em->getRepository("Application\Model\Venda")->find($id);
         //         \Laminas\Debug\Debug::dump($cliente);
         $view = new ViewModel(array('venda' => $venda));
@@ -242,7 +242,7 @@ class IndexController extends AbstractActionController
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+        $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
         $request = $this->getRequest();
 
 

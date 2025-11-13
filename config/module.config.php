@@ -1,6 +1,12 @@
 <?php
 
+use Laminas\Cache\Service\StorageAdapterFactory;
+use Laminas\Cache\Service\StorageCacheAbstractServiceFactory;
+
 namespace Application;
+
+use Laminas\Cache\Service\StorageAdapterFactory;
+use Laminas\Cache\Service\StorageCacheAbstractServiceFactory;
 
 return [
     'router' => [
@@ -56,9 +62,22 @@ return [
         'abstract_factories' => [
             'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
             'Laminas\Log\LoggerAbstractServiceFactory',
+            StorageCacheAbstractServiceFactory::class,
         ],
         'factories' => [
             'translator' => 'Laminas\Mvc\Service\TranslatorServiceFactory',
+            'Cache' => \Laminas\Cache\Storage\Adapter\Filesystem::class,
+            StorageAdapterFactory::class => \Laminas\ServiceManager\Factory\InvokableFactory::class,
+        ],
+    ],
+    'caches' => [
+        'default' => [
+            'adapter' => [
+                'name' => \Laminas\Cache\Storage\Adapter\Filesystem::class,
+                'options' => [
+                    'cache_dir' => 'data/cache',
+                ],
+            ],
         ],
     ],
 
@@ -113,6 +132,9 @@ return [
                 'drivers' => [
                     'Application\Model' => 'my_annotation_driver',
                 ],
+                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../../module/Application/src/Entity'],
             ],
         ],
     ],

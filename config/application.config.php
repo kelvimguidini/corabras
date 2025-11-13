@@ -9,6 +9,7 @@ return [
         'DoctrineModule',
         'DoctrineORMModule',
         'Application',
+        'Laminas\Mvc\Plugin\FlashMessenger',
     ],
     'module_listener_options' => [
         'config_glob_paths'    => [

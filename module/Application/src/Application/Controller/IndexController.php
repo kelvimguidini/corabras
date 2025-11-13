@@ -27,7 +27,7 @@ class IndexController extends AbstractActionController
 
     $encoding = mb_internal_encoding();
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $request = $this->getRequest();
 
@@ -184,7 +184,7 @@ class IndexController extends AbstractActionController
     }
 
     $request = $this->getRequest();
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $id = $this->params()->fromRoute("id", 0);
 
     $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
@@ -219,7 +219,7 @@ class IndexController extends AbstractActionController
       }
 
 
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
       $array_tramitar_carga = isset($_POST['carga_tramitar']) ? $_POST['carga_tramitar'] : array();
 
@@ -348,7 +348,7 @@ class IndexController extends AbstractActionController
     if ($request->isPost()) {
       $idvenda = $request->getPost("idvenda");
 
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
       $vendaOld = $em->getRepository("Application\Model\Venda")->find($idvenda);
       $produtos = json_decode(stripslashes($_POST['prods']));
@@ -427,7 +427,7 @@ class IndexController extends AbstractActionController
     }
     try {
       $encoding = mb_internal_encoding();
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
       $request = $this->getRequest();
 
       $offSet = $this->params()->fromRoute("offset", 0);
@@ -583,7 +583,7 @@ class IndexController extends AbstractActionController
   {
     session_start();
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
@@ -598,7 +598,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $request = $this->getRequest();
 
@@ -632,7 +632,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $lista = $em->getRepository("Application\Model\Carga")->findAll();
     $view = new ViewModel(array('lista' => $lista));
     $view->setTerminal(true);
@@ -645,7 +645,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $id = $this->params()->fromRoute("id", 0);
 
@@ -853,7 +853,7 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Declacao_entrega_" . $idVenda;
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
@@ -979,7 +979,7 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Recibo_entrega_" . $idVenda;
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
@@ -1074,7 +1074,7 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
     $encoding = mb_internal_encoding();
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $request = $this->getRequest();
 
@@ -1108,7 +1108,7 @@ class IndexController extends AbstractActionController
     }
     $id = $this->params()->fromRoute("id", 0);
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
     $em->remove($cidade);
     $em->flush();
