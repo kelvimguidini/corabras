@@ -10,32 +10,35 @@ namespace Application\Controller;
 
 use Laminas\Cache\Storage\ExceptionEvent;
 use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\Mvc\Controller\Plugin\FlashMessenger;
 use Laminas\View\Model\ViewModel;
-use Laminas\Session\Storage\SessionStorage;
-use Laminas\Session\SessionManager;
-use Laminas\Session\Container;
 use Dompdf\Dompdf;
-
+use Doctrine\ORM\EntityManager;
 
 class IndexController extends AbstractActionController
 {
+  private EntityManager $em;
+
+  public function __construct(EntityManager $em = null)
+  {
+    if ($em) {
+      $this->em = $em;
+    }
+  }
+
 
   public function indexAction()
   {
-    session_start();
+    // session_start();
 
     $encoding = mb_internal_encoding();
-
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-
     $request = $this->getRequest();
+
 
     $idVenda = $this->params()->fromRoute("id", 0);
     $produtos_lista = null;
     if ($idVenda > 0) {
-      $produtos_lista = $em->getRepository("Application\Model\Produto")->findBy(array('venda' => $idVenda));
-      $venda = $em->getRepository("Application\Model\Venda")->find($idVenda);
+      $produtos_lista = $this->em->getRepository("Application\Model\Produto")->findBy(array('venda' => $idVenda));
+      $venda = $this->em->getRepository("Application\Model\Venda")->find($idVenda);
     } else {
       $venda = new \Application\Model\Venda();
     }
@@ -93,15 +96,15 @@ class IndexController extends AbstractActionController
 
         $cesta = array();
 
-        $em->persist($venda);
+        $this->em->persist($venda);
 
-        $em->flush();
+        $this->em->flush();
 
         if ($idVenda > 0) {
           foreach ($produtos_lista as $pro) {
-            $p = $em->find("Application\Model\Produto", $pro->getId());
-            $em->remove($p);
-            $em->flush();
+            $p = $this->em->find("Application\Model\Produto", $pro->getId());
+            $this->em->remove($p);
+            $this->em->flush();
           }
         }
 
@@ -118,8 +121,8 @@ class IndexController extends AbstractActionController
 
             array_push($cesta, $produto);
 
-            $em->persist($produto);
-            $em->flush();
+            $this->em->persist($produto);
+            $this->em->flush();
           }
         }
 
@@ -136,8 +139,8 @@ class IndexController extends AbstractActionController
         // $situ->setSituacao("Recebido");
         // $situ->setVenda($venda);
 
-        // $em->persist($situ);
-        // $em->flush();
+        // $this->em->persist($situ);
+        // $this->em->flush();
 
         $result["html"] = $this->gerarPdfComprovante($cesta);
       } catch (ExceptionEvent $e) {
@@ -146,7 +149,7 @@ class IndexController extends AbstractActionController
       }
     }
 
-    $lista = $em->getRepository("Application\Model\Cidade")->findBy(
+    $lista = $this->em->getRepository("Application\Model\Cidade")->findBy(
       array(),
       array('nome' => 'ASC')
     );
@@ -184,16 +187,15 @@ class IndexController extends AbstractActionController
     }
 
     $request = $this->getRequest();
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $id = $this->params()->fromRoute("id", 0);
 
-    $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
+    $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
       ->setMaxResults(1);
 
     $venda = $db->getSingleResult();
     $venda->setAberto(true);
-    $em->persist($venda);
-    $em->flush();
+    $this->em->persist($venda);
+    $this->em->flush();
     $view->setTerminal(true);
 
     return new ViewModel();
@@ -218,29 +220,26 @@ class IndexController extends AbstractActionController
         $array_tramitar = $_POST['item_tramitar'];
       }
 
-
-      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-
       $array_tramitar_carga = isset($_POST['carga_tramitar']) ? $_POST['carga_tramitar'] : array();
 
       if (($situacao == "Entrega" || $situacao == "Finalizados") && count($array_tramitar_carga) > 0) {
 
         foreach ($array_tramitar_carga as $item_tramitar) {
 
-          $carga = $em->getRepository("Application\Model\Carga")->find($item_tramitar);
+          $carga = $this->em->getRepository("Application\Model\Carga")->find($item_tramitar);
           $carga->setSituacao($situacao);
 
-          $db = $em->createQuery('select v from Application\Model\Venda v where IDENTITY(v.carga) = ' . $item_tramitar);
+          $db = $this->em->createQuery('select v from Application\Model\Venda v where IDENTITY(v.carga) = ' . $item_tramitar);
           $vendas = $db->getArrayResult();
 
-          $em->persist($carga);
-          $em->flush();
+          $this->em->persist($carga);
+          $this->em->flush();
           $array_tramitar = array();
 
           foreach ($vendas as $venda) {
             $array_tramitar[] = $venda["id"];
 
-            $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $venda["id"])
+            $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $venda["id"])
               ->setMaxResults(1);
 
             $venda = $db->getSingleResult();
@@ -248,15 +247,15 @@ class IndexController extends AbstractActionController
 
             $venda->setCarga($carga);
 
-            $em->persist($venda);
-            $em->flush();
+            $this->em->persist($venda);
+            $this->em->flush();
           }
         }
       }
 
       if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
 
-        $db = $em->createQuery('select c from Application\Model\Carga c where c.id = ' . $idcarga)
+        $db = $this->em->createQuery('select c from Application\Model\Carga c where c.id = ' . $idcarga)
           ->setMaxResults(1);
 
         $carga = $db->getSingleResult();
@@ -264,7 +263,7 @@ class IndexController extends AbstractActionController
       //\Laminas\Debug\Debug::dump($carga);
       foreach ($array_tramitar as $item_tramitar) {
 
-        $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
+        $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
           ->setMaxResults(1);
 
         $venda = $db->getSingleResult();
@@ -274,50 +273,50 @@ class IndexController extends AbstractActionController
         if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
           $venda->setCarga($carga);
 
-          $em->persist($venda);
-          $em->flush();
+          $this->em->persist($venda);
+          $this->em->flush();
         } else if ($situacao == 'Recebido') {
           $cargaTemp = $venda->getCarga()->getId();
           $venda->setCarga(null);
 
-          $em->persist($venda);
-          $em->flush();
+          $this->em->persist($venda);
+          $this->em->flush();
         } else {
-          $em->persist($venda);
-          $em->flush();
+          $this->em->persist($venda);
+          $this->em->flush();
         }
         //\Laminas\Debug\Debug::dump($cargaTemp );
         if (($venda->getCarga() != null && $venda->getCarga()->getId() != null) || $cargaTemp != null) {
 
           $idCargaTemp = $cargaTemp != null ? $cargaTemp : $venda->getCarga()->getId();
 
-          $db = $em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp);
+          $db = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp);
           $cargas = $db->getArrayResult();
 
 
           if (count($cargas) == 0) {
-            $c = $em->getRepository("Application\Model\Carga")->find($idCargaTemp);
-            $em->remove($c);
-            $em->flush();
+            $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
+            $this->em->remove($c);
+            $this->em->flush();
           } else {
-            $db2 = $em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
+            $db2 = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
             $carga2 = $db2->getArrayResult();
 
             //\Laminas\Debug\Debug::dump($carga2);
             if (count($carga2) == 0) {
-              $c = $em->getRepository("Application\Model\Carga")->find($idCargaTemp);
+              $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
               $c->setSituacao($situacao);
 
-              $em->persist($c);
-              $em->flush();
+              $this->em->persist($c);
+              $this->em->flush();
             }
           }
         }
 
 
-        // $s = $em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
-        // $em->remove($s);
-        // $em->flush();
+        // $s = $this->em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
+        // $this->em->remove($s);
+        // $this->em->flush();
 
         // $situ = new \Application\Model\Situacao();
 
@@ -326,8 +325,8 @@ class IndexController extends AbstractActionController
         // $situ->setSituacao($situacao);
         // $situ->setVenda($venda);
 
-        // $em->persist($situ);
-        // $em->flush();
+        // $this->em->persist($situ);
+        // $this->em->flush();
       }
 
       $result["resp"] = "Tramitado com sucesso!";
@@ -348,9 +347,7 @@ class IndexController extends AbstractActionController
     if ($request->isPost()) {
       $idvenda = $request->getPost("idvenda");
 
-      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-
-      $vendaOld = $em->getRepository("Application\Model\Venda")->find($idvenda);
+      $vendaOld = $this->em->getRepository("Application\Model\Venda")->find($idvenda);
       $produtos = json_decode(stripslashes($_POST['prods']));
 
       $venda = new \Application\Model\Venda();
@@ -379,8 +376,8 @@ class IndexController extends AbstractActionController
       $venda->setEnderecoEntrega($vendaOld->getEnderecoEntrega());
       $venda->setObs($vendaOld->getObs());
 
-      $em->persist($venda);
-      $em->flush();
+      $this->em->persist($venda);
+      $this->em->flush();
 
 
       // $situ = new \Application\Model\Situacao();
@@ -389,12 +386,12 @@ class IndexController extends AbstractActionController
       // $situ->setSituacao();
       // $situ->setVenda($venda);
 
-      // $em->persist($situ);
-      // $em->flush();
+      // $this->em->persist($situ);
+      // $this->em->flush();
 
       foreach ($produtos as $idProduto => $qtd) {
         if (!is_null($qtd) && $qtd !== '') {
-          $prodOld = $em->getRepository("Application\Model\Produto")->find($idProduto);
+          $prodOld = $this->em->getRepository("Application\Model\Produto")->find($idProduto);
 
 
           $produto = new \Application\Model\Produto();
@@ -405,11 +402,11 @@ class IndexController extends AbstractActionController
           $produto->setValor($prodOld->getValor());
           $produto->setVenda($venda);
 
-          $em->persist($produto);
+          $this->em->persist($produto);
           $prodOld->setquantidade($prodOld->getQuantidade() - $qtd);
 
-          $em->persist($prodOld);
-          $em->flush();
+          $this->em->persist($prodOld);
+          $this->em->flush();
         }
       }
     } else {
@@ -427,7 +424,6 @@ class IndexController extends AbstractActionController
     }
     try {
       $encoding = mb_internal_encoding();
-      $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
       $request = $this->getRequest();
 
       $offSet = $this->params()->fromRoute("offset", 0);
@@ -439,7 +435,7 @@ class IndexController extends AbstractActionController
       // Define a ordenação conforme a situação
       $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
 
-      $qb = $em->createQueryBuilder();
+      $qb = $this->em->createQueryBuilder();
       $qb->select('v', 'c')
         ->from('Application\Model\Venda', 'v')
         ->leftJoin('v.carga', 'c')
@@ -532,7 +528,7 @@ class IndexController extends AbstractActionController
       $produtos = [];
       if (!empty($vendas)) {
         $vendasId = array_column($vendas, 'id');
-        $qbProd = $em->createQueryBuilder();
+        $qbProd = $this->em->createQueryBuilder();
         $qbProd->select('p')
           ->from('Application\Model\Produto', 'p')
           ->where('p.venda IN (:vendas)')
@@ -543,10 +539,10 @@ class IndexController extends AbstractActionController
       }
 
       // -------------------- OUTRAS CONSULTAS (pode cachear) --------------------
-      $cidades = $em->getRepository("Application\Model\Cidade")
+      $cidades = $this->em->getRepository("Application\Model\Cidade")
         ->findBy([], ['nome' => 'ASC']);
 
-      $queryCargasCombo = $em->createQuery(
+      $queryCargasCombo = $this->em->createQuery(
         "SELECT c FROM Application\Model\Carga c 
          WHERE (c.situacao IN ('Carregamento','Entrega'))
          AND c.id IN (
@@ -558,7 +554,7 @@ class IndexController extends AbstractActionController
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
-      $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c')
+      $cargas = $this->em->createQuery('SELECT c FROM Application\Model\Carga c')
         ->getArrayResult();
 
       $data_atual = date("Y/m/d");
@@ -584,7 +580,7 @@ class IndexController extends AbstractActionController
     session_start();
 
     $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-    $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
+    $db = $this->em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 
@@ -617,8 +613,8 @@ class IndexController extends AbstractActionController
       $carga->setRetorno(trim($retorno));
       $carga->setSituacao($situacao);
 
-      $em->persist($carga);
-      $em->flush();
+      $this->em->persist($carga);
+      $this->em->flush();
 
       $view = new ViewModel(array('id' => $carga->getId()));
       $view->setTerminal(true);
@@ -632,8 +628,8 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-    $lista = $em->getRepository("Application\Model\Carga")->findAll();
+
+    $lista = $this->em->getRepository("Application\Model\Carga")->findAll();
     $view = new ViewModel(array('lista' => $lista));
     $view->setTerminal(true);
     return $view;
@@ -645,11 +641,10 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $id = $this->params()->fromRoute("id", 0);
 
-    $db = $em->createQuery('select c, v, p from Application\Model\Carga c LEFT JOIN c.vendas v LEFT JOIN v.produtos p where c.id = ' . $id);
+    $db = $this->em->createQuery('select c, v, p from Application\Model\Carga c LEFT JOIN c.vendas v LEFT JOIN v.produtos p where c.id = ' . $id);
     $cargas = $db->getArrayResult();
 
 
@@ -855,7 +850,7 @@ class IndexController extends AbstractActionController
 
     $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
-    $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
+    $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
     //\Laminas\Debug\Debug::dump($pedido);
     $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
@@ -981,7 +976,7 @@ class IndexController extends AbstractActionController
 
     $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
-    $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
+    $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
     $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
 
@@ -1084,14 +1079,14 @@ class IndexController extends AbstractActionController
 
       $cliente->setNome(mb_strtoupper(trim($nome)), $encoding);
 
-      $em->persist($cliente);
-      $em->flush();
+      $this->em->persist($cliente);
+      $this->em->flush();
 
       $result["resp"] = "Salvo com sucesso!";
       $result["tipo_mens"] = 'success';
     }
 
-    $lista = $em->getRepository("Application\Model\Cidade")->findBy(
+    $lista = $this->em->getRepository("Application\Model\Cidade")->findBy(
       array(),
       array('nome' => 'ASC')
     );
@@ -1109,9 +1104,9 @@ class IndexController extends AbstractActionController
     $id = $this->params()->fromRoute("id", 0);
 
     $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
-    $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
-    $em->remove($cidade);
-    $em->flush();
+    $cidade = $this->em->getRepository("Application\Model\Cidade")->find($id);
+    $this->em->remove($cidade);
+    $this->em->flush();
 
     $result["resp"] = "Salvo com sucesso!";
     $result["tipo_mens"] = 'success';

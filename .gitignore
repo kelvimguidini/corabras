@@ -13,6 +13,8 @@ data/sessions/
 data/tmp/
 temp/
 
+sessions
+
 #Doctrine 2
 data/DoctrineORMModule/Proxy/
 data/DoctrineORMModule/cache/

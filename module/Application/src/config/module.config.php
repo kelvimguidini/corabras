@@ -10,7 +10,17 @@
 
 namespace Application;
 
+use Application\Controller\Factory\IndexControllerFactory;
+use Application\Controller\IndexController;
+
 return array(
+    'controllers' => [
+        'factories' => [
+            IndexController::class => IndexControllerFactory::class,
+        ],
+
+    ],
+
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -179,11 +189,7 @@ return array(
             ),
         ),
     ),
-    'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\Index' => Controller\IndexController::class,
-        ),
-    ),
+
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

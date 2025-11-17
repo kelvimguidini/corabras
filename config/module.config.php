@@ -1,22 +1,26 @@
 <?php
 
-use Laminas\Cache\Service\StorageAdapterFactory;
-use Laminas\Cache\Service\StorageCacheAbstractServiceFactory;
-
 namespace Application;
 
-use Laminas\Cache\Service\StorageAdapterFactory;
-use Laminas\Cache\Service\StorageCacheAbstractServiceFactory;
+use Application\Controller\IndexController;
+use Application\Controller\Factory\IndexControllerFactory;
 
 return [
+    'controllers' => [
+        'factories' => [
+            IndexController::class => IndexControllerFactory::class,
+        ],
+
+    ],
+
     'router' => [
         'routes' => [
             'home' => [
-                'type' => 'Laminas\Router\Http\Literal',
+                'type' => \Laminas\Router\Http\Literal::class,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => IndexController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -26,7 +30,7 @@ return [
                 'options' => [
                     'route'    => '/login',
                     'defaults' => [
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => IndexController::class,
                         'action'     => 'login',
                     ],
                 ],
@@ -36,7 +40,7 @@ return [
                 'options' => [
                     'route'    => '/tramitar',
                     'defaults' => [
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => IndexController::class,
                         'action'     => 'tramitar',
                     ],
                 ],
@@ -50,37 +54,13 @@ return [
                         'situacao' => '[a-zA-Z0-9_-]+',
                     ],
                     'defaults' => [
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => IndexController::class,
                         'action' => 'pedidos',
                     ],
                 ],
             ],
         ],
     ],
-
-    'service_manager' => [
-        'abstract_factories' => [
-            'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Laminas\Log\LoggerAbstractServiceFactory',
-            StorageCacheAbstractServiceFactory::class,
-        ],
-        'factories' => [
-            'translator' => 'Laminas\Mvc\Service\TranslatorServiceFactory',
-            'Cache' => \Laminas\Cache\Storage\Adapter\Filesystem::class,
-            StorageAdapterFactory::class => \Laminas\ServiceManager\Factory\InvokableFactory::class,
-        ],
-    ],
-    'caches' => [
-        'default' => [
-            'adapter' => [
-                'name' => \Laminas\Cache\Storage\Adapter\Filesystem::class,
-                'options' => [
-                    'cache_dir' => 'data/cache',
-                ],
-            ],
-        ],
-    ],
-
     'translator' => [
         'locale' => 'pt_BR',
         'translation_file_patterns' => [
@@ -92,11 +72,8 @@ return [
         ],
     ],
 
-    'controllers' => [
-        'invokables' => [
-            'Application\Controller\Index' => Controller\IndexController::class,
-        ],
-    ],
+
+
 
     'view_manager' => [
         'display_not_found_reason' => true,
@@ -122,19 +99,11 @@ return [
     ],
 
     'doctrine' => [
-        'driver' => [
-            'my_annotation_driver' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'cache' => 'array',
-                'paths' => [__DIR__ . "/src/Application/Model"],
-            ],
+        'configuration' => [
             'orm_default' => [
-                'drivers' => [
-                    'Application\Model' => 'my_annotation_driver',
-                ],
-                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
-                'cache' => 'array',
-                'paths' => [__DIR__ . '/../../module/Application/src/Entity'],
+                'metadata_cache' => 'memory',
+                'query_cache'    => 'memory',
+                'result_cache'   => 'memory',
             ],
         ],
     ],
