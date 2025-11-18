@@ -14,11 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.1 (usado pelo Zend Framework 2)
-      - name: Setup PHP (8.1)
+      # 2️⃣ Instalar PHP 8.2 (usado pelo Zend Framework 2)
+      - name: Setup PHP (8.2)
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql, curl, dom, xml, json
 
       # 3️⃣ Instalar dependências do Composer
