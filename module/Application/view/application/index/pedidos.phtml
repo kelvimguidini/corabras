@@ -305,7 +305,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						$existe = false;
 						$c = isset($this->cargas[$x]) ? $this->cargas[$x] : array('id' => null);
 						foreach ($this->vendas as $v) {
-							if (isset($c) && $v["carga"]["id"] == $c["id"]) {
+							if (isset($c) && isset($v) && isset($v["carga"]) && $v["carga"]["id"] == $c["id"]) {
 								$existe = true;
 								break;
 							}
