@@ -14,6 +14,7 @@ return [
     ],
 
     'router' => [
+        'base_url' => '/',
         'routes' => [
             'home' => [
                 'type' => \Laminas\Router\Http\Literal::class,
