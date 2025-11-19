@@ -26,15 +26,6 @@ jobs:
         run: composer install --no-dev --prefer-dist --optimize-autoloader
 
 
-      # 5️⃣ Limpar arquivos desnecessários antes do deploy
-      - name: Cleanup unnecessary files
-        run: |
-          rm -rf node_modules
-          rm -rf tests
-          rm -rf .git
-          rm -f .env
-          rm -f vite.config.js
-
       # 6️⃣ Upload via FTP (FTPS)
       - name: Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -52,6 +43,7 @@ jobs:
             **/node_modules/**
             **/tests/**
             **/storage/**
+            **/vendor/**
             **/public/storage/**
             **/tmp/**
             **/.env**
