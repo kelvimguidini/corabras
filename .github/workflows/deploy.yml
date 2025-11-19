@@ -10,33 +10,55 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout do repositório
+      # 1️⃣ Checkout
       - name: Checkout repository 
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 (usado pelo Zend Framework 2)
-      - name: Setup PHP (8.2)
+      # 2️⃣ Baixar composer.lock do servidor para comparar
+      - name: Download composer.lock from server
+        uses: sebastianpopp/ftp-action@v2
+        continue-on-error: true
+        with:
+          host: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: './remote-check'
+          remoteDir: '/www/'
+          verbose: false
+          method: 'download'
+          file: 'composer.lock'
+
+      # 3️⃣ Verificar se composer.lock mudou
+      - name: Detect changes in composer.lock
+        id: check_vendor
+        run: |
+          if [ -f "./remote-check/composer.lock" ]; then
+            if cmp --silent "./composer.lock" "./remote-check/composer.lock"; then
+              echo "vendor_changed=false" >> $GITHUB_OUTPUT
+              echo "Vendor sem mudanças. Não será reinstalado."
+            else
+              echo "vendor_changed=true" >> $GITHUB_OUTPUT
+              echo "Composer.lock mudou. Instalando vendor..."
+            fi
+          else
+            echo "vendor_changed=true" >> $GITHUB_OUTPUT
+            echo "composer.lock não encontrado no servidor. Instalando vendor..."
+          fi
+
+      # 4️⃣ Instalar dependências SOMENTE se tiver alteração
+      - name: Setup PHP 8.2
+        if: steps.check_vendor.outputs.vendor_changed == 'true'
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql, curl, dom, xml, json
 
-      # 3️⃣ Instalar dependências do Composer
       - name: Install PHP dependencies
+        if: steps.check_vendor.outputs.vendor_changed == 'true'
         run: composer install --no-dev --prefer-dist --optimize-autoloader
 
-
-      # 5️⃣ Limpar arquivos desnecessários antes do deploy
-      - name: Cleanup unnecessary files
-        run: |
-          rm -rf node_modules
-          rm -rf tests
-          rm -rf .git
-          rm -f .env
-          rm -f vite.config.js
-
-      # 6️⃣ Upload via FTP (FTPS)
-      - name: Upload Files via FTP
+      # 5️⃣ Upload (incluindo vendor apenas se necessário)
+      - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -45,8 +67,8 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 30000
-          local-dir: ./ 
-          server-dir: /www/
+          local-dir: './'
+          server-dir: '/www/'
           exclude: |
             **/.git*
             **/node_modules/**
@@ -57,3 +79,19 @@ jobs:
             **/.env**
             **vite.config.js**
             **nginx.conf**
+            ${{ steps.check_vendor.outputs.vendor_changed == 'false' && '**/vendor/**' || '' }}
+
+      # 6️⃣ Atualizar composer.lock no servidor (se mudou)
+      - name: Upload updated composer.lock
+        if: steps.check_vendor.outputs.vendor_changed == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: '/www/'
+          local-dir: './'
+          exclude: |
+            **/*
+          include: |
+            composer.lock
