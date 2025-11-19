@@ -10,24 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout do repositório
+      # 1 — Checkout do repositório
       - name: Checkout repository 
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 (usado pelo Zend Framework 2)
+      # 2 — Setup PHP usado pelo Composer
       - name: Setup PHP (8.2)
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql, curl, dom, xml, json
 
-      # 3️⃣ Instalar dependências do Composer
-      - name: Install PHP dependencies
-        run: composer install --no-dev --prefer-dist --optimize-autoloader
+      # 3 — Instalar dependências incluindo DOCTRINE DBAL 2
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-dev --prefer-dist --optimize-autoloader
 
-
-      # 6️⃣ Upload via FTP (FTPS)
-      - name: Upload Files via FTP
+      # 4 — Upload do APP (exceto public/)
+      - name: Upload APP (backend)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -36,16 +36,16 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 30000
-          local-dir: ./ 
-          server-dir: /www/
+          local-dir: ./   
+          server-dir: /    # raiz do projeto
           exclude: |
-            **/.git*
+            **/.git**
             **/node_modules/**
             **/tests/**
             **/storage/**
-            **/vendor/**
-            **/public/storage/**
             **/tmp/**
             **/.env**
             **vite.config.js**
             **nginx.conf**
+            **.htaccess**
+            **/public/.htaccess**
