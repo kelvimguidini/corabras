@@ -13,54 +13,7 @@ return [
 
     ],
 
-    'router' => [
-        'routes' => [
-            'home' => [
-                'type' => \Laminas\Router\Http\Literal::class,
-                'options' => [
-                    'route'    => '/',
-                    'defaults' => [
-                        'controller' => IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-            ],
-            'login' => [
-                'type' => 'Laminas\Router\Http\Literal',
-                'options' => [
-                    'route'    => '/login',
-                    'defaults' => [
-                        'controller' => IndexController::class,
-                        'action'     => 'login',
-                    ],
-                ],
-            ],
-            'tramitar' => [
-                'type' => 'Laminas\Router\Http\Literal',
-                'options' => [
-                    'route'    => '/tramitar',
-                    'defaults' => [
-                        'controller' => IndexController::class,
-                        'action'     => 'tramitar',
-                    ],
-                ],
-            ],
-            'pedidos' => [
-                'type' => 'Laminas\Router\Http\Segment',
-                'options' => [
-                    'route' => '/pedidos[/:offset][/:situacao]',
-                    'constraints' => [
-                        'offset' => '[0-9]+',
-                        'situacao' => '[a-zA-Z0-9_-]+',
-                    ],
-                    'defaults' => [
-                        'controller' => IndexController::class,
-                        'action' => 'pedidos',
-                    ],
-                ],
-            ],
-        ],
-    ],
+    // Routes moved to `config/autoload/routes.global.php` (single source of truth)
     'translator' => [
         'locale' => 'pt_BR',
         'translation_file_patterns' => [
