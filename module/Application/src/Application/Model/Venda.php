@@ -57,9 +57,10 @@ class Venda
     public $nota_fiscal;
 
     /**
-	 * @ORM\Column(type="string", length=2)
-	 */
+    * @ORM\Column(type="string", length=2)
+    */
     public $tipo_nf;
+
 
     /**
 	 * @ORM\Column(type="string", length=2)

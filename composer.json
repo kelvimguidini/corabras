@@ -20,6 +20,7 @@
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.5",
         "laminas/laminas-servicemanager": "^3.11",
         "laminas/laminas-cache-storage-adapter-memory": "^2.0",
-        "doctrine/dbal": "^2.13"
+        "doctrine/dbal": "^2.13",
+        "dompdf/dompdf": "^3.1"
     }
 }

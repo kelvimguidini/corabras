@@ -83,10 +83,10 @@
       <label for="nota_fiscal">Tipo Nota Fiscal</label> 
       <div class="form-group">
         <label class="radio-inline">
-          <input type="radio" required name="tipo_nota_fiscal" value="Normal" <?php echo ($this->venda != null && $this->venda->getTipo_nf() == 'No')? ' checked' : '' ;?>> Normal
+          <input type="radio" required name="tipo_nota_fiscal" value="No" <?php echo ($this->venda != null && $this->venda->getTipo_nf() == 'No')? ' checked' : '' ;?>> Normal
         </label>
         <label class="radio-inline">
-          <input type="radio" name="tipo_nota_fiscal" value="Baixa" <?php echo (($this->venda != null && $this->venda->getTipo_nf() != 'No') || $this->venda == null)? ' checked' : '' ;?>> Baixa
+          <input type="radio" name="tipo_nota_fiscal" value="Ba" <?php echo (($this->venda != null && $this->venda->getTipo_nf() != 'No') || $this->venda == null)? ' checked' : '' ;?>> Baixa
         </label>
       </div>
     </div>

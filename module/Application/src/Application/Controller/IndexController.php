@@ -8,7 +8,7 @@
 
 namespace Application\Controller;
 
-use Laminas\Cache\Storage\ExceptionEvent;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Dompdf\Dompdf;
@@ -17,8 +17,38 @@ use Doctrine\ORM\EntityManager;
 class IndexController extends AbstractActionController
 {
   private EntityManager $em;
+  protected $baseUrl = 'http://sh00094.teste.website/~fddd5815';
 
-  public function __construct(EntityManager $em = null)
+  // public function onDispatch(MvcEvent $e)
+  // {
+  //   $request = $this->getRequest();
+  //   $uri = $request->getUri();
+
+  //   $scheme = $uri->getScheme();      // http | https
+  //   $host   = $uri->getHost();        // domínio/hostname
+  //   $port   = $uri->getPort();        // porta (80, 443 ou outra)
+  //   $path   = $request->getBasePath(); // normalmente "/public"
+
+  //   // 🔧 Monta a porta corretamente:
+  //   // - só adiciona se não for padrão
+  //   $portString = '';
+  //   if ($port && !in_array($port, [80, 443])) {
+  //     $portString = ':' . $port;
+  //   }
+
+  //   // 🔧 Base URL final (com pasta public)
+  //   $this->baseUrl  = sprintf(
+  //     '%s://%s%s%s',
+  //     $scheme,
+  //     $host,
+  //     $portString,
+  //     $path
+  //   );
+
+  //   return parent::onDispatch($e);
+  // }
+
+  public function __construct(EntityManager $em)
   {
     if ($em) {
       $this->em = $em;
@@ -143,7 +173,7 @@ class IndexController extends AbstractActionController
         // $this->em->flush();
 
         $result["html"] = $this->gerarPdfComprovante($cesta);
-      } catch (ExceptionEvent $e) {
+      } catch (\Exception $e) {
         $result["resp"] = "Erro ao salvar! Por favor tente novamente.";
         $result["tipo_mens"] = 'danger';
       }
@@ -579,7 +609,6 @@ class IndexController extends AbstractActionController
   {
     session_start();
 
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $db = $this->em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
@@ -594,7 +623,6 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $request = $this->getRequest();
 
@@ -655,10 +683,11 @@ class IndexController extends AbstractActionController
 
   public function gerarPdfComprovante($produtos)
   {
-    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
 
     if (isset($produtos[0]->venda)) {
 
+      $imgLogo1 = $this->baseUrl . '/img/logo-1.png';
+      $imgLogo2 = $this->baseUrl . '/img/Corabras_Selo-1.png';
       $html = "
       <style type=\"text/css\">
 .tg  {border-collapse:collapse;border-spacing:0;}
@@ -674,9 +703,9 @@ class IndexController extends AbstractActionController
             <th colspan=\"5\"><table width='100%'>
                 <tbody>
                   <tr>
-                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/logo-1.png') . "\" alt=\"Image\" width=\"150\" height=\"60\"></td>
+                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"$imgLogo1\" alt=\"Image\" width=\"150\" height=\"60\"></td>
                     <td style='text-align:center;vertical-align:middle'><span style=\"font-weight:bold; font-size:19px\">CORABRAS TELHAS DE CONCRETO</span><br><br><span style=\"font-weight:bold\">CNPJ </span> 82.888.702/0001-18<br>Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br><span style=\"color:#3166FF; font-size:18px\">www.corabras.com.br</span></td>
-                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/Corabras_Selo-1.png') . "\" width=\"150\" height=\"112\"></td>
+                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"$imgLogo2\" width=\"150\" height=\"112\"></td>
                   </tr>
                 </tbody>
                 </table>
@@ -848,12 +877,11 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Declacao_entrega_" . $idVenda;
 
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
     //\Laminas\Debug\Debug::dump($pedido);
-    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
     $html = "
         <style type=\"text/css\">
@@ -974,11 +1002,10 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Recibo_entrega_" . $idVenda;
 
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    $renderer = $this->serviceLocator->get('Laminas\View\Renderer\RendererInterface');
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
 
     $qtd_total = 0;
@@ -1069,7 +1096,6 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
     $encoding = mb_internal_encoding();
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
 
     $request = $this->getRequest();
 
@@ -1103,7 +1129,6 @@ class IndexController extends AbstractActionController
     }
     $id = $this->params()->fromRoute("id", 0);
 
-    $em = $this->getEvent()->getApplication()->getServiceManager()->get("Doctrine\ORM\EntityManager");
     $cidade = $this->em->getRepository("Application\Model\Cidade")->find($id);
     $this->em->remove($cidade);
     $this->em->flush();
@@ -1116,11 +1141,14 @@ class IndexController extends AbstractActionController
 
   public function gerarPdf($html, $filename)
   {
-    // include autoloader
-    require_once  __DIR__ . '/../../../../../vendor/dompdf/autoload.inc.php';
 
     // instantiate and use the dompdf class
-    $dompdf = new Dompdf();
+    $dompdf = new \Dompdf\Dompdf([
+      'isRemoteEnabled' => true,
+      'isHtml5ParserEnabled' => true,
+    ]);
+
+    $dompdf->set_option('isRemoteEnabled', true);
 
     $dompdf->loadHtml($html);
 
