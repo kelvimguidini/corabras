@@ -686,8 +686,8 @@ class IndexController extends AbstractActionController
 
     if (isset($produtos[0]->venda)) {
 
-      $imgLogo1 = $this->baseUrl . '/img/logo-1.png';
-      $imgLogo2 = $this->baseUrl . '/img/Corabras_Selo-1.png';
+      $imgLogo1 = $this->baseUrl . '/img/logo-1.jpg';
+      $imgLogo2 = $this->baseUrl . '/img/Corabras_Selo-1.jpg';
       $html = "
       <style type=\"text/css\">
 .tg  {border-collapse:collapse;border-spacing:0;}

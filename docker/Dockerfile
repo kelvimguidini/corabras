@@ -1,19 +1,24 @@
 # Usar imagem base PHP 8.3 com FPM
 FROM php:8.2-fpm
 
-# Atualiza e instala dependências necessárias
+# Instala dependências do sistema (compatíveis com Debian Trixie)
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     libicu-dev \
-    libonig-dev \
     git \
     curl \
-    && docker-php-ext-install \
-    pdo_mysql \
-    zip \
-    intl \
-    opcache
+    libfreetype6-dev \
+    libjpeg-dev \
+    libpng-dev \
+    && docker-php-ext-install pdo_mysql zip intl opcache
+
+# Configurar e instalar o GD com JPEG/PNG/Freetype
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
+
 
 # 🧰 Instala o Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php && \

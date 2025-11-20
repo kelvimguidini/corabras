@@ -49,3 +49,4 @@ jobs:
             **nginx.conf**
             **.htaccess**
             **/public/.htaccess**
+            **/vendor/**
