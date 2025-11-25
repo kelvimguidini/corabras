@@ -71,6 +71,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								$qtdFit = 0;
 								$qtdEspig = 0;
 								$qtdMax = 0;
+								$qtdPlus = 0;
 								$qtdCoppo = 0;
 								$qtdIni = 0;
 								$qtd03v = 0;
@@ -85,6 +86,9 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 										case 'Max RESINADA':
 											$qtdMax += $p['quantidade'];
 											$peso += 5.5 * $p['quantidade'];
+											break;
+										case 'Plus':
+											$qtdPlus += $p['quantidade'];
 											break;
 										case 'Coppo Venetto':
 										case 'Coppo Venetto RESINADA':
@@ -112,7 +116,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 											$qtdFit += $p['quantidade'];
 											$peso += 3.9 * $p['quantidade'];
 											break;
-										case 'Espigão':
+										case 'Cumeeira':
 											$qtdEspig += $p['quantidade'];
 											$peso += 4 * $p['quantidade'];
 											break;
@@ -141,6 +145,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
 								<td><?php echo substr($p['cor'], 0, 10); ?></td>
 								<td><?= $qtdFit ?></td>
+								<td><?= $qtdPlus ?></td>
 								<td><?= $qtdMax ?></td>
 								<td><?= $qtdCoppo ?></td>
 								<td><?= $qtdEspig ?></td>

@@ -140,12 +140,13 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				<select class="form-control" name="modelo" id="cientes_id">
 					<option value="" <?php if (!isset($this->filtro['modelo']) || (isset($this->filtro['modelo']) && $this->filtro['modelo'] == '')) echo 'selected'; ?>>- Selecione -</option>
 					<option value="Super Max" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Super Max') echo 'selected'; ?>>Super Max</option>
+					<option value="Plus" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Plus') echo 'selected'; ?>>Plus</option>
 					<option value="Max" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max') echo 'selected'; ?>>Max</option>
 					<option value="Coppo Venetto" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo Venetto') echo 'selected'; ?>>Coppo Venetto</option>
 					<option value="Super Max RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Super Max RESINADA') echo 'selected'; ?>>Super Max RESINADA</option>
 					<option value="Max RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max RESINADA') echo 'selected'; ?>>max RESINADA</option>
 					<option value="Coppo RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo RESINADA') echo 'selected'; ?>>Coppo RESINADA</option>
-					<option value="Espigão" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Espigão') echo 'selected'; ?>>Espigão</option>
+					<option value="Cumeeira" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Cumeeira') echo 'selected'; ?>>Cumeeira</option>
 					<option value="Inicial" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Inicial') echo 'selected'; ?>>Inicial</option>
 					<option value="03 vias" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == '03 vias') echo 'selected'; ?>>03 vias</option>
 					<option value="04 vias" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == '04 vias') echo 'selected'; ?>>04 vias</option>
@@ -358,6 +359,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<th>Vendedor</th>
 								<th>Cor</th>
 								<th>Super</th>
+								<th>Plus</th>
 								<th>Max</th>
 								<th>Coppo</th>
 								<th>ESP</th>
@@ -410,6 +412,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								$qtdFit = 0;
 								$qtdEspig = 0;
 								$qtdMax = 0;
+								$qtdPlus = 0;
 								$qtdCoppo = 0;
 								$qtdIni = 0;
 								$qtd03v = 0;
@@ -429,6 +432,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 											case 'Max':
 											case 'Max RESINADA':
 												$qtdMax += $p->getQuantidade();
+												$peso += 5.5 * $p->getQuantidade();
+												$cor = $cor == "" ? $p->getCor() : $cor;
+												break;
+											case 'Plus':
+												$qtdPlus += $p->getQuantidade();
 												$peso += 5.5 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
@@ -460,7 +468,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 												$peso += 3.9 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
-											case 'Espigão':
+											case 'Cumeeira':
 												$qtdEspig += $p->getQuantidade();
 												$peso += 4 * $p->getQuantidade();
 												break;
@@ -493,6 +501,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
 								<td><?php echo substr($cor, 0, 10); ?></td>
 								<td><?= $qtdFit ?></td>
+								<td><?= $qtdPlus ?></td>
 								<td><?= $qtdMax ?></td>
 								<td><?= $qtdCoppo ?></td>
 								<td><?= $qtdEspig ?></td>
