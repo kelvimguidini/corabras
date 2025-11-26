@@ -743,17 +743,17 @@ class IndexController extends AbstractActionController
             <td>";
       $html .= $produtos[0]->venda->urgente;
       $html .= "</td>
-          </tr>
-          <tr>
-            <th>Tipo Nota Fiscal:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->tipo_nf . "</td>
+          </tr>";
+      // $html .=     "<tr>
+      //       <th>Tipo Nota Fiscal:</th>
+      //       <td colspan=\"2\">" . $produtos[0]->venda->tipo_nf . "</td>
 
-            <th>Nota Fiscal:</th>
-            <td>";
-      $html .= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não";
-      $html .= "</td>
-          </tr>
-          <tr>
+      //       <th>Nota Fiscal:</th>
+      //       <td>";
+      // $html .= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não";
+      // $html .= "</td>
+      //     </tr>";
+      $html .= "<tr>
             <th>Forma de Pagamento:</th>
             <td colspan=\"2\">";
 
