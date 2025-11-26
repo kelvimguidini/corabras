@@ -164,14 +164,6 @@ class IndexController extends AbstractActionController
           return $this->redirect()->toRoute('pedidos');
         }
 
-        // $situ = new \Application\Model\Situacao();
-
-        // $situ->setData(date("d/m/Y"));
-        // $situ->setSituacao("Recebido");
-        // $situ->setVenda($venda);
-
-        // $this->em->persist($situ);
-        // $this->em->flush();
 
         $result["html"] = $this->gerarPdfComprovante($cesta);
       } catch (\Exception $e) {
@@ -194,6 +186,8 @@ class IndexController extends AbstractActionController
     if (isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('pedidos');
     }
+
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
     if ($request->isPost()) {
       $usuario = $request->getPost("usuario");
@@ -217,7 +211,6 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
 
-    $request = $this->getRequest();
     $id = $this->params()->fromRoute("id", 0);
 
     $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
@@ -227,9 +220,11 @@ class IndexController extends AbstractActionController
     $venda->setAberto(true);
     $this->em->persist($venda);
     $this->em->flush();
+
+    $view = new ViewModel();
     $view->setTerminal(true);
 
-    return new ViewModel();
+    return $view;
   }
 
   public function tramitarAction()
@@ -238,7 +233,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
     $situacao = "Recebido";
 
@@ -372,7 +367,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
 
     if ($request->isPost()) {
@@ -446,6 +441,7 @@ class IndexController extends AbstractActionController
     }
     try {
       $encoding = mb_internal_encoding();
+      /** @var \Laminas\Http\PhpEnvironment\Request $request */
       $request = $this->getRequest();
 
       $offSet = $this->params()->fromRoute("offset", 0);
@@ -614,9 +610,9 @@ class IndexController extends AbstractActionController
         'data_atual' => $data_atual,
       ]);
     } catch (\Exception $e) {
-      \Laminas\Debug\Debug::dump($e->getMessage());
-      \Laminas\Debug\Debug::dump($e->getTraceAsString());
-      exit;
+      error_log($e->getMessage());
+      error_log($e->getTraceAsString());
+      throw $e;
     }
   }
 
@@ -638,7 +634,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
 
     if ($request->isPost()) {
@@ -727,126 +723,42 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $encoding = mb_internal_encoding();
+
+    mb_internal_encoding("UTF-8");
 
     $idVenda = $this->params()->fromRoute("id", 0);
-    $filename = "Declacao_entrega_" . $idVenda;
+    $filename = "Declaracao_entrega_" . $idVenda;
 
+    // Busca a venda
+    $db = $this->em->createQuery(
+      'SELECT v, p, c 
+         FROM Application\Model\Venda v 
+         LEFT JOIN v.produtos p 
+         LEFT JOIN v.carga c 
+         WHERE v.id = :id'
+    )->setParameter('id', $idVenda);
 
-    $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    //\Laminas\Debug\Debug::dump($pedido);
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
-    $html = "
-        <style type=\"text/css\">
-            .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
-            .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-              overflow:hidden;padding:5px 5px;word-break:normal;}
-            .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-              font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
-            .tg .tg-1wig{font-weight:bold;text-align:left;vertical-align:top}
-            .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
-            .tg .tg-baqh{text-align:center;vertical-align:top}
-            .tg .tg-c3ow{border-color:inherit;vertical-align:top}
-            .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-            .tg .tg-dvpl{border-color:inherit;text-align:right;vertical-align:top}
-            .tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
-            .tg .tg-0lax{text-align:left;vertical-align:top}
-            .tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
-            </style>
-            <table class=\"tg\">
-            <tbody>
-              <tr>
-                <td class=\"tg-9wq8\" colspan=\"2\"><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" ></td>
-                <td class=\"tg-9wq8\" colspan=\"3\"><span style=\"font-weight:bold\">DECLARAÇÃO</span></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CLIENTE</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-c3ow\"><span style=\"font-weight:bold\">Endereço: </span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['endereco'] . " - " . $pedido['cidade'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CONTATO</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['contato'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">TELEFONE</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['telefone'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">VENDEDOR</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome_vendedor'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\"><span style=\"font-weight:bold\">Declaro ter recebido a mercadoria descrita abaixo:</span></td>
-              </tr>";
-    $qtd_total = 0;
-    foreach ($pedido['produtos'] as $prod) {
-      $qtd_total += $prod['quantidade'];
-      $html .= "<tr>
-              <td class=\"tg-dvpl\"><span style=\"font-weight:bold\">" . $prod['quantidade'] . "</span></td>
-              <td class=\"tg-0pky\" colspan=\"4\">PÇS " . mb_strtoupper($prod['modelo'], $encoding) . " " . mb_strtoupper($prod['cor'], $encoding) . "</td>
-            </tr>";
-    }
+    // Renderiza o HTML da view
+    $view = new \Laminas\View\Model\ViewModel([
+      'pedido' => $pedido,
+      'dataAtual' => date("d/m/Y"),
+      'logo' => $this->baseUrl . '/img/logo-1.jpg',
+    ]);
+    $view->setTemplate('application/index/imprimir');
 
-    $html .= "<tr>
-                <td class=\"tg-dvpl\" colspan=\"5\"><span style=\"font-weight:bold\">BRASÍLIA-DF " . date("d/m/Y") . "</span></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\">QUEBRAS NO CARREGAMENTO: </td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\">PEÇAS PARA REPOSIÇÃO:</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\">TOTAL DE TELHAS E/OU ACESSÓRIOS: </td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $qtd_total . " PEÇAS</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-baqh\" colspan=\"4\">Responsável pela descarga</td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-0lax\" colspan=\"4\"><br></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-baqh\" colspan=\"4\">Motorista</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-baqh\" colspan=\"4\">Nome completo do conferente</td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-baqh\" colspan=\"4\"><br><br></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-amwm\" colspan=\"4\">Assinatura do conferente</td>
-              </tr>
-              <tr>
-                <td class=\"tg-1wig\" colspan=\"5\">Afirmo que conferi o carregamento e o pedido, confirmando as quantidades acima descritas, SENDO ENTÃO RESPONSÁVEL pela entrega nas quantidades exatas me passadas pelo romaneio</td>
-              </tr>
-            </tbody>
-        </table>";
+    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
+    $renderer = $this->getEvent()->getApplication()
+      ->getServiceManager()
+      ->get('ViewRenderer');
 
-    //echo $html;
-    $this->gerarPdf($html, $filename);
+    $html = $renderer->render($view);
+
+    // Gera o PDF
+    return $this->gerarPdf($html, $filename);
   }
+
 
   public function reciboAction()
   {
@@ -892,6 +804,7 @@ class IndexController extends AbstractActionController
       'qtd_total'      => $qtd_total,
       'valor_total_g'  => $valor_total_g,
       'valor_extenso'  => $valor_extenso,
+      'logo' => $this->baseUrl . '/img/logo-1.jpg',
     ]);
 
     // --- GERA O PDF ---
@@ -919,7 +832,7 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
     $encoding = mb_internal_encoding();
-
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
 
     if ($request->isPost()) {

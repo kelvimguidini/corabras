@@ -1,1 +1,146 @@
-<?php echo $this->lista;?>
+<style>
+    .tg {
+        border-collapse: collapse;
+        border-spacing: 0;
+        margin: 0px auto;
+    }
+
+    .tg td {
+        border: 1px solid #000;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+    }
+
+    .tg th {
+        border: 1px solid #000;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+        font-weight: bold;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .right {
+        text-align: right;
+    }
+</style>
+
+<table class="tg">
+
+    <tr>
+        <td class="center" colspan="2">
+            <img src="<?= $logo ?>" style="max-width:200px">
+        </td>
+        <td class="center" colspan="3"><b>DECLARAÇÃO</b></td>
+    </tr>
+
+    <tr>
+        <td><b>CLIENTE</b></td>
+        <td colspan="4"><?= $pedido['nome'] ?></td>
+    </tr>
+
+    <tr>
+        <td><b>ENDEREÇO</b></td>
+        <td colspan="4"><?= $pedido['endereco'] ?> - <?= $pedido['cidade'] ?></td>
+    </tr>
+
+    <tr>
+        <td><b>CONTATO</b></td>
+        <td colspan="4"><?= $pedido['contato'] ?></td>
+    </tr>
+
+    <tr>
+        <td><b>TELEFONE</b></td>
+        <td colspan="4"><?= $pedido['telefone'] ?></td>
+    </tr>
+
+    <tr>
+        <td><b>VENDEDOR</b></td>
+        <td colspan="4"><?= $pedido['nome_vendedor'] ?></td>
+    </tr>
+
+    <tr>
+        <td colspan="5"><b>Declaro ter recebido a mercadoria descrita abaixo:</b></td>
+    </tr>
+
+    <?php
+    $qtd_total = 0;
+    foreach ($pedido['produtos'] as $prod):
+        $qtd_total += $prod['quantidade'];
+        $modelo = mb_strtoupper($prod['modelo'], 'UTF-8');
+        $cor    = mb_strtoupper($prod['cor'], 'UTF-8');
+    ?>
+        <tr>
+            <td class="right"><b><?= $prod['quantidade'] ?></b></td>
+            <td colspan="4">PÇS <?= $modelo ?> <?= $cor ?></td>
+        </tr>
+    <?php endforeach; ?>
+
+    <tr>
+        <td colspan="5">
+            BRASÍLIA-DF <?= $this->escapeHtml($dataAtual) ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5">QUEBRAS NO CARREGAMENTO:</td>
+    </tr>
+    <tr>
+        <td colspan="5">PEÇAS PARA REPOSIÇÃO:</td>
+    </tr>
+
+    <tr>
+        <td><b>TOTAL DE PEÇAS:</b></td>
+        <td colspan="4"><b><?= $qtd_total ?> PEÇAS</b></td>
+    </tr>
+
+    <tr>
+        <td colspan="5" style="height:40px"></td>
+    </tr>
+
+    <tr>
+        <td colspan="4" class="center">Responsável pela descarga</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td colspan="5" style="height:40px"></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td colspan="4" class="center">Motorista</td>
+    </tr>
+
+    <tr>
+        <td colspan="5" style="height:40px"></td>
+    </tr>
+
+    <tr>
+        <td colspan="4" class="center">Nome completo do conferente</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td colspan="4" class="center">Assinatura do conferente</td>
+    </tr>
+
+    <tr>
+        <td colspan="5">
+            <b>
+                Afirmo que conferi o carregamento e o pedido, confirmando as quantidades acima descritas,
+                SENDO ENTÃO RESPONSÁVEL pela entrega nas quantidades exatas me passadas pelo romaneio.
+            </b>
+        </td>
+    </tr>
+
+</table>
