@@ -469,7 +469,7 @@ class IndexController extends AbstractActionController
 
         $cliente   = mb_strtoupper($request->getPost("nome"), $encoding);
         $cpfCnpj   = $request->getPost("cpfcnpj");
-        $cidade    = $request->getPost("cidade");
+        $cidade = (array) $request->getPost("cidade", []);
         $dataEnt   = $request->getPost("data_entrega");
         $vendedor  = mb_strtoupper($request->getPost("vendedor"), $encoding);
         $modelo    = $request->getPost("modelo");
@@ -498,8 +498,9 @@ class IndexController extends AbstractActionController
         if ($cpfCnpj) {
           $qb->andWhere('v.cpfcnpj = :cpfCnpj')->setParameter('cpfCnpj', $cpfCnpj);
         }
-        if ($cidade) {
-          $qb->andWhere('v.cidade = :cidade')->setParameter('cidade', $cidade);
+        if (!empty($cidade)) {
+          $qb->andWhere('v.cidade IN (:cidades)')
+            ->setParameter('cidades', $cidade);
         }
         if ($vendedor) {
           $qb->andWhere('UPPER(v.nome_vendedor) LIKE :vendedor')->setParameter('vendedor', "%$vendedor%");

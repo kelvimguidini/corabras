@@ -116,11 +116,21 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 			<div class="form-group col-md-2 col-sm-12 has-feedback">
 				<label for="cliente">Cidade</label>
-				<select name="cidade" id="cidade" class="form-control">
-					<option value="" <?php if (!isset($this->filtro['cidade'])) echo "selected"; ?>>- Selecione -</option>
-					<?php foreach ($this->cidades as $c) { ?>
-						<option value="<?php echo $c->getNome(); ?>" <?php if (isset($this->filtro['cidade']) && $this->filtro['cidade'] == $c->getNome()) echo "selected"; ?>><?php echo $c->getNome() ?></option>
-					<?php } ?>
+				<select name="cidade[]" id="cidade" class="form-control" multiple>
+
+					<option value="" disabled>- Selecione -</option>
+					<?php foreach ($this->cidades as $c):
+						$selected = (
+							isset($this->filtro['cidade'])
+							&& is_array($this->filtro['cidade'])
+							&& in_array($c->getNome(), $this->filtro['cidade'])
+						) ? "selected" : "";
+					?>
+						<option value="<?= $c->getNome() ?>" <?= $selected ?>>
+							<?= $c->getNome() ?>
+						</option>
+					<?php endforeach; ?>
+
 				</select>
 			</div>
 
@@ -277,6 +287,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						<th>Vendedor</th>
 						<th>Cor</th>
 						<th>Super</th>
+						<th>Plus</th>
 						<th>Max</th>
 						<th>Coppo</th>
 						<th>ESP</th>
@@ -284,7 +295,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						<th>03v</th>
 						<th>04v</th>
 						<th>Capa</th>
-						<th>Peso</th>
 						<th>Valor</th>
 						<th class="no_print"></th>
 					</tr>
@@ -367,7 +377,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<th>03v</th>
 								<th>04v</th>
 								<th>Capa</th>
-								<th>Peso</th>
 								<th>Valor</th>
 								<th class="no_print"></th>
 							</tr>
@@ -419,7 +428,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								$qtd04v = 0;
 								$qtdCapa = 0;
 								$valorTotal = 0;
-								$peso = 0;
 								$cor = "";
 
 								foreach ($this->produtos as $p) {
@@ -432,60 +440,36 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 											case 'Max':
 											case 'Max RESINADA':
 												$qtdMax += $p->getQuantidade();
-												$peso += 5.5 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Plus':
 												$qtdPlus += $p->getQuantidade();
-												$peso += 5.5 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Coppo Venetto':
 											case 'Coppo Venetto RESINADA':
 												$qtdCoppo += $p->getQuantidade();
-												$peso += 4.7 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Capa Lateral':
 												$qtdCapa += $p->getQuantidade();
-												$peso += 4 * $p->getQuantidade();
 												break;
 											case 'Inicial':
 												$qtdIni += $p->getQuantidade();
-												$peso += 3 * $p->getQuantidade();
 												break;
 											case '03 vias':
 												$qtd03v += $p->getQuantidade();
-												$peso += 5 * $p->getQuantidade();
 												break;
 											case '04 vias':
 												$qtd04v += $p->getQuantidade();
-												$peso += 5 * $p->getQuantidade();
 												break;
 											case 'Super Max':
 											case 'Super Max RESINADA':
 												$qtdFit += $p->getQuantidade();
-												$peso += 3.9 * $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Cumeeira':
 												$qtdEspig += $p->getQuantidade();
-												$peso += 4 * $p->getQuantidade();
-												break;
-											case 'Policarbonato Max':
-												$peso += 1 * $p->getQuantidade();
-												break;
-											case 'Policarbonato Coppo':
-												$peso += 1 * $p->getQuantidade();
-												break;
-											case 'Policarbonato Fit':
-												$peso += 1 * $p->getQuantidade();
-												break;
-											case 'Manta Termica':
-												$peso += 1 * $p->getQuantidade();
-												break;
-											case 'Frete':
-												$peso += 1 * $p->getQuantidade();
 												break;
 										}
 
@@ -509,7 +493,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?= $qtd03v ?></td>
 								<td><?= $qtd04v ?></td>
 								<td><?= $qtdCapa ?></td>
-								<td><?php echo number_format($peso, 0, ',', '.'); ?>kg</td>
 								<td>R$ <?php echo number_format($valorTotal, 2, ',', '.'); ?></td>
 								<td>
 									<?php
@@ -777,10 +760,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					<div class="col-md-6 col-sm-6">
 						<label for="cliente_nome">Hora Saída</label>
 						<input required type="text" class="form-control time" id="saidah" name="saida_hora" autocomplete="off">
-					</div>
-					<div class="col-md-6 col-sm-6">
-						<label for="cliente_nome">Hora Retorno</label>
-						<input required type="text" class="form-control time" id="retornoh" name="retorno_hora" autocomplete="off">
 					</div>
 				</div>
 
