@@ -61,6 +61,7 @@ class IndexController extends AbstractActionController
     // session_start();
 
     $encoding = mb_internal_encoding();
+    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
 
 
@@ -410,15 +411,6 @@ class IndexController extends AbstractActionController
       $this->em->flush();
 
 
-      // $situ = new \Application\Model\Situacao();
-
-      // $situ->setData(date("d/m/Y"));
-      // $situ->setSituacao();
-      // $situ->setVenda($venda);
-
-      // $this->em->persist($situ);
-      // $this->em->flush();
-
       foreach ($produtos as $idProduto => $qtd) {
         if (!is_null($qtd) && $qtd !== '') {
           $prodOld = $this->em->getRepository("Application\Model\Produto")->find($idProduto);
@@ -459,9 +451,10 @@ class IndexController extends AbstractActionController
       $offSet = $this->params()->fromRoute("offset", 0);
       $situ = $this->params()->fromRoute("situacao", "Recebido");
 
-      $limitePadrao = 50;
+      // If situation is 'Recebido' show all records (no limit)
+      $limitePadrao = ($situ === 'Recebido') ? 0 : 100;
       $limite = $request->isPost() ? (int) $request->getPost("limite", $limitePadrao) : $limitePadrao;
-
+      $filtro = [];
       // Define a ordenação conforme a situação
       $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
 
@@ -472,17 +465,9 @@ class IndexController extends AbstractActionController
         ->where('v.situacao = :situacao')
         ->setParameter('situacao', $situ)
         ->orderBy('v.ja_aberto', 'ASC')
-        ->addOrderBy($direcao, 'ASC')
-        ->setFirstResult($offSet)
-        ->setMaxResults($limite);
+        ->addOrderBy($direcao, 'ASC');
 
-      $filtro = [
-        'next' => $offSet + $limite,
-        'preview' => $offSet - $limite,
-        'situacao' => $situ,
-        'limite' => $limite,
-      ];
-
+      // Pagination will be applied after filters so we can compute total correctly.
       // -------------------- FILTROS (POST) --------------------
       if ($request->isPost()) {
 
@@ -552,6 +537,36 @@ class IndexController extends AbstractActionController
       }
 
       // -------------------- EXECUÇÃO --------------------
+
+      // Compute total number of matching records (without pagination)
+      $qbCount = clone $qb;
+      $qbCount->select('COUNT(DISTINCT v.id)');
+      // ordering not required for count
+      $qbCount->resetDQLPart('orderBy');
+      $qbCount->setFirstResult(null);
+      $qbCount->setMaxResults(null);
+      $total = (int) $qbCount->getQuery()->getSingleScalarResult();
+
+      // Apply pagination only when $limite > 0. A $limite of 0 means "no limit" (return all).
+      if ($limite > 0) {
+        $qb->setFirstResult($offSet)
+          ->setMaxResults($limite);
+        $next = $offSet + $limite;
+        $preview = max(0, $offSet - $limite);
+      } else {
+        $next = 0;
+        $preview = 0;
+      }
+
+      $filtro += [
+        'next' => $next,
+        'preview' => $preview,
+        'situacao' => $situ,
+        'limite' => $limite,
+        'offset' => $offSet,
+        'total'  => $total,
+      ];
+
       $vendas = $qb->getQuery()->getArrayResult();
 
       // -------------------- PRODUTOS RELACIONADOS --------------------
@@ -683,188 +698,28 @@ class IndexController extends AbstractActionController
 
   public function gerarPdfComprovante($produtos)
   {
-
-    if (isset($produtos[0]->venda)) {
-
-      $imgLogo1 = $this->baseUrl . '/img/logo-1.jpg';
-      $imgLogo2 = $this->baseUrl . '/img/Corabras_Selo-1.jpg';
-      $html = "
-      <style type=\"text/css\">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-</style>
-      <table border=\"1\" width='100%' style='border-collapse: collapse;'>
-        <thead>
-          <tr>
-            <th colspan=\"5\"><table width='100%'>
-                <tbody>
-                  <tr>
-                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"$imgLogo1\" alt=\"Image\" width=\"150\" height=\"60\"></td>
-                    <td style='text-align:center;vertical-align:middle'><span style=\"font-weight:bold; font-size:19px\">CORABRAS TELHAS DE CONCRETO</span><br><br><span style=\"font-weight:bold\">CNPJ </span> 82.888.702/0001-18<br>Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br><span style=\"color:#3166FF; font-size:18px\">www.corabras.com.br</span></td>
-                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"$imgLogo2\" width=\"150\" height=\"112\"></td>
-                  </tr>
-                </tbody>
-                </table>
-               </th>
-          </tr>
-          <tr>
-            <th>Vendedor:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->nome_vendedor . "</td>
-            <th>Data Cadastro:</th>
-            <td>" . $produtos[0]->venda->getData_cadastro() . "</td>
-          </tr>
-          <tr>
-            <th>Nome Cliente:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->nome . "</td>
-            <th>Documento:</th>
-            <td>" . $produtos[0]->venda->cpfcnpj . "</td>
-          </tr>
-          <tr>
-            <th>Telefone do Cliente:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->telefone . "</td>
-                        <th>Contato:</th>
-            <td>" . $produtos[0]->venda->contato . "</td>
-          </tr>
-          <tr>
-            <th>Endereço:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->endereco . "</td>
-
-            <th>Cidade:</th>
-            <td>" . $produtos[0]->venda->cidade . "</td>
-          </tr>
-          <tr>
-            <th>Data Entrega:</th>
-            <td colspan=\"2\">" . $produtos[0]->venda->getData_entrega() . "</td>
-            <th>Urgente:</th>
-            <td>";
-      $html .= $produtos[0]->venda->urgente;
-      $html .= "</td>
-          </tr>";
-      // $html .=     "<tr>
-      //       <th>Tipo Nota Fiscal:</th>
-      //       <td colspan=\"2\">" . $produtos[0]->venda->tipo_nf . "</td>
-
-      //       <th>Nota Fiscal:</th>
-      //       <td>";
-      // $html .= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não";
-      // $html .= "</td>
-      //     </tr>";
-      $html .= "<tr>
-            <th>Forma de Pagamento:</th>
-            <td colspan=\"2\">";
-
-      switch ($produtos[0]->venda->forma_pagamento) {
-        case "AV":
-          $html .= "À Vista";
-          break;
-        case "CH":
-          $html .= "Cheque";
-          break;
-        case "TR":
-          $html .= "Transferência";
-          break;
-        case "OU":
-          $html .= $produtos[0]->venda->descricao_outra_forma_pagamento;
-          break;
-      }
-
-      $html .= "</td>
-            <th>Pagamento:</th>
-            <td>";
-
-      switch ($produtos[0]->venda->pagamento) {
-        case "EN":
-          $html .= "Na Entrega";
-          break;
-        case "AN":
-          $html .= "Antecipado";
-          break;
-      }
-
-      $html .= "</td>
-          </tr>
-          <tr>
-            <th>Endereço Entrega:</th>
-            <td colspan=\"4\">";
-      if ($produtos[0]->venda->envio) {
-        if ($produtos[0]->venda->local_entrega) {
-          $html .= $produtos[0]->venda->endereco;
-        } else {
-          $html .= $produtos[0]->venda->endereco_entrega;
-        }
-      } else {
-        $html .= "Retirar";
-      }
-      $html .= "</td>
-          </tr>
-
-          <tr>
-            <th >Observação:</th>
-            <td colspan=\"4\">" . $produtos[0]->venda->obs . "</td>
-          </tr>
-      <thead>
-
-      <tbody>
-        <tr>
-          <th colspan=\"5\">&nbsp;</th>
-                </tr>
-        <tr style=\"background-color: #f4f2f7;\">
-          <th>Modelo</th>
-          <th>Cor</th>
-          <th>Quantidade</th>
-          <th>Valor</th>
-          <th>Total</th>
-                </tr>";
-
-
-
-      $totalGeral = 0;
-      foreach ($produtos as $produto) {
-        $total = floatval(str_replace(',', '.', $produto->valor)) * $produto->quantidade;
-        $totalGeral += $total;
-
-        $valor = number_format($produto->valor, 2, ',', '.');
-        $valorTotal = number_format($total, 2, ',', '.');
-
-        $html .= "<tr>
-          <td>" . $produto->modelo . "</td>
-          <td>" . $produto->cor . "</td>
-          <td>" . $produto->quantidade . "</td>
-          <th>R$ " . $valor . "</td>
-          <td>R$ " . $valorTotal . "</td>
-                </tr>";
-      }
-      $valorTotalGeral = number_format($totalGeral, 2, ',', '.');
-      $html .= "<tr>
-          <th colspan=\"4\">Total</th>
-          <td>R$ " . $valorTotalGeral . "</td>
-                </tr>
-                <tr>
-            <th colspan=\"5\">
-                <table width='100%' class=\"tg\">
-                    <tbody>
-                        <tr>
-                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Banco Brasil</span><br>Agencia: <span style=\"font-weight:bold\">1840-6</span><br>C/C: <span style=\"font-weight:bold\">134 538-9</span><br>Coral &amp; Coral Ltda. <br>CNPJ 82.888.702/0001-18</th>
-                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Itaú </span><br>Agencia: <span style=\"font-weight:bold\">4336  </span><br>C/C: <span style=\"font-weight:bold\">22492-0</span><br>Coral &amp; Coral Ltda.<br>CNPJ 82.888.702/0001-18</th>
-                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Caixa</span><br>Agência: <span style=\"font-weight:bold\">2407 </span><br>Operação: <span style=\"font-weight:bold\">003</span><br>C/C: <span style=\"font-weight:bold\">3924-4</span><br>Coral &amp; Coral Ltda.  <br>CNPJ 82.888.702/0001-18</th>
-                          </tr>
-                    </tbody>
-                </table>
-               </th>
-          </tr>
-      </tbody>
-    </table>";
-
-
-      $filename = "Comprovante_cadastro";
-
-      $this->gerarPdf($html, $filename);
+    if (!isset($produtos[0]->venda)) {
+      return;
     }
+
+    $view = new ViewModel([
+      'produtos' => $produtos,
+      'venda'    => $produtos[0]->venda,
+      'imgLogo1' => $this->baseUrl . '/img/logo-1.jpg',
+      'imgLogo2' => $this->baseUrl . '/img/Corabras_Selo-1.jpg',
+    ]);
+
+    // Caminho da view: module/Application/view/application/index/comprovante.phtml
+    $view->setTemplate('application/index/comprovante');
+
+    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('ViewRenderer');
+
+    $html = $renderer->render($view);
+
+    $this->gerarPdf($html, "Comprovante_cadastro");
   }
+
 
   public function imprimirAction()
   {
@@ -999,15 +854,22 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
+
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Recibo_entrega_" . $idVenda;
 
+    // --- consulta ---
+    $db = $this->em->createQuery('
+        SELECT v, p, c 
+        FROM Application\Model\Venda v 
+        LEFT JOIN v.produtos p 
+        LEFT JOIN v.carga c 
+        WHERE v.id = :id
+    ')->setParameter('id', $idVenda);
 
-    $db = $this->em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
-
+    // --- cálculos ---
     $qtd_total = 0;
     $valor_total = 0;
     foreach ($pedido['produtos'] as $prod) {
@@ -1018,63 +880,24 @@ class IndexController extends AbstractActionController
     $valor_total_g = number_format($valor_total, 2, ',', '.');
     $valor_extenso = $this->valorExtenso($valor_total);
 
-    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+    setlocale(LC_TIME, 'pt_BR.UTF-8');
     date_default_timezone_set('America/Sao_Paulo');
 
-    $html2 = "<style type=\"text/css\">
-                .tg  {border: none;margin-top:25px;}
-                .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                  overflow:hidden;padding:5px 5px;word-break:normal;}
-                .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                  font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
-                .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle;}
-                .tg .tg-9yu8{border-color:inherit;text-align:center;vertical-align:middle;text-decoration: underline;font-size: 20px;}
-                .tg .tg-9wxp{border-color:inherit;text-align:center;vertical-align:middle;font-size:40px;}
-                .tg .tg-5wxp{border-color:inherit;text-align:center;vertical-align:middle;width: 25px;}
-                .tg .tg-c3ow{border-color:inherit;vertical-align:top}
-                .tg .tg-0pky{border-color:inherit;text-align:right;vertical-align:top}
-                .tg .tg-0lax{text-align:left;vertical-align:top}
-                table, tr, td { border: none !important;}
-                </style>";
+    // --- RENDERIZA O TEMPLATE ---
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()
+      ->get('Laminas\View\Renderer\RendererInterface');
 
-    for ($i = 0; $i < 2; $i++) {
-      $html2 .= "<table class=\"tg\" cellspacing=\"0\" cellpadding=\"0\">
-                <tbody>
-                    <tr>
-                        <td class=\"tg-5wxp\" ><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" width=\"100px\" height=\"80px\"; ></td>
-                        <td class=\"tg-9wxp\" colspan=\"2\"><span style=\"font-weight:bold\">CORABRAS</span></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-9yu8\" colspan=\"3\"><span style=\"font-weight:bold\">RECIBO</span></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-c3ow\" colspan=\"3\">Recebemos de " . $pedido['nome'] . " a quantia supra algarismada de <span style=\"font-weight:bold\">R$ " . $valor_total_g . " (" . $valor_extenso . ") </span> referente ao pagamento de telhas de concreto.</td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-9wq8\" colspan=\"2\"></td>
-                        <td class=\"tg-0pky\">" . strftime('%A, %d de %B de %Y', strtotime('today')) . "</td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"2\"><span style=\"font-weight:bold\">" . $qtd_total . " PEÇAS</span></td>
-                        <td class=\"tg-0pky\"><br><br><br><br>______________________________________________________________</td>
-                    </tr>
-                </tbody>
-            </table>";
-    }
+    $html = $renderer->render('application/index/recibo', [
+      'pedido'         => $pedido,
+      'qtd_total'      => $qtd_total,
+      'valor_total_g'  => $valor_total_g,
+      'valor_extenso'  => $valor_extenso,
+    ]);
 
-
-    //echo $html2;
-    $this->gerarPdf($html2, $filename);
+    // --- GERA O PDF ---
+    $this->gerarPdf($html, $filename);
   }
+
 
   public function sairAction()
   {

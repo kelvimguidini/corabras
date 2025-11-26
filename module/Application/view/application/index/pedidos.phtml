@@ -190,7 +190,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				<label for="limite">Exibir</label>
 
 				<select name="limite" class="form-control">
-					<option value="50" <?php if (isset($this->filtro['limite']) && $this->filtro['limite'] == 50) echo 'selected'; ?>>50 Registros</option>
+					<option value="100" <?php if (isset($this->filtro['limite']) && $this->filtro['limite'] == 100) echo 'selected'; ?>>100 Registros</option>
 					<option value="1000" <?php if (isset($this->filtro['limite']) && $this->filtro['limite'] == 1000) echo 'selected'; ?>>1000 Registros</option>
 					<option value="0" <?php if (isset($this->filtro['limite']) && $this->filtro['limite'] == 0) echo 'selected'; ?>>Todos Os Registros</option>
 				</select>
@@ -717,9 +717,12 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 <div id="actions" class="row yesprint2">
 	<div class="col-md-2 no_print">
+
 		<a onclick="anterior();" id="anterior" class="btn btn-info">
-			<< Anterior </a>
-				<a onclick="proximo();" id="next" class="btn btn-info">Próximo >></a>
+			<< Anterior</a>
+				<a onclick="proximo();" id="next" class="btn btn-info">
+					Próximo >></a>
+
 	</div>
 
 	<div class="col-md-4 col-sm-12">
@@ -809,11 +812,15 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 	});
 
 	function proximo() {
+		// prevent action if button is hidden or disabled
+		if (!$("#next").is(':visible') || $("#next").is('[disabled]')) return;
 		$("#filtros").attr("action", "<?php echo $this->url('pedidos', array('offset' => $this->filtro['next'], 'situacao' => $this->filtro['situacao'])); ?>");
 		$("#filtros").submit();
 	}
 
 	function anterior() {
+		// prevent action if button is hidden or disabled
+		if (!$("#anterior").is(':visible') || $("#anterior").is('[disabled]')) return;
 		$("#filtros").attr("action", "<?= $this->url('pedidos', array('offset' => $this->filtro['preview'], 'situacao' => $this->filtro['situacao'])); ?>");
 		$("#filtros").submit();
 	}
@@ -853,21 +860,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 	}
 	$(document).ready(function() {
 
-		// $('#saidah').timepicker({
-		// 	hourText: 'Hora',
-		// 	minuteText: 'Minutos',
-		// 	showPeriod: false,
-		// 	showPeriodLabels: false,
-		// 	interval: 60
-		// });
-
-		// $('#retornoh').timepicker({
-		// 	hourText: 'Hora',
-		// 	minuteText: 'Minutos',
-		// 	showPeriod: false,
-		// 	showPeriodLabels: false,
-
-		// });
+		const limite = <?= $filtro['limite']; ?>;
+		const offset = <?= $filtro['offset']; ?>;
+		const total = <?= $filtro['total']; ?>;
+		const next = <?= $filtro['next']; ?>;
+		const preview = <?= $filtro['preview']; ?>;
 
 		$("#carga-modal").on('shown.bs.modal', function() {
 			$.ajax({
@@ -909,14 +906,19 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 			$(this).val(currentValue);
 		});
 
-		if (<?= $this->filtro['preview']; ?> < 0) {
-			$("#anterior").attr("disabled", "true");
+		// Se mostrar todos → esconder ambos
+		if (limite == 0) {
+			$("#next, #anterior").hide();
 		}
 
-		if ("<?php if (isset($this->filtro['limite']) && $this->filtro['limite'] == 0) echo 'todos'; ?>" == "todos") {
-			$("#next").attr("disabled", "true");
-			$("#anterior").attr("disabled", "true");
+		// Primeira página
+		if (offset <= 0) {
+			$("#anterior").hide();
+		}
 
+		// Última página
+		if (next >= total) {
+			$("#next").hide();
 		}
 
 		$('#situacao').change(function() {

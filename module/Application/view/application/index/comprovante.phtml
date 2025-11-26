@@ -1,0 +1,199 @@
+<style>
+    .tg {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .tg td {
+        border: 1px solid #000;
+        font-family: Arial;
+        font-size: 14px;
+        padding: 10px 5px;
+    }
+
+    .tg th {
+        border: 1px solid #000;
+        font-family: Arial;
+        font-size: 14px;
+        padding: 10px 5px;
+    }
+
+    .tg .tg-0pky {
+        text-align: left;
+        vertical-align: top
+    }
+</style>
+
+<table border="1" width="100%" style="border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th colspan="5">
+                <table width="100%">
+                    <tr>
+                        <td width="170px">
+                            <img src="<?= $imgLogo1 ?>" width="150" height="60">
+                        </td>
+                        <td style="text-align:center;">
+                            <strong style="font-size:19px">CORABRAS TELHAS DE CONCRETO</strong><br><br>
+                            <strong>CNPJ</strong> 82.888.702/0001-18<br>
+                            Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br>
+                            <span style="color:#3166FF;font-size:18px">www.corabras.com.br</span>
+                        </td>
+                        <td width="150px">
+                            <img src="<?= $imgLogo2 ?>" width="150" height="112">
+                        </td>
+                    </tr>
+                </table>
+            </th>
+        </tr>
+
+        <tr>
+            <th>Vendedor:</th>
+            <td colspan="2"><?= $venda->nome_vendedor ?></td>
+
+            <th>Data Cadastro:</th>
+            <td><?= $venda->getData_cadastro() ?></td>
+        </tr>
+
+        <tr>
+            <th>Nome Cliente:</th>
+            <td colspan="2"><?= $venda->nome ?></td>
+
+            <th>Documento:</th>
+            <td><?= $venda->cpfcnpj ?></td>
+        </tr>
+
+        <tr>
+            <th>Telefone do Cliente:</th>
+            <td colspan="2"><?= $venda->telefone ?></td>
+
+            <th>Contato:</th>
+            <td><?= $venda->contato ?></td>
+        </tr>
+
+        <tr>
+            <th>Endereço:</th>
+            <td colspan="2"><?= $venda->endereco ?></td>
+
+            <th>Cidade:</th>
+            <td><?= $venda->cidade ?></td>
+        </tr>
+
+        <tr>
+            <th>Data Entrega:</th>
+            <td colspan="2"><?= $venda->getData_entrega() ?></td>
+
+            <th>Urgente:</th>
+            <td><?= $venda->urgente ?></td>
+        </tr>
+
+        <tr>
+            <th>Tipo Nota Fiscal:</th>
+            <td colspan="2"><?= $produtos[0]->venda->tipo_nf ?></td>
+
+            <th>Nota Fiscal:</th>
+            <td><?= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não" ?></td>
+        </tr>
+
+        <tr>
+            <th>Forma de Pagamento:</th>
+            <td colspan="2">
+                <?php
+                switch ($venda->forma_pagamento) {
+                    case "AV":
+                        echo "À Vista";
+                        break;
+                    case "CH":
+                        echo "Cheque";
+                        break;
+                    case "TR":
+                        echo "Transferência";
+                        break;
+                    case "OU":
+                        echo $venda->descricao_outra_forma_pagamento;
+                        break;
+                }
+                ?>
+            </td>
+
+            <th>Pagamento:</th>
+            <td>
+                <?php
+                switch ($venda->pagamento) {
+                    case "EN":
+                        echo "Na Entrega";
+                        break;
+                    case "AN":
+                        echo "Antecipado";
+                        break;
+                }
+                ?>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Endereço Entrega:</th>
+            <td colspan="4">
+                <?php
+                if ($venda->envio) {
+                    echo $venda->local_entrega ? $venda->endereco : $venda->endereco_entrega;
+                } else {
+                    echo "Retirar";
+                }
+                ?>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Observação:</th>
+            <td colspan="4"><?= $venda->obs ?></td>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <th colspan="5">&nbsp;</th>
+        </tr>
+
+        <tr style="background:#f4f2f7;">
+            <th>Modelo</th>
+            <th>Cor</th>
+            <th>Quantidade</th>
+            <th>Valor</th>
+            <th>Total</th>
+        </tr>
+
+        <?php
+        $totalGeral = 0;
+        foreach ($produtos as $p):
+            $total = floatval(str_replace(',', '.', $p->valor)) * $p->quantidade;
+            $totalGeral += $total;
+        ?>
+            <tr>
+                <td><?= $p->modelo ?></td>
+                <td><?= $p->cor ?></td>
+                <td><?= $p->quantidade ?></td>
+                <td>R$ <?= number_format($p->valor, 2, ',', '.') ?></td>
+                <td>R$ <?= number_format($total, 2, ',', '.') ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+        <tr>
+            <th colspan="4">Total</th>
+            <td>R$ <?= number_format($totalGeral, 2, ',', '.') ?></td>
+        </tr>
+
+        <tr>
+            <th colspan="5">
+                <table width="100%" class="tg">
+                    <tr>
+                        <th class="tg-0pky">Banco Brasil<br>Agência: <b>1840-6</b><br>C/C: <b>134 538-9</b><br>Coral & Coral Ltda.<br>CNPJ 82.888.702/0001-18</th>
+                        <th class="tg-0pky">Itaú<br>Agência: <b>4336</b><br>C/C: <b>22492-0</b><br>Coral & Coral Ltda.<br>CNPJ 82.888.702/0001-18</th>
+                        <th class="tg-0pky">Caixa<br>Agência: <b>2407</b><br>Operação: <b>003</b><br>C/C: <b>3924-4</b><br>Coral & Coral Ltda.<br>CNPJ 82.888.702/0001-18</th>
+                    </tr>
+                </table>
+            </th>
+        </tr>
+
+    </tbody>
+</table>

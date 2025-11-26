@@ -1,0 +1,50 @@
+<style>
+    /* seu CSS aqui */
+</style>
+
+<?php for ($i = 0; $i < 2; $i++): ?>
+
+    <table class="tg">
+        <tr>
+            <td class="tg-5wxp">
+                <img src="<?= $this->basePath('/img/corabras.png') ?>" width="100" height="80">
+            </td>
+            <td class="tg-9wxp" colspan="2"><strong>CORABRAS</strong></td>
+        </tr>
+
+        <tr>
+            <td colspan="3"><br><br></td>
+        </tr>
+
+        <tr>
+            <td class="tg-9yu8" colspan="3"><strong>RECIBO</strong></td>
+        </tr>
+
+        <tr>
+            <td colspan="3"><br><br></td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                Recebemos de <?= $pedido['nome'] ?> a quantia supra algarismada de
+                <strong>R$ <?= $valor_total_g ?> (<?= $valor_extenso ?>)</strong>
+                referente ao pagamento de telhas de concreto.
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3"><br><br></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"></td>
+            <td><?= strftime('%A, %d de %B de %Y', strtotime('today')) ?></td>
+        </tr>
+
+        <tr>
+            <td><strong><?= $qtd_total ?> PEÇAS</strong></td>
+            <td colspan="2"><br><br><br><br>______________________________________________________________</td>
+        </tr>
+    </table>
+
+<?php endfor; ?>
