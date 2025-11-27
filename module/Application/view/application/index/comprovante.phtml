@@ -88,11 +88,8 @@
         </tr>
 
         <tr>
-            <th>Tipo Nota Fiscal:</th>
-            <td colspan="2"><?= $produtos[0]->venda->tipo_nf ?></td>
-
-            <th>Nota Fiscal:</th>
-            <td><?= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não" ?></td>
+            <th>CÓDIGO:</th>
+            <td colspan="4"><?= $produtos[0]->venda->tipo_nf = 'No' ? 'PA01' : 'PB02' ?></td>
         </tr>
 
         <tr>
