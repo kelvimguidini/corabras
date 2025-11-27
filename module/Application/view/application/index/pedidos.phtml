@@ -154,6 +154,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					<option value="Max" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max') echo 'selected'; ?>>Max</option>
 					<option value="Coppo Venetto" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo Venetto') echo 'selected'; ?>>Coppo Venetto</option>
 					<option value="Super Max RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Super Max RESINADA') echo 'selected'; ?>>Super Max RESINADA</option>
+					<option value="Plus RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Plus RESINADA') echo 'selected'; ?>>Plus RESINADA</option>
 					<option value="Max RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Max RESINADA') echo 'selected'; ?>>max RESINADA</option>
 					<option value="Coppo RESINADA" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Coppo RESINADA') echo 'selected'; ?>>Coppo RESINADA</option>
 					<option value="Cumeeira" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Cumeeira') echo 'selected'; ?>>Cumeeira</option>
@@ -443,6 +444,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
 											case 'Plus':
+											case 'Plus RESINADA':
 												$qtdPlus += $p->getQuantidade();
 												$cor = $cor == "" ? $p->getCor() : $cor;
 												break;
