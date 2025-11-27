@@ -88,9 +88,10 @@
         </tr>
 
         <tr>
-            <th>CÓDIGO:</th>
-            <td colspan="4"><?= $produtos[0]->venda->tipo_nf = 'No' ? 'PA01' : 'PB02' ?></td>
+            <th>Código:</th>
+            <td colspan="4"><?= $produtos[0]->venda->tipo_nf == 'No' ? 'PA01' : 'PB02' ?></td>
         </tr>
+
 
         <tr>
             <th>Forma de Pagamento:</th>
