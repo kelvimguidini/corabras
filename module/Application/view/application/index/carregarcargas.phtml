@@ -17,18 +17,18 @@ if (isset($this->result) && count($this->result) > 0) { ?>
                 <tr>
                     <th>Data</th>
                     <th>Saída</th>
-                    <th>Retorno</th>
                     <th>Motorista</th>
                     <th>Situação</th>
                 </tr>
             </thead>
-            <tbody> <?php foreach ($this->lista as $f): ?> <tr>
+            <tbody>
+                <?php foreach ($this->lista as $f): ?> <tr>
                         <td><?php echo $f->getData(); ?></td>
                         <td><?php echo $f->getSaida(); ?></td>
-                        <td><?php echo $f->getRetorno(); ?></td>
                         <td><?php echo $f->getMotorista(); ?></td>
                         <td><?php echo $f->getSituacao(); ?></td>
-                    </tr> <?php endforeach; ?> </tbody>
+                    </tr> <?php endforeach; ?>
+            </tbody>
         </table>
     </div>
 </div><!-- /#list -->

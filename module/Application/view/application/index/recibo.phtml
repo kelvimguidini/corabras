@@ -1,5 +1,7 @@
 <style>
-    /* seu CSS aqui */
+    .right {
+        text-align: right;
+    }
 </style>
 
 <?php for ($i = 0; $i < 2; $i++): ?>
@@ -35,10 +37,21 @@
         <tr>
             <td colspan="3"><br><br></td>
         </tr>
+        <?php
+        setlocale(LC_TIME, 'pt_BR.UTF-8');
+        date_default_timezone_set('America/Sao_Paulo');
+        $fmt = new IntlDateFormatter(
+            'pt_BR',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            'America/Sao_Paulo',
+            IntlDateFormatter::GREGORIAN,
+            "EEEE, dd 'de' MMMM 'de' yyyy"
+        );
+        ?>
 
         <tr>
-            <td colspan="2"></td>
-            <td><?= strftime('%A, %d de %B de %Y', strtotime('today')) ?></td>
+            <td colspan="3" class="right"><?= $fmt->format(new DateTime()) ?></td>
         </tr>
 
         <tr>

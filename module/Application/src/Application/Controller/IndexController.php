@@ -793,8 +793,7 @@ class IndexController extends AbstractActionController
     $valor_total_g = number_format($valor_total, 2, ',', '.');
     $valor_extenso = $this->valorExtenso($valor_total);
 
-    setlocale(LC_TIME, 'pt_BR.UTF-8');
-    date_default_timezone_set('America/Sao_Paulo');
+
 
     // --- RENDERIZA O TEMPLATE ---
     $renderer = $this->getEvent()->getApplication()->getServiceManager()
@@ -885,6 +884,9 @@ class IndexController extends AbstractActionController
       'isHtml5ParserEnabled' => true,
     ]);
 
+    $dompdf->set_option('isPdfObjectStream', false);
+    $dompdf->set_option('isPdfCompressionEnabled', false);
+    $dompdf->set_option("pdf_version", "1.4");
     $dompdf->set_option('isRemoteEnabled', true);
 
     $dompdf->loadHtml($html);
