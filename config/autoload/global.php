@@ -57,11 +57,21 @@ return [
             'orm_default' => [
                 'driverClass' => \Doctrine\DBAL\Driver\PDO\MySQL\Driver::class,
                 'params' => [
-                    'host' => '69.6.212.253',
-                    'port' => '3306',
-                    'user' => 'fddd5815_corabras',
-                    'password' => 'Corabras*2020',
-                    'dbname' => 'fddd5815_corabras'
+                    // --- Banco Produção cPanel (Blocos) ---
+                    'host'     => 'localhost',
+                    'port'     => '3306',
+                    'user'     => 'fddd5815_blocos',
+                    'password' => '3{Vg2J9%5q6O3UzJ',
+                    'dbname'   => 'fddd5815_blocos',
+                    'charset'  => 'utf8',
+
+                    // --- Host alternativo caso conexão seja externa ---
+                    // 'host' => '69.6.212.253',
+
+                    // --- Banco Anterior (Telhas) ---
+                    // 'user'     => 'fddd5815_corabras',
+                    // 'password' => 'Corabras*2020',
+                    // 'dbname'   => 'fddd5815_corabras',
                 ]
             ]
         ],
