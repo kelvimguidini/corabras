@@ -145,7 +145,11 @@ class IndexController extends AbstractActionController
             $produto = new \Application\Model\Produto();
 
             $produto->setModelo($request->getPost("modelo_" . $i));
-            $produto->setCor($request->getPost("cor_" . $i));
+            $medidaPost = $request->getPost("medida_" . $i);
+            if ($medidaPost === null) {
+              $medidaPost = $request->getPost("cor_" . $i);
+            }
+            $produto->setMedida($medidaPost);
             $produto->setquantidade($request->getPost("quantidade_" . $i));
             $produto->setValor($request->getPost("valor_" . $i));
             $produto->setVenda($venda);
@@ -414,7 +418,7 @@ class IndexController extends AbstractActionController
           $produto = new \Application\Model\Produto();
 
           $produto->setModelo($prodOld->getModelo());
-          $produto->setCor($prodOld->getCor());
+          $produto->setMedida($prodOld->getMedida());
           $produto->setQuantidade($qtd);
           $produto->setValor($prodOld->getValor());
           $produto->setVenda($venda);

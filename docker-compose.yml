@@ -1,23 +1,40 @@
 version: '3.8'
 
 services:
+  db:
+    image: mariadb:10.5
+    container_name: blocos_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fddd5815_corabras
+      MYSQL_USER: fddd5815_corabras
+      MYSQL_PASSWORD: Corabras*2020
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
   app:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: app
+    container_name: blocos_app
     volumes:
       - .:/var/www/html
+      - /var/www/html/vendor
     expose:
       - "9003:9003"
     environment:
       XDEBUG_MODE: debug,develop
       XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003 start_with_request=yes
       PHP_IDE_CONFIG: serverName=zf2
+    depends_on:
+      - db
 
   nginx:
     image: nginx:latest
-    container_name: zf2_nginx
+    container_name: blocos_nginx
     ports:
       - "9000:80"
     volumes:
@@ -28,3 +45,4 @@ services:
 
 volumes:
   db_data:
+

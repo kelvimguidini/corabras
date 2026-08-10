@@ -26,8 +26,8 @@ jobs:
         run: |
           composer install --no-dev --prefer-dist --optimize-autoloader
 
-      # 4 — Upload do APP (exceto public/)
-      - name: Upload APP (backend)
+      # 4 — Upload do Projeto via FTP para o subdomínio blocos.corabras.frii.site
+      - name: Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -35,18 +35,25 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftp
-          timeout: 30000
-          local-dir: ./   
-          server-dir: /    # raiz do projeto
+          timeout: 60000
+          local-dir: ./
+          server-dir: /blocos.corabras.frii.site/
           exclude: |
             **/.git**
+            **/.git/**
+            **/.github/**
             **/node_modules/**
             **/tests/**
             **/storage/**
+            **/public/storage/**
             **/tmp/**
             **/.env**
             **vite.config.js**
             **nginx.conf**
-            **.htaccess**
-            **/public/.htaccess**
-            **/vendor/**
+            **docker-compose.yml**
+            **Dockerfile**
+            **docker/**
+            **.dockerignore**
+            **blocos.code-workspace**
+            **/config/autoload/*.local.php
+            **/config/autoload/doctrine.local.php

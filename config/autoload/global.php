@@ -79,7 +79,7 @@ return [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
                 'paths' => [
-                    __DIR__ . "/src/Application/Model"
+                    __DIR__ . "/../../module/Application/src/Application/Model"
                 ],
             ],
             'orm_default' => [

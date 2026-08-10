@@ -34,7 +34,7 @@
                             <img src="<?= $imgLogo1 ?>" width="150" height="60">
                         </td>
                         <td style="text-align:center;">
-                            <strong style="font-size:19px">CORABRAS TELHAS DE CONCRETO</strong><br><br>
+                            <strong style="font-size:19px">CORABRAS BLOCOS DE CONCRETO</strong><br><br>
                             <strong>CNPJ</strong> 82.888.702/0001-18<br>
                             Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br>
                             <span style="color:#3166FF;font-size:18px">www.corabras.com.br</span>
@@ -154,8 +154,8 @@
         </tr>
 
         <tr style="background:#f4f2f7;">
-            <th>Modelo</th>
-            <th>Cor</th>
+            <th>Produto</th>
+            <th>Medida</th>
             <th>Quantidade</th>
             <th>Valor</th>
             <th>Total</th>
@@ -164,14 +164,14 @@
         <?php
         $totalGeral = 0;
         foreach ($produtos as $p):
-            $total = floatval(str_replace(',', '.', $p->valor)) * $p->quantidade;
+            $total = floatval(str_replace(',', '.', $p->getValor())) * $p->getQuantidade();
             $totalGeral += $total;
         ?>
             <tr>
-                <td><?= $p->modelo ?></td>
-                <td><?= $p->cor ?></td>
-                <td><?= $p->quantidade ?></td>
-                <td>R$ <?= number_format($p->valor, 2, ',', '.') ?></td>
+                <td><?= $p->getModelo() ?></td>
+                <td><?= $p->getMedida() ?></td>
+                <td><?= $p->getQuantidade() ?></td>
+                <td>R$ <?= number_format(floatval(str_replace(',', '.', $p->getValor())), 2, ',', '.') ?></td>
                 <td>R$ <?= number_format($total, 2, ',', '.') ?></td>
             </tr>
         <?php endforeach; ?>

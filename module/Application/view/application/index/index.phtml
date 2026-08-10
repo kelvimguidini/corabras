@@ -1,4 +1,4 @@
-<h3 class="page-header">Cadastro de vendas</h3>
+<h3 class="page-header">Cadastro de Vendas <span class="label label-primary" style="font-size: 14px; vertical-align: middle; margin-left: 10px;">BLOCOS DE CONCRETO</span></h3>
 
 <div class="alert alert-info">
   <span>Ao salvar, será feito o downlaod de um PDF com os ítens gravados.</span>
@@ -190,41 +190,42 @@
           <hr>
 
           <div class="form-group col-md-3">
-            <label for="modelo_<?php echo $p->getId(); ?>">Modelo</label>
+            <label for="modelo_<?php echo $p->getId(); ?>">Produto</label>
             <select class="form-control" name="modelo_<?php echo $p->getId(); ?>">
               <option value="" <?php ($p->getModelo() == '') ? 'Selected' : ''; ?>>- Selecione -</option>
-              <option value="Super Max" <?php if ($p->getModelo() == 'Super Max') echo 'selected'; ?>>Super Max</option>
-              <option value="Plus" <?php if ($p->getModelo() == 'Plus') echo 'selected'; ?>>Plus</option>
-              <option value="Max" <?php if ($p->getModelo() == 'Max') echo 'selected'; ?>>Max</option>
-              <option value="Coppo Venetto" <?php if ($p->getModelo() == 'Coppo Venetto') echo 'selected'; ?>>Coppo Venetto</option>
-              <option value="Super Max RESINADA" <?php if ($p->getModelo() == 'Super Max RESINADA') echo 'selected'; ?>>Super Max RESINADA</option>
-              <option value="Plus RESINADA" <?php if ($p->getModelo() == 'Plus RESINADA') echo 'selected'; ?>>Plus RESINADA</option>
-              <option value="Max RESINADA" <?php if ($p->getModelo() == 'Max RESINADA') echo 'selected'; ?>>Max RESINADA</option>
-              <option value="Coppo RESINADA" <?php if ($p->getModelo() == 'Coppo RESINADA') echo 'selected'; ?>>Coppo RESINADA</option>
-              <option value="Cumeeira" <?php if ($p->getModelo() == 'Cumeeira') echo 'selected'; ?>>Cumeeira</option>
-              <option value="Inicial" <?php if ($p->getModelo() == 'Inicial') echo 'selected'; ?>>Inicial</option>
-              <option value="03 vias" <?php if ($p->getModelo() == '03 vias') echo 'selected'; ?>>03 vias</option>
-              <option value="04 vias" <?php if ($p->getModelo() == '04 vias') echo 'selected'; ?>>04 vias</option>
-              <option value="Capa Lateral" <?php if ($p->getModelo() == 'Capa Lateral') echo 'selected'; ?>>Capa Lateral</option>
-              <option value="Policarbonato Max" <?php if ($p->getModelo() == 'Policarbonato Max') echo 'selected'; ?>>Policarbonato Max</option>
-              <option value="Policabornato Coppo" <?php if ($p->getModelo() == 'Policabornato Coppo') echo 'selected'; ?>>Policabornato Coppo</option>
-              <option value="Policabornato Fit" <?php if ($p->getModelo() == 'Policabornato Fit') echo 'selected'; ?>>Policabornato Fit</option>
-              <option value="Manta Termica" <?php if ($p->getModelo() == 'Manta Termica') echo 'selected'; ?>>Manta Termica</option>
+              <option value="Bloco B" <?php if ($p->getModelo() == 'Bloco B') echo 'selected'; ?>>Bloco B</option>
+              <option value="Bloco C" <?php if ($p->getModelo() == 'Bloco C') echo 'selected'; ?>>Bloco C</option>
+              <option value="1/2 Bloco" <?php if ($p->getModelo() == '1/2 Bloco') echo 'selected'; ?>>1/2 Bloco</option>
+              <option value="Canaleta" <?php if ($p->getModelo() == 'Canaleta') echo 'selected'; ?>>Canaleta</option>
+              <option value="Compensador" <?php if ($p->getModelo() == 'Compensador') echo 'selected'; ?>>Compensador</option>
+              <option value="Pirulito" <?php if ($p->getModelo() == 'Pirulito') echo 'selected'; ?>>Pirulito</option>
+              <option value="Paver" <?php if ($p->getModelo() == 'Paver') echo 'selected'; ?>>Paver</option>
               <option value="Frete" <?php if ($p->getModelo() == 'Frete') echo 'selected'; ?>>Frete</option>
             </select>
           </div>
 
           <div class="form-group col-md-2">
-            <label for="cor_<?php echo $p->getId(); ?>">Cor</label>
+            <label for="cor_<?php echo $p->getId(); ?>">Medida</label>
             <select class="form-control" name="cor_<?php echo $p->getId(); ?>">
-              <option value="" <?php echo ($p->getCor() == '') ? 'Selected' : ''; ?>>- Selecione -</option>
-              <option value="Cinza Pérola" <?php echo ($p->getCor() == 'Cinza Pérola') ? 'Selected' : ''; ?>>Cinza Pérola</option>
-              <option value="Grafite" <?php echo ($p->getCor() == 'Grafite') ? 'Selected' : ''; ?>>Grafite</option>
-              <option value="Ocre" <?php echo ($p->getCor() == 'Ocre') ? 'Selected' : ''; ?>>Ocre</option>
-              <option value="Marrom" <?php echo ($p->getCor() == 'Marrom') ? 'Selected' : ''; ?>>Marrom</option>
-              <option value="Mostarda" <?php echo ($p->getCor() == 'Mostarda') ? 'Selected' : ''; ?>>Mostarda</option>
-              <option value="Vermelha" <?php echo ($p->getCor() == 'Vermelha') ? 'Selected' : ''; ?>>Vermelha</option>
-              <option value="Salmão" <?php echo ($p->getCor() == 'Salmão') ? 'Selected' : ''; ?>>Salmão</option>
+              <option value="" <?php echo ($p->getMedida() == '') ? 'Selected' : ''; ?>>- Selecione -</option>
+              <option value="09x19x19" <?php echo ($p->getMedida() == '09x19x19') ? 'Selected' : ''; ?>>09x19x19</option>
+              <option value="09x19x39" <?php echo ($p->getMedida() == '09x19x39') ? 'Selected' : ''; ?>>09x19x39</option>
+              <option value="11,5x19x04" <?php echo ($p->getMedida() == '11,5x19x04') ? 'Selected' : ''; ?>>11,5x19x04</option>
+              <option value="11,5x19x11,5" <?php echo ($p->getMedida() == '11,5x19x11,5') ? 'Selected' : ''; ?>>11,5x19x11,5</option>
+              <option value="11,5x19x19" <?php echo ($p->getMedida() == '11,5x19x19') ? 'Selected' : ''; ?>>11,5x19x19</option>
+              <option value="11,5x19x24" <?php echo ($p->getMedida() == '11,5x19x24') ? 'Selected' : ''; ?>>11,5x19x24</option>
+              <option value="11,5x19x36,5" <?php echo ($p->getMedida() == '11,5x19x36,5') ? 'Selected' : ''; ?>>11,5x19x36,5</option>
+              <option value="11,5x19x39" style="font-weight: bold;" <?php echo ($p->getMedida() == '11,5x19x39') ? 'Selected' : ''; ?>>11,5x19x39</option>
+              <option value="14x19x19" <?php echo ($p->getMedida() == '14x19x19') ? 'Selected' : ''; ?>>14x19x19</option>
+              <option value="14x19x34" <?php echo ($p->getMedida() == '14x19x34') ? 'Selected' : ''; ?>>14x19x34</option>
+              <option value="14x19x39" style="font-weight: bold;" <?php echo ($p->getMedida() == '14x19x39') ? 'Selected' : ''; ?>>14x19x39</option>
+              <option value="14x19x54" <?php echo ($p->getMedida() == '14x19x54') ? 'Selected' : ''; ?>>14x19x54</option>
+              <option value="19x19x19" <?php echo ($p->getMedida() == '19x19x19') ? 'Selected' : ''; ?>>19x19x19</option>
+              <option value="19x19x39" <?php echo ($p->getMedida() == '19x19x39') ? 'Selected' : ''; ?>>19x19x39</option>
+              <option value="Retangular 6" <?php echo ($p->getMedida() == 'Retangular 6') ? 'Selected' : ''; ?>>Retangular 6</option>
+              <option value="Retangular 8" <?php echo ($p->getMedida() == 'Retangular 8') ? 'Selected' : ''; ?>>Retangular 8</option>
+              <option value="16 Faces 6" <?php echo ($p->getMedida() == '16 Faces 6') ? 'Selected' : ''; ?>>16 Faces 6</option>
+              <option value="16 Faces 8" <?php echo ($p->getMedida() == '16 Faces 8') ? 'Selected' : ''; ?>>16 Faces 8</option>
             </select>
           </div>
 
@@ -348,57 +349,58 @@
       row.append(inputHidden);
 
 
-      //MODELO
+      //PRODUTO (MODELO)
       var modelo = $('<div>').addClass('form-group col-md-3');
       var labelModelo = $('<label>').attr({
         for: 'modelo_' + qtd_produtos
-      }).text('Modelo');
+      }).text('Produto');
       var selectModelo = $('<select>').addClass('form-control').attr({
           name: 'modelo_' + qtd_produtos,
           id: 'cientes_id',
           required: true
         })
         .append('<option value="">- Selecione -</option>')
-        .append('<option value="Super Max">Super Max</option>')
-        .append('<option value="Plus">Plus</option>')
-        .append('<option value="Max">Max</option>')
-        .append('<option value="Coppo Venetto">Coppo Venetto</option>')
-        .append('<option value="Super Max RESINADA">Super Max RESINADA</option>')
-        .append('<option value="Plus RESINADA">Plus RESINADA</option>')
-        .append('<option value="Max RESINADA">Max RESINADA</option>')
-        .append('<option value="Coppo RESINADA">Coppo RESINADA</option>')
-        .append('<option value="Cumeeira">Cumeeira</option>')
-        .append('<option value="Inicial">Inicial</option>')
-        .append('<option value="03 vias">03 vias</option>')
-        .append('<option value="04 vias">04 vias</option>')
-        .append('<option value="Capa Lateral">Capa Lateral</option>')
-        .append('<option value="Policarbonato Max">Policarbonato Max</option>')
-        .append('<option value="Policabornato Coppo">Policabornato Coppo</option>')
-        .append('<option value="Policabornato Fit">Policabornato Fit</option>')
-        .append('<option value="Manta Termica">Manta Termica</option>')
+        .append('<option value="Bloco B">Bloco B</option>')
+        .append('<option value="Bloco C">Bloco C</option>')
+        .append('<option value="1/2 Bloco">1/2 Bloco</option>')
+        .append('<option value="Canaleta">Canaleta</option>')
+        .append('<option value="Compensador">Compensador</option>')
+        .append('<option value="Pirulito">Pirulito</option>')
+        .append('<option value="Paver">Paver</option>')
         .append('<option value="Frete">Frete</option>');
 
       modelo.append(labelModelo);
       modelo.append(selectModelo);
       row.append(modelo);
 
-      //COR
+      //MEDIDA
       var cor = $('<div>').addClass('form-group col-md-2');
       var labelCor = $('<label>').attr({
         for: 'cor_' + qtd_produtos
-      }).text('Cor');
+      }).text('Medida');
       var selectCor = $('<select>').addClass('form-control').attr({
           name: 'cor_' + qtd_produtos,
           required: true
         })
         .append('<option value="" >- Selecione -</option>')
-        .append('<option value="Cinza Pérola">Cinza Pérola</option>')
-        .append('<option value="Grafite">Grafite</option>')
-        .append('<option value="Ocre">Ocre</option>')
-        .append('<option value="Marrom">Marrom</option>')
-        .append('<option value="Mostarda">Mostarda</option>')
-        .append('<option value="Vermelha">Vermelha</option>')
-        .append('<option value="Salmão">Salmão</option>')
+        .append('<option value="09x19x19">09x19x19</option>')
+        .append('<option value="09x19x39">09x19x39</option>')
+        .append('<option value="11,5x19x04">11,5x19x04</option>')
+        .append('<option value="11,5x19x11,5">11,5x19x11,5</option>')
+        .append('<option value="11,5x19x19">11,5x19x19</option>')
+        .append('<option value="11,5x19x24">11,5x19x24</option>')
+        .append('<option value="11,5x19x36,5">11,5x19x36,5</option>')
+        .append('<option value="11,5x19x39" style="font-weight: bold;">11,5x19x39</option>')
+        .append('<option value="14x19x19">14x19x19</option>')
+        .append('<option value="14x19x34">14x19x34</option>')
+        .append('<option value="14x19x39" style="font-weight: bold;">14x19x39</option>')
+        .append('<option value="14x19x54">14x19x54</option>')
+        .append('<option value="19x19x19">19x19x19</option>')
+        .append('<option value="19x19x39">19x19x39</option>')
+        .append('<option value="Retangular 6">Retangular 6</option>')
+        .append('<option value="Retangular 8">Retangular 8</option>')
+        .append('<option value="16 Faces 6">16 Faces 6</option>')
+        .append('<option value="16 Faces 8">16 Faces 8</option>');
 
       cor.append(labelCor);
       cor.append(selectCor);

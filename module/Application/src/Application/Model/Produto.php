@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="Produto")
  */
 class Produto
 {
@@ -18,14 +19,14 @@ class Produto
     public $id;
 
     /**
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string", length=50)
      */
     public $modelo;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
-    public $cor;
+    public $medida;
 
     /**
      * @ORM\Column(type="integer")
@@ -33,14 +34,14 @@ class Produto
     public $quantidade;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     public $valor;
 
     /**
      * @var Venda
-     * @ORM\ManyToOne(targetEntity="Application\Model\Venda", inversedBy="id_venda")
-     * @ORM\JoinColumn(name="id_venda")
+     * @ORM\ManyToOne(targetEntity="Application\Model\Venda", inversedBy="produtos")
+     * @ORM\JoinColumn(name="id_venda", referencedColumnName="id")
      */
     public $venda;
 
@@ -74,14 +75,30 @@ class Produto
         $this->modelo = $modelo;
     }
 
-    public function getCor()
+    public function getMedida()
     {
-        return $this->cor;
+        return $this->medida;
     }
 
+    public function setMedida($medida)
+    {
+        $this->medida = $medida;
+    }
+
+    /**
+     * Alias for backward compatibility
+     */
+    public function getCor()
+    {
+        return $this->medida;
+    }
+
+    /**
+     * Alias for backward compatibility
+     */
     public function setCor($cor)
     {
-        $this->cor = $cor;
+        $this->medida = $cor;
     }
 
     public function getQuantidade()
@@ -98,14 +115,13 @@ class Produto
     {
         $source = array('.');
         $replace = array(',');
-        return str_replace($source, $replace, $this->valor);
+        return str_replace($source, $replace, (string)$this->valor);
     }
 
     public function setValor($valor)
     {
         $source = array('.', ',');
         $replace = array('', '.');
-        //         \Laminas\Debug\Debug::dump(str_replace($source, $replace, $valor));
-        $this->valor = str_replace($source, $replace, $valor);
+        $this->valor = str_replace($source, $replace, (string)$valor);
     }
 }

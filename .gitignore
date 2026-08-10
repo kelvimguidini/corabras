@@ -6,6 +6,10 @@ vendor/
 # Binary gettext files
 *.mo
 
+# Local config
+config/autoload/*.local.php
+blocos.code-workspace
+
 # Data
 data/logs/
 data/cache/
@@ -23,3 +27,4 @@ data/DoctrineORMModule/cache/
 demos/
 extras/documentation
 log
+

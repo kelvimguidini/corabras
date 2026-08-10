@@ -1,4 +1,4 @@
-﻿<?= $this->doctype() ?>
+<?= $this->doctype() ?>
 <?php
 $this->plugin('basePath')->setBasePath('');
 ?>
@@ -6,7 +6,7 @@ $this->plugin('basePath')->setBasePath('');
 
 <head>
     <meta charset="utf-8">
-    <?= $this->headTitle('CORABRAS - Cadastro de vendas')->setSeparator(' - ')->setAutoEscape(false) ?>
+    <?= $this->headTitle('CORABRAS BLOCOS - Cadastro de vendas')->setSeparator(' - ')->setAutoEscape(false) ?>
 
     <?= $this->headMeta()
         ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -50,7 +50,7 @@ $this->plugin('basePath')->setBasePath('');
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?= $this->url('home'); ?>">CORABRAS</a>
+                <a class="navbar-brand" href="<?= $this->url('home'); ?>">CORABRAS <span class="label label-warning" style="font-size: 11px; vertical-align: middle; margin-left: 5px;">BLOCOS</span></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
