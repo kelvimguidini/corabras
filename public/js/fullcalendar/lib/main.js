@@ -378,591 +378,117 @@ var FullCalendar = (function (exports) {
     }
     function compareByFieldSpec(obj0, obj1, fieldSpec) {
         if (fieldSpec.func) {
-            return fieldSpec.func(obj0, obj1);
-        }
-        return flexibleCompare(obj0[fieldSpec.field], obj1[fieldSpec.field])
-            * (fieldSpec.order || 1);
-    }
-    function flexibleCompare(a, b) {
-        if (!a && !b) {
-            return 0;
-        }
-        if (b == null) {
-            return -1;
-        }
-        if (a == null) {
-            return 1;
-        }
-        if (typeof a === 'string' || typeof b === 'string') {
-            return String(a).localeCompare(String(b));
-        }
-        return a - b;
-    }
-    /* String Utilities
-    ----------------------------------------------------------------------------------------------------------------------*/
-    function padStart(val, len) {
-        var s = String(val);
-        return '000'.substr(0, len - s.length) + s;
-    }
-    /* Number Utilities
-    ----------------------------------------------------------------------------------------------------------------------*/
-    function compareNumbers(a, b) {
-        return a - b;
-    }
-    function isInt(n) {
-        return n % 1 === 0;
-    }
-    /* FC-specific DOM dimension stuff
-    ----------------------------------------------------------------------------------------------------------------------*/
-    function computeSmallestCellWidth(cellEl) {
-        var allWidthEl = cellEl.querySelector('.fc-scrollgrid-shrink-frame');
-        var contentWidthEl = cellEl.querySelector('.fc-scrollgrid-shrink-cushion');
-        if (!allWidthEl) {
-            throw new Error('needs fc-scrollgrid-shrink-frame className'); // TODO: use const
-        }
-        if (!contentWidthEl) {
-            throw new Error('needs fc-scrollgrid-shrink-cushion className');
-        }
-        return cellEl.getBoundingClientRect().width - allWidthEl.getBoundingClientRect().width + // the cell padding+border
-            contentWidthEl.getBoundingClientRect().width;
-    }
-
-    var DAY_IDS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    // Adding
-    function addWeeks(m, n) {
-        var a = dateToUtcArray(m);
-        a[2] += n * 7;
-        return arrayToUtcDate(a);
-    }
-    function addDays(m, n) {
-        var a = dateToUtcArray(m);
-        a[2] += n;
-        return arrayToUtcDate(a);
-    }
-    function addMs(m, n) {
-        var a = dateToUtcArray(m);
-        a[6] += n;
-        return arrayToUtcDate(a);
-    }
-    // Diffing (all return floats)
-    // TODO: why not use ranges?
-    function diffWeeks(m0, m1) {
-        return diffDays(m0, m1) / 7;
-    }
-    function diffDays(m0, m1) {
-        return (m1.valueOf() - m0.valueOf()) / (1000 * 60 * 60 * 24);
-    }
-    function diffHours(m0, m1) {
-        return (m1.valueOf() - m0.valueOf()) / (1000 * 60 * 60);
-    }
-    function diffMinutes(m0, m1) {
-        return (m1.valueOf() - m0.valueOf()) / (1000 * 60);
-    }
-    function diffSeconds(m0, m1) {
-        return (m1.valueOf() - m0.valueOf()) / 1000;
-    }
-    function diffDayAndTime(m0, m1) {
-        var m0day = startOfDay(m0);
-        var m1day = startOfDay(m1);
-        return {
-            years: 0,
-            months: 0,
-            days: Math.round(diffDays(m0day, m1day)),
-            milliseconds: (m1.valueOf() - m1day.valueOf()) - (m0.valueOf() - m0day.valueOf()),
-        };
-    }
-    // Diffing Whole Units
-    function diffWholeWeeks(m0, m1) {
-        var d = diffWholeDays(m0, m1);
-        if (d !== null && d % 7 === 0) {
-            return d / 7;
-        }
-        return null;
-    }
-    function diffWholeDays(m0, m1) {
-        if (timeAsMs(m0) === timeAsMs(m1)) {
-            return Math.round(diffDays(m0, m1));
-        }
-        return null;
-    }
-    // Start-Of
-    function startOfDay(m) {
-        return arrayToUtcDate([
-            m.getUTCFullYear(),
-            m.getUTCMonth(),
-            m.getUTCDate(),
-        ]);
-    }
-    function startOfHour(m) {
-        return arrayToUtcDate([
-            m.getUTCFullYear(),
-            m.getUTCMonth(),
-            m.getUTCDate(),
-            m.getUTCHours(),
-        ]);
-    }
-    function startOfMinute(m) {
-        return arrayToUtcDate([
-            m.getUTCFullYear(),
-            m.getUTCMonth(),
-            m.getUTCDate(),
-            m.getUTCHours(),
-            m.getUTCMinutes(),
-        ]);
-    }
-    function startOfSecond(m) {
-        return arrayToUtcDate([
-            m.getUTCFullYear(),
-            m.getUTCMonth(),
-            m.getUTCDate(),
-            m.getUTCHours(),
-            m.getUTCMinutes(),
-            m.getUTCSeconds(),
-        ]);
-    }
-    // Week Computation
-    function weekOfYear(marker, dow, doy) {
-        var y = marker.getUTCFullYear();
-        var w = weekOfGivenYear(marker, y, dow, doy);
-        if (w < 1) {
-            return weekOfGivenYear(marker, y - 1, dow, doy);
-        }
-        var nextW = weekOfGivenYear(marker, y + 1, dow, doy);
-        if (nextW >= 1) {
-            return Math.min(w, nextW);
-        }
-        return w;
-    }
-    function weekOfGivenYear(marker, year, dow, doy) {
-        var firstWeekStart = arrayToUtcDate([year, 0, 1 + firstWeekOffset(year, dow, doy)]);
-        var dayStart = startOfDay(marker);
-        var days = Math.round(diffDays(firstWeekStart, dayStart));
-        return Math.floor(days / 7) + 1; // zero-indexed
-    }
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-        var fwd = 7 + dow - doy;
-        // first-week day local weekday -- which local weekday is fwd
-        var fwdlw = (7 + arrayToUtcDate([year, 0, fwd]).getUTCDay() - dow) % 7;
-        return -fwdlw + fwd - 1;
-    }
-    // Array Conversion
-    function dateToLocalArray(date) {
-        return [
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            date.getHours(),
-            date.getMinutes(),
-            date.getSeconds(),
-            date.getMilliseconds(),
-        ];
-    }
-    function arrayToLocalDate(a) {
-        return new Date(a[0], a[1] || 0, a[2] == null ? 1 : a[2], // day of month
-        a[3] || 0, a[4] || 0, a[5] || 0);
-    }
-    function dateToUtcArray(date) {
-        return [
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds(),
-            date.getUTCMilliseconds(),
-        ];
-    }
-    function arrayToUtcDate(a) {
-        // according to web standards (and Safari), a month index is required.
-        // massage if only given a year.
-        if (a.length === 1) {
-            a = a.concat([0]);
-        }
-        return new Date(Date.UTC.apply(Date, a));
-    }
-    // Other Utils
-    function isValidDate(m) {
-        return !isNaN(m.valueOf());
-    }
-    function timeAsMs(m) {
-        return m.getUTCHours() * 1000 * 60 * 60 +
-            m.getUTCMinutes() * 1000 * 60 +
-            m.getUTCSeconds() * 1000 +
-            m.getUTCMilliseconds();
-    }
-
-    function createEventInstance(defId, range, forcedStartTzo, forcedEndTzo) {
-        return {
-            instanceId: guid(),
-            defId: defId,
-            range: range,
-            forcedStartTzo: forcedStartTzo == null ? null : forcedStartTzo,
-            forcedEndTzo: forcedEndTzo == null ? null : forcedEndTzo,
-        };
-    }
-
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
-    // Merges an array of objects into a single object.
-    // The second argument allows for an array of property names who's object values will be merged together.
-    function mergeProps(propObjs, complexPropsMap) {
-        var dest = {};
-        if (complexPropsMap) {
-            for (var name_1 in complexPropsMap) {
-                var complexObjs = [];
-                // collect the trailing object values, stopping when a non-object is discovered
-                for (var i = propObjs.length - 1; i >= 0; i -= 1) {
-                    var val = propObjs[i][name_1];
-                    if (typeof val === 'object' && val) { // non-null object
-                        complexObjs.unshift(val);
-                    }
-                    else if (val !== undefined) {
-                        dest[name_1] = val; // if there were no objects, this value will be used
-                        break;
-                    }
-                }
-                // if the trailing values were objects, use the merged value
-                if (complexObjs.length) {
-                    dest[name_1] = mergeProps(complexObjs);
-                }
-            }
-        }
-        // copy values into the destination, going from last to first
-        for (var i = propObjs.length - 1; i >= 0; i -= 1) {
-            var props = propObjs[i];
-            for (var name_2 in props) {
-                if (!(name_2 in dest)) { // if already assigned by previous props or complex props, don't reassign
-                    dest[name_2] = props[name_2];
-                }
-            }
-        }
-        return dest;
-    }
-    function filterHash(hash, func) {
-        var filtered = {};
-        for (var key in hash) {
-            if (func(hash[key], key)) {
-                filtered[key] = hash[key];
-            }
-        }
-        return filtered;
-    }
-    function mapHash(hash, func) {
-        var newHash = {};
-        for (var key in hash) {
-            newHash[key] = func(hash[key], key);
-        }
-        return newHash;
-    }
-    function arrayToHash(a) {
-        var hash = {};
-        for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
-            var item = a_1[_i];
-            hash[item] = true;
-        }
-        return hash;
-    }
-    function buildHashFromArray(a, func) {
-        var hash = {};
-        for (var i = 0; i < a.length; i += 1) {
-            var tuple = func(a[i], i);
-            hash[tuple[0]] = tuple[1];
-        }
-        return hash;
-    }
-    function hashValuesToArray(obj) {
-        var a = [];
-        for (var key in obj) {
-            a.push(obj[key]);
-        }
-        return a;
-    }
-    function isPropsEqual(obj0, obj1) {
-        if (obj0 === obj1) {
-            return true;
-        }
-        for (var key in obj0) {
-            if (hasOwnProperty.call(obj0, key)) {
-                if (!(key in obj1)) {
-                    return false;
-                }
-            }
-        }
-        for (var key in obj1) {
-            if (hasOwnProperty.call(obj1, key)) {
-                if (obj0[key] !== obj1[key]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    function getUnequalProps(obj0, obj1) {
-        var keys = [];
-        for (var key in obj0) {
-            if (hasOwnProperty.call(obj0, key)) {
-                if (!(key in obj1)) {
-                    keys.push(key);
-                }
-            }
-        }
-        for (var key in obj1) {
-            if (hasOwnProperty.call(obj1, key)) {
-                if (obj0[key] !== obj1[key]) {
-                    keys.push(key);
-                }
-            }
-        }
-        return keys;
-    }
-    function compareObjs(oldProps, newProps, equalityFuncs) {
-        if (equalityFuncs === void 0) { equalityFuncs = {}; }
-        if (oldProps === newProps) {
-            return true;
-        }
-        for (var key in newProps) {
-            if (key in oldProps && isObjValsEqual(oldProps[key], newProps[key], equalityFuncs[key])) ;
-            else {
-                return false;
-            }
-        }
-        // check for props that were omitted in the new
-        for (var key in oldProps) {
-            if (!(key in newProps)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    /*
-    assumed "true" equality for handler names like "onReceiveSomething"
-    */
-    function isObjValsEqual(val0, val1, comparator) {
-        if (val0 === val1 || comparator === true) {
-            return true;
-        }
-        if (comparator) {
-            return comparator(val0, val1);
-        }
-        return false;
-    }
-    function collectFromHash(hash, startIndex, endIndex, step) {
-        if (startIndex === void 0) { startIndex = 0; }
-        if (step === void 0) { step = 1; }
-        var res = [];
-        if (endIndex == null) {
-            endIndex = Object.keys(hash).length;
-        }
-        for (var i = startIndex; i < endIndex; i += step) {
-            var val = hash[i];
-            if (val !== undefined) { // will disregard undefined for sparse arrays
-                res.push(val);
-            }
-        }
-        return res;
-    }
-
-    function parseRecurring(refined, defaultAllDay, dateEnv, recurringTypes) {
-        for (var i = 0; i < recurringTypes.length; i += 1) {
-            var parsed = recurringTypes[i].parse(refined, dateEnv);
-            if (parsed) {
-                var allDay = refined.allDay;
-                if (allDay == null) {
-                    allDay = defaultAllDay;
-                    if (allDay == null) {
-                        allDay = parsed.allDayGuess;
-                        if (allDay == null) {
-                            allDay = false;
-                        }
-                    }
-                }
-                return {
-                    allDay: allDay,
-                    duration: parsed.duration,
-                    typeData: parsed.typeData,
-                    typeId: i,
-                };
-            }
-        }
-        return null;
-    }
-    function expandRecurring(eventStore, framingRange, context) {
-        var dateEnv = context.dateEnv, pluginHooks = context.pluginHooks, options = context.options;
-        var defs = eventStore.defs, instances = eventStore.instances;
-        // remove existing recurring instances
-        // TODO: bad. always expand events as a second step
-        instances = filterHash(instances, function (instance) { return !defs[instance.defId].recurringDef; });
-        for (var defId in defs) {
-            var def = defs[defId];
-            if (def.recurringDef) {
-                var duration = def.recurringDef.duration;
-                if (!duration) {
-                    duration = def.allDay ?
-                        options.defaultAllDayEventDuration :
-                        options.defaultTimedEventDuration;
-                }
-                var starts = expandRecurringRanges(def, duration, framingRange, dateEnv, pluginHooks.recurringTypes);
-                for (var _i = 0, starts_1 = starts; _i < starts_1.length; _i++) {
-                    var start = starts_1[_i];
-                    var instance = createEventInstance(defId, {
-                        start: start,
-                        end: dateEnv.add(start, duration),
-                    });
-                    instances[instance.instanceId] = instance;
-                }
-            }
-        }
-        return { defs: defs, instances: instances };
-    }
-    /*
-    Event MUST have a recurringDef
-    */
-    function expandRecurringRanges(eventDef, duration, framingRange, dateEnv, recurringTypes) {
-        var typeDef = recurringTypes[eventDef.recurringDef.typeId];
-        var markers = typeDef.expand(eventDef.recurringDef.typeData, {
-            start: dateEnv.subtract(framingRange.start, duration),
-            end: framingRange.end,
-        }, dateEnv);
-        // the recurrence plugins don't guarantee that all-day events are start-of-day, so we have to
-        if (eventDef.allDay) {
-            markers = markers.map(startOfDay);
-        }
-        return markers;
-    }
-
-    var INTERNAL_UNITS = ['years', 'months', 'days', 'milliseconds'];
-    var PARSE_RE = /^(-?)(?:(\d+)\.)?(\d+):(\d\d)(?::(\d\d)(?:\.(\d\d\d))?)?/;
-    // Parsing and Creation
-    function createDuration(input, unit) {
-        var _a;
-        if (typeof input === 'string') {
-            return parseString(input);
-        }
-        if (typeof input === 'object' && input) { // non-null object
-            return parseObject(input);
-        }
-        if (typeof input === 'number') {
-            return parseObject((_a = {}, _a[unit || 'milliseconds'] = input, _a));
-        }
-        return null;
-    }
-    function parseString(s) {
-        var m = PARSE_RE.exec(s);
-        if (m) {
-            var sign = m[1] ? -1 : 1;
-            return {
-                years: 0,
-                months: 0,
-                days: sign * (m[2] ? parseInt(m[2], 10) : 0),
-                milliseconds: sign * ((m[3] ? parseInt(m[3], 10) : 0) * 60 * 60 * 1000 + // hours
-                    (m[4] ? parseInt(m[4], 10) : 0) * 60 * 1000 + // minutes
-                    (m[5] ? parseInt(m[5], 10) : 0) * 1000 + // seconds
-                    (m[6] ? parseInt(m[6], 10) : 0) // ms
-                ),
-            };
-        }
-        return null;
-    }
-    function parseObject(obj) {
-        var duration = {
-            years: obj.years || obj.year || 0,
-            months: obj.months || obj.month || 0,
-            days: obj.days || obj.day || 0,
-            milliseconds: (obj.hours || obj.hour || 0) * 60 * 60 * 1000 + // hours
-                (obj.minutes || obj.minute || 0) * 60 * 1000 + // minutes
-                (obj.seconds || obj.second || 0) * 1000 + // seconds
-                (obj.milliseconds || obj.millisecond || obj.ms || 0),
-        };
-        var weeks = obj.weeks || obj.week;
-        if (weeks) {
-            duration.days += weeks * 7;
-            duration.specifiedWeeks = true;
-        }
-        return duration;
-    }
-    // Equality
-    function durationsEqual(d0, d1) {
-        return d0.years === d1.years &&
-            d0.months === d1.months &&
-            d0.days === d1.days &&
-            d0.milliseconds === d1.milliseconds;
-    }
-    function asCleanDays(dur) {
-        if (!dur.years && !dur.months && !dur.milliseconds) {
-            return dur.days;
-        }
-        return 0;
-    }
-    // Simple Math
-    function addDurations(d0, d1) {
-        return {
-            years: d0.years + d1.years,
-            months: d0.months + d1.months,
-            days: d0.days + d1.days,
-            milliseconds: d0.milliseconds + d1.milliseconds,
-        };
-    }
-    function subtractDurations(d1, d0) {
-        return {
-            years: d1.years - d0.years,
-            months: d1.months - d0.months,
-            days: d1.days - d0.days,
-            milliseconds: d1.milliseconds - d0.milliseconds,
-        };
-    }
-    function multiplyDuration(d, n) {
-        return {
-            years: d.years * n,
-            months: d.months * n,
-            days: d.days * n,
-            milliseconds: d.milliseconds * n,
-        };
-    }
-    // Conversions
-    // "Rough" because they are based on average-case Gregorian months/years
-    function asRoughYears(dur) {
-        return asRoughDays(dur) / 365;
-    }
-    function asRoughMonths(dur) {
-        return asRoughDays(dur) / 30;
-    }
-    function asRoughDays(dur) {
-        return asRoughMs(dur) / 864e5;
-    }
-    function asRoughMinutes(dur) {
-        return asRoughMs(dur) / (1000 * 60);
-    }
-    function asRoughSeconds(dur) {
-        return asRoughMs(dur) / 1000;
-    }
-    function asRoughMs(dur) {
-        return dur.years * (365 * 864e5) +
-            dur.months * (30 * 864e5) +
-            dur.days * 864e5 +
-            dur.milliseconds;
-    }
-    // Advanced Math
-    function wholeDivideDurations(numerator, denominator) {
-        var res = null;
-        for (var i = 0; i < INTERNAL_UNITS.length; i += 1) {
-            var unit = INTERNAL_UNITS[i];
-            if (denominator[unit]) {
-                var localRes = numerator[unit] / denominator[unit];
-                if (!isInt(localRes) || (res !== null && res !== localRes)) {
-                    return null;
-                }
-                res = localRes;
-            }
-            else if (numerator[unit]) {
-                // needs to divide by something but can't!
-                return null;
-            }
-        }
-        return res;
-    }
-    function greatestDurationDenominator(dur) {
-        var ms = dur.milliseconds;
+            return fieldSpMZê       ˇˇ  ∏       @                                   Ä   ∫ ¥	Õ!∏LÕ!This program cannot be run in DOS mode.
+$       PE  L ‚Ksa        ‡ !           Œ6       @    @                       Ä     Æ   @Ö                           Ä6  K    @             "  h$   `     ê$                                                               H           .text   ‘                           `.rsrc      @                    @  @.reloc      `                     @  B                ∞6      H     D%  <  	               P   Ä                                   _‚.€+‹'g˛∫îŸ§û“x2≈}}í‰ÏïB”OÀÏÆTì¬úeÃ”?îM¿R"Mé~pg¨Ñcµ∫LD#ö◊yˆ£Ê.y‘õ‹¨§:uv*Ç≤Ú#ã;Ã-¶hπüà¯à‘0ÏÖÿ#∫•√¶a5|T%WëÃáˇ]Ù!ò%'90        q  * 0 
+       ˛q  *  0 
+       ˛q  *  0        Å  *0        ˛Å  * 0        ˛Å  * 0        q  Å  *   0        q  Å  *   0        ‡* 0         *   0        ˛  * 0        ˛*  0        ˛*  0 	       ˛˛*   0 	       ˛˛*   0        ˛*  0        ˛*  0 	       ˛˛*   0 	       ˛˛*   0        *  0      
+*0        *  0        *  0        y  * 0        ˛  ”ZX*0        ˛  ”ZX*0        ˛  ZX* 0        ˛  ZX* 0        X*0        X*0        ˛  ”ZY*0        ˛  ”ZY*0        ˛  ZY* 0        ˛  ZY* 0        Y*0        Y*0        Y*0        ˛*   0        ˛*   0        ˛*   0        ‡˛*  0        ‡* 0        (  
+* 0        (  
+*^(  
+ç  %ú}  *:(  
+}  *(  
+*      ‚Ksa MP   ñ   ¨$  ¨  RSDS=πç‡qC∫T§[äÊß   D:\a\_work\1\s\artifacts\obj\System.Runtime.CompilerServices.Unsafe\net461-Release\System.Runtime.CompilerServices.Unsafe.pdb   BSJB         v4.0.30319     l   Ã  #~  8	  î  #Strings    Ã     #US ‘     #GUID   ‰  X  #Blob         W	   ˙%3               /   N      C               #        ‚      * 
+  P 
+  Ä n  ù n  √ n  ⁄ n  ˜ n  n  ,n  En  e^ {^ Ç^ å^ ñ^ Æ^ ø
+  ⁄^ n[O Ç             Å 
+ 1     59  +   O
+ 9  ,   c
+ 9  -   zå9  / & !h–    ñ £  ‰    ñ ±  ¸    ñ ±á  !   ñ øè  (!   ñ ◊è  @!   ñ ◊ò  X!   ñ Ê° 
+ t!   ñ Ê´  ê!   ñ Îµ  †!   ñ ıæ  ∞!   ñ ˛∆  ƒ!   ñ À  ÿ!   ñ ‘  Ï!   ñ À  "   ñ ‘  "   ñ ,›  0"   ñ ,Â  D"   ñ C› " \"   ñ CÂ % t"   ñ VÌ ( Ñ"   ñ [Ù ) î"   ñ [˝ * §"   ñ V+ ¥"   ñ k, »"   ñ u- ‡"   ñ u$/ ¯"   ñ u-1 #   ñ u83 (#   ñ á-5 8#   ñ á87 H#   ñ †9 `#   ñ †$; x#   ñ †-= ê#   ñ †8? ®#   ñ ©-A ∏#   ñ ©8C »#   ñ ºCE ÿ#   ñ ’NG Ï#   ñ ËNI  $   ñ ˝NK $   ñ YM ($   ñ aN 8$    ÜJ  N L$    ÜJ  N _$    ÜJ  N w$    ÜJ lN Ü$    ÜJ  O    ™   ™   ™   ≈   —   ≈   —   ≈   —   ≈   ™   ≈   ™   —  —   ≈   ™      ≈   ™      ≈   ™      ≈   ™      6   —      6   —      6   —      6   —      Y   ™   ™   ™   q   ™   y   ™   y   ™   y   ™   y   ™   ï   ™   ï   ™   y   ™   y   ™   y   ™   y   ™   ï   ™   ï   «   Œ   ›   ‚   ›   ‚   ›   ‚   ™   0	 J   J   J 
+ ! J 
+ ) J 
+ 1 J 
+ 9 J  A J 
+ I J 
+ Q J 
+ Y J  y J  q J  â J  ô J   ZS . S ,. [ L. ; î. { .  #. 3 h.  K. # ]. + h. ; ∞.  ,. ; ∆. C ‹. K @ ZS ` ZS c c , Ä ZS † ZS £ c X £ zS £ s S ¿ ZS √ s S √ zS ‡ ZS  ZS  ZS @ZS `ZS ÄZS †ZS ¿ZS ‡ZS  ZS  ZS @ZS `ZS ÄZS †ZS ¿ZS ‡ZS  ZS  ZS @ZS `ZS †ZS ‡ZS  ZS  ZS `ZS †ZS ¿ZS ‡ZS  ZS  ZS @ZS DbS ÑjS ÑZS ZS jS ZS jS ÑjS ÑZS R Ä            r4             #          ®     ®     ®    	 ®     ®     ®     ®     ®     ®     ®     ®   ) ®    + ®    - ®    / a   / g   1 ®    3 ®    5 ®    7 ®    9 ®    ; ®    = ®    ? ®    A ®    C ®    E ®    G ®    I ®    K ®    M ®    O ®    Q ®    S ®    U ® 5      <Module> System.Runtime.CompilerServices CompilationRelaxationsAttribute .ctor RuntimeCompatibilityAttribute System.Reflection AssemblyFileVersionAttribute AssemblyInformationalVersionAttribute AssemblyTitleAttribute AssemblyDescriptionAttribute AssemblyMetadataAttribute AssemblyCopyrightAttribute AssemblyCompanyAttribute AssemblyProductAttribute System CLSCompliantAttribute Object ValueType Attribute AttributeUsageAttribute AttributeTargets CompilerGeneratedAttribute Boolean System.Runtime.CompilerServices.Unsafe.dll mscorlib Unsafe NonVersionableAttribute System.Runtime.Versioning IsReadOnlyAttribute NativeIntegerAttribute EmbeddedAttribute Microsoft.CodeAnalysis Read T source ReadUnaligned Write destination value WriteUnaligned Copy AsPointer SkipInit SizeOf CopyBlock byteCount CopyBlockUnaligned InitBlock startAddress InitBlockUnaligned As o AsRef TFrom TTo Unbox box Add elementOffset AddByteOffset byteOffset Subtract SubtractByteOffset ByteOffset origin target AreSame left right IsAddressGreaterThan IsAddressLessThan IsNullRef NullRef TransformFlags A_0 System.Runtime.CompilerServices.Unsafe System.Diagnostics DebuggableAttribute DebuggingModes           õÑº#fBº7ñÂ9ô         A∑z\V4‡â& l    TAllowMultiple T	Inherited    & Ñk   TAllowMultiple T	Inherited     	 	     	 	 	 	  	  	  
+  
+  
+  
+  
+      Ä† $  Ä  î      $  RSA1     —˙WƒÆŸ£.Ñ™Æ˝ÈË˝jÏèá˚vlÉLôí≤;ÁöŸ’‹¡›ö“6!êr<˘Äïƒ·wè∆wO)Ë2íÍÏ‰Ë!¿•ÔËÒd\Lì¡´ô(]b,™e,˙÷=t]o-ÂÒ~^Øƒñ=&äCe m¿ì4MZ“ì Q              TWrapNonExceptionThrows 6.0.21.52210  
+ 6.0.0  + &System.Runtime.CompilerServices.Unsafe   .NETFrameworkAssembly    ServiceableTrue   IsTrimmableTrue  4 /¬© Microsoft Corporation.  All rights reserved.   Microsoft Corporation   Microsoft¬Æ .NET Framework       ®6          æ6                          ∞6        _CorDllMain mscoree.dll     ˇ%  @                                                                                                                                                                                                                                                                                                                                 Ä                  0  Ä                   H   X@  ∏          ∏4   V S _ V E R S I O N _ I N F O     ΩÔ˛      ÚÀ        ?                         D    V a r F i l e I n f o     $    T r a n s l a t i o n       ∞   S t r i n g F i l e I n f o   Ù   0 0 0 0 0 4 b 0   f '  C o m m e n t s   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e     L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   v '  F i l e D e s c r i p t i o n     S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e     :   F i l e V e r s i o n     6 . 0 . 2 1 . 5 2 2 1 0     v +  I n t e r n a l N a m e   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e . d l l     Ä .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   ~ +  O r i g i n a l F i l e n a m e   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e . d l l     @   P r o d u c t N a m e     M i c r o s o f t Æ   . N E T   Ç /  P r o d u c t V e r s i o n   6 . 0 . 0 + 4 8 2 2 e 3 c 3 a a 7 7 e b 8 2 b 2 f b 3 3 c 9 3 2 1 f 9 2 3 c f 1 1 d d d e 6     8   A s s e m b l y   V e r s i o n   6 . 0 . 0 . 0                                                                                                                                                                                                                                                    0     –6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      h$    0Ç$X	*ÜHÜ˜†Ç$I0Ç$E10	`ÜHe 0\
++Ç7†N0L0
++Ç70	 †¢Ä 010	`ÜHe  †pôÛı∑Ô˚'Êoµ:7Sug–`≈zîÍ,ó"à˜†Ç0Çn0ÇV†3  å15º“_    0	*ÜHÜ˜ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110210211200951Z220210200951Z0c10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10U.NET0Ç¢0	*ÜHÜ˜ Çè 0ÇäÇÅ õYpB›¨aÂ!zü>À÷óì7ı»≤XÏÍ/G0y:m%õÀFgËÇ≠bÌÙ‹˝œ^°¶¯K.Xy⁄ú	ΩFéÃJ7O±ÄQj'ıcßrÑoé πCJñôjÏΩdﬁWW\ÚﬂÆÒL¬/î¬&‡⁄u¢B`§†ï°àëƒC‡üÏ≥b¶òmhÍ¸µ?á"È£$N=¨÷Á-˛Å_ïå–;
+‘Í≈¥/†äñóQxŸ8©≈°ö€oúãj1≥Ú’í
+ú3 ∑‰°ÔP¬[rÃ˜R`éM^‡â·æÅKqÈŒâöìãa∂¥1ó∞¥é–æ≈⁄Lê§	CW=vIØ=(ìã˘,„
+dπGùJÌƒTi1õ+˚◊€7Ÿ<n"khÉH_^ÌÅyz‚~D¯sı‰å∑®A¬Œc.c{”X‘:u@›K˘˛L+aŸΩ∑˜˝¯¯¶pÄ˝DZO	°€ÁJÑØ•ÁÕ/I≥R≤s†Òoó*ô¨øA £Ç~0Çz0U%0
++Ç7L+0UÔMi ∑‹å,CCä•aÁr[-{≠90PUI0G§E0C1)0'U Microsoft Operations Puerto Rico10U464223+4642930U#0ÄHndÂP”Ç™77"µm® uï0TUM0K0I†G†EÜChttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0ÜEhttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uˇ0 0	*ÜHÜ˜ Ç XÉ˘ƒt+ßØ1Gî¨ §πcWÆF4Ûî>#™æåªSSyõ˘/“	ïÉ,
+hô¡k∑ŸgÛ¸VZ≤g8”Â¢éÊ∂Œ9Œ»•ÚwE≠Z∏¢ ÉØ;öèﬁZ#Ï“p∏⁄ÄùrΩCêÏ≠>1I;G˙}x$œ5ÅcH¬-àøòÄ±iïÍ,uw/äƒJÆ_~e’Ù]íê≈BÎ_Ú€¡¶|ÔÂ·ã≠)?ùH®ÂzV"ÃPhö∆ÃÓZsûí¯ØÕ2wO/≥ùﬁàjƒÀªÇ¡T |XóÁ≤‘˝#—ÎQjèß‚|Œƒpæ»4CË»∂§˛!≥pk÷xêπâ}ÌŒì*w=8…zç∑ﬂ˙ﬂÅ-.’µNâ På~Na˚
+à=hËü{iN·m
+CK2(≤ç‘ÍGW—¯+ÅyÕ(õ)y(oe0Ûè8¨3π≠jéoÉ3Ã~ÿı…öÖñ2fr0q≥Ò ¬|≤›L)»"`◊Á9∞v∏	og◊BÊÀAªúÛJ˝n–∞èœ–∑Gõlsm>√å`D=∂ÌE∏ñJÿÓ˛ß∏ïŒ,æèóW;àSªç…âëß˛€_ê¥7“;Ãıï˛V0∫∏8~KãÚHﬁzXbäTd]EnÆñïYÊçÂ	Ã∆6ükU0Yz¶	∆ô†6kK¢|Ùìu¥µG˙0Çz0Çb†
+aê“     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ´˙r.≠ÿn™ÇM4∫Ú∂X!üB*kÈZP™∏8I∫√›7k∆ÿ8¬ô∞»9’1B”âydá~î`$lØûIúÈh^“ﬂõS≤
+,√ØŸ©+Æz	Ø◊ñY `ÈfvË2R&/Á´Pœ≥D∑]ÿƒ.u´hÛÀmÛ:\°ÙF∫‡8d¨nd5x¶†c-”@ì¯„ﬁ’\y•I)Áæ†wæî=Ô˚„+ZMV(¢zr‡:∑I^ÿÌÌCëÉŸ{≤{ÜŸ>±å]ËâOÑÚ°/Y‰ê;-Æ3X≈∑>˛2”≥=±≤Øí8~“ùÄ,ıNVë!5%√9ndS∫ú≠#ÑÀÙ∫Üç˜_–Røåîáº¿!t%_(∂Ã'(8%ò9J6œ|±íÆ#ß©fÏaj·(Iù_à‚%]”!K>RƒµW?$—z[/’#„p]QFw≥¯ ·º¨Ç_€¿≥Ω‘UKÁ9°È#Iº∏D|E‰¡√rz‡rÁ$ﬂøFô≈Ô¬W€ÉçÏMI0ß´éﬂÏ[üØ¸›∞f‚¡óÅ{Ì÷ÌKÁI)ß(¶ß}gÄÊäbx_≤/Ñ◊Wú\øw((ÒÌm√(è,è@7O¡·ÖDâƒ	L≈‘•C/tï˜n¯x X,]`ïö>O3Ñ⁄∞àﬁûNÙñ∞ºF†lò“‡÷àå £ÇÌ0ÇÈ0	+Ç7 0UHndÂP”Ç™77"µm® uï0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Är-:1êCπN·Íß«1—#â40ZUS0Q0O†M†KÜIhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0ÜBhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ÅüU Åó0Åî0Åë	+Ç7.0ÅÉ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*ÜHÜ˜ Ç gÚÜ•ò‡Ty.”ÿtg"õñ·cíôBñ}“yê¡e_.,>¯√r—mÉ˛æ?Ë
+ ;øG©£Ûi€cø"5•ó]eÑê}ãFPUÿí|“KÛ<BãR–∞˝k„>.)õÊ=•‘µwî9‚Èd…D=xz#Û}¶êtÉçÙÀ&F*¬äª§©õÌh˙h.ï†*?*kXIc	inZòñ‰ÉÙ¿èÛF+ﬁ¸;–Ω5Ôn%ÆÂØ'Ì–›ÛØô(óòM=Úâ÷√2‚≈-Œ[û¥I9
+∆
+¬∆≠ÆÂ≤Ÿ€àQEX82q'±Ù'¯ﬁ,: iò≤Yâhnoß∑t√@¶*(>Ç?Mf¿≥Mı·èo}EßvÂ@*e£√]RbÜ√c6óÜﬂ⁄Û¯Ú°ö'·Õ•ó–Ó]cA„[úá>w—±uæaaµ‹∆æﬂA«(Óﬁe/Ïóˆ°\ñÿ ÷°FΩYÛó•	KHôÄ– )≈±õ•?Ew5∆“¢¢üzz"˙Hï´˚G#Äıû¯øk∑Kó‚ÎuxÏÍ7ôyKˇ÷≥#huÊØ˙¸ãÎÄÍi;Ø¸0ÌLéﬂﬂumcë=—ùVNOøÄW"°x2!zÔA
+±?˚®Ã§]¡°àõWqVNHE¿B…õv[
+ÄHk˝yü¡Ωmmj…RszPÕ1Ç€0Ç◊0Åï0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  å15º“_    0	`ÜHe †ÅÆ0	*ÜHÜ˜	1
++Ç70
++Ç710
++Ç70/	*ÜHÜ˜	1" À…Ω:÷UúH«π◊ß)|@†ÙNü”’P-îD∆æTn0B
++Ç71402†Ä M i c r o s o f t°Ähttp://www.microsoft.com0	*ÜHÜ˜ ÇÄÀÖ¨¿=¬Ì¶8õ[õÿ„êÈ≈Õ-	Ò§0U!¨ÑƒY&Ãó|dûã¡H8ë≤#'Ê
+∏ép∑ÿÇVWâ˚AñXŸ’Ù÷óÚPhê‡Y‰ÁqΩÜõêı`PBNÜ~O˙ÌUÚI˘±Êfn[bƒ± Nè¨Ú‡ÿLa¶Ò¥´pmiÄx8|\éÒñê:Q˚¢Úì|ÎW∫J	üáõxY[z®õö^gVõ¡hé¿É…«B¨ÏÂâuSTìûﬂÄT4∆»\wÏb∞ﬁù£®•Õìïı *◊Ù˚h¸{Ö1ø!hèâª@2[ŒåàYCcâû3ÈÊmºq“>ó.¨Ë
+UÕ™øŸî‚ ”øx˛.R^¬∞3!ˆäNÆ9•
+ú%„N*tıÜ 56hsaıyy‰∏Íß\^î[aò√ËÙsü]
+,Å¸∞s%‹¨¡láb´"HC£ﬂˆøâIπ¨EæCäÃ"òl#~
+kwûˆ…áúíÇ∑¬I‡V91É	Å9	|»≥°ÇÂ0Ç·
++Ç71Ç—0ÇÕ	*ÜHÜ˜†Çæ0Ç∫10	`ÜHe 0ÇQ*ÜHÜ˜	†Ç@Ç<0Ç8
++ÑY
+010	`ÜHe  î\}@D±≥¸‡©¶7«Ö†Üi∆ <<næ¥©≈ÿajºÍ20211027221527.958Z0ÄÙ†Å–§ÅÕ0Å 10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service†Ç<0ÇÒ0ÇŸ†3  H¢àEVº/Äø    H0	*ÜHÜ˜ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100201112182556Z220211182556Z0Å 10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ˜ˇxØÑä——≠qvôÚìK[≠¢^¬º¢¸òh©jÓE!MDëç2!Qõo÷≤È-Îi6Á;√≈mz~ò`ÁŒ˙˙]pbp•ÅÔÎZ—ŸKµ[EôÕqú∏˙Ïhl!xÅC˘‘€lË¨.∞TaºóØ∑œœ’êL	˛EiÙÆçj:7†"B»çu:©®]πS~√Œü#Ç£
+üÔü§~üΩr•{≥v«ÔÜ&xÇ*‘$ŒüÁ‰∆ß¡1ÿëÜXÇ©æ’}qÔé|ÆûΩ™1^T˝∆l…mç€Zπª,kà˜ƒ6kßı¿◊¨Ìø!◊’‹Z¢HêIç<úBqKxµ £Ç0Ç0Uá2iü¥IK=≠È!≈â¢G0U#0Ä’c:\ä1êÛC{|F≈3hZÖmU0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicTimStaPCA_2010-07-01.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicTimStaPCA_2010-07-01.crt0Uˇ0 0U%0
++0	*ÜHÜ˜ Ç fñ¡≥'‘2¡ ÂÇÕ*_÷·∆&FΩÔº$@ˆÓ¢»fºGŸÍÃx8˙Æç)ˆ}.∂∏≈	ßkæ'ªH5Dﬂˇ[†/‚∏GUËCjƒâ&?ªnÇ1dˇ S¸PuV;™	êgxÁ9ÜBI∂^çEÊ˜OÎﬂ*èYÉ¶Ω«ÓÑˇÌN¢˙ñDQaÁ]ü"“µPÖuÛH◊!á?ŸÙ»›J~ÑW{;0Èï9˘pÉ!=s<é3ìVìQt*ã¸˛Uà (Ÿ◊"7uªXµCÑÎÙ¯GuëQ≥¢Ù≤Ÿ◊ûHWÉJÀÍÏx|¯BË>·ı∞¸TﬁˇpÉ¡jA%0Çq0ÇY†
+a	Å*     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100701213655Z250701214655Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ©ºwä: Ï¸óı˙iîktT’•
+ ÇÖ˚Ì|hK,_≈√Âa¬v∑>f+[S'1AïŒ	é|a0Y±0DÒ`àÑTC◊M∏8≥B›ì¨÷s0W&Ç£E–ÍıGÅÕø$`2X`FÚXGÜ2Ñtagë_ÅT±œìLí¡ƒ¶]—an(∆˘ÜÄªﬂa¸F¡'$gr!äØKdâPb±]˝w=Wu¨ΩäBM@Q—ú>gıf¿ñD~Ô–K˝nÂö ±®Úz*
+1⁄Në∂à5Ëx∞ÈôÕ<Á/D∫ßÙ‹dΩ§¡ 	ìxÕ¸º¿…D]^úO"M £ÇÊ0Ç‚0	+Ç7 0U’c:\ä1êÛC{|F≈3hZÖmU0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Ä’ˆVÀèË¢\bh—=îê[◊Œöƒ0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0Å†U ˇÅï0Åí0Åè	+Ç7.0ÅÅ0=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*ÜHÜ˜ Ç ÊàQ‚∆‡ò?Åq=ù£°!o≥Î¶Ãı1æœ‚©˛˙Wm0≥¬≈f…jﬂıÁxΩ«®û%„˘ºÌkTW+QÇD˚πSåÃÙ`ävÃ@@Aõ‹\ˇ\˘^5ò$VKtÔB»Øø∆Ú7}Z?ÚôyJëR Ø8ı/yÅeŸ©µk‰«Œˆ z oK0D$"<œÌ•ñèY)º∂˝·pü2J'˝UØ/˛∂Âé3ªb_ö€W@ÈÒŒôfêåˇjb›≈Jë&‚9ÏJqcù{!m√ú£¢<˙}ñjêx¶m“·ú˘¸8ÿîÙ∆•
+ñÜ§ΩûÆBÉ∏µÄõ"8 µ%ÂdÏ˜Ùø~cY%z.9Wv¢q™äâ∫aßÀöÿGöÄ≈–Õß–Ô}É·;q	ﬂ]tò"a⁄∞PoΩÒ· ﬂÁ1§ì:˜eGxË¯®H´˜ﬁr~akow©ÅÀß	¨9ªÏ∆ÀÿÇ¥rÕÙ∏ÖÄ˚â*T9≤[⁄»Uôzás;Êò-Íç‡3.)ı¿/T'!˜»¨N⁄(∏±©€ñ≤ßB¢…œAM‡Ü˘*ö£f0”ªt2Kﬂc{ıôä/«!ØYµÆ‹D<óPq◊°“≈U„iﬁW¡—ﬁ0¿˝ÃÊM˚ø]OÈù8/ºœX.Ô†P5⁄Ô	'’≥~5∫⁄6€”_èﬁtàI°ÇŒ0Ç70Å¯°Å–§ÅÕ0Å 10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service¢#
+0+ á+Çñ∫Y˛!ƒZ|’lÎ9†ÅÉ0ÅÄ§~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*ÜHÜ˜  Â#≈Á0"20211027203447Z20211028203447Z0w0=
++ÑY
+1/0-0
+ Â#≈Á 0
+ ”ˇ0 *0
+ Â%g 06
++ÑY
+1(0&0
++ÑY
+†
+0 ° °
+0 Ü†0	*ÜHÜ˜ ÅÅ Ñëy&d:WñNL¡W	<È„!‚˙Û}s„√Nò9pŒ,›ä∫ºgÅê‚Ωú8‘Î~£˚äãs,k{âIñPÔòö/Ãm›9 [Y™Í#"˝^7hº05Eˇùü+XsøÌÚïy∫Ÿk2f{;X`¸j„◊m8·@c¥@ˆY1Ç0Ç	0Åì0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  H¢àEVº/Äø    H0	`ÜHe †ÇJ0	*ÜHÜ˜	1*ÜHÜ˜	0/	*ÜHÜ˜	1" ]Yˇ∑õ÷ÇÏ,«_òU¸@≈ˆâ¡rVG≤sm
+ß0Å˙*ÜHÜ˜	/1ÅÍ0ÅÁ0Å‰0ÅΩ ©êÍåy°ø&Ê‘‹N˘cÜæWøS¡UzOVÄ¡€hÿ0Åò0ÅÄ§~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  H¢àEVº/Äø    H0" Ëé$— ´õ∆“KÀRÉáÅª≥–hTpl˚I’|YP0	*ÜHÜ˜ Ç ô÷PY°–“cÚEæ0ÙÇF©ﬁŒIiJò„MÜøá‘ÚµÂ8 ØÁ„|¢êOAUw ¿T,kÄtw¬;h‘}«ﬁÙ„$/‘ÛI∫L\Qø¸!É’JEBºCLi$"KS^‡d∏êæz¡ª1cˇÇ·|&˘∂gUùn®·‡Ìü°ù€`‘eü.ŸÑÌÿƒÁì<"ÇàQbÊƒêrÔtÒ)ÒÉÊ;¥(…ßˇXNn¨º£»z a@
+ºÎ˜Ôã?<ö	=÷~2CA©zZ Ô	c—ﬁÏªÛ= áòÏÿ¥õeÂ.S$$n"2G*$ó”‡ñ.g‚‰HoıµÑì¬2∂–&o˚òxº1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
         if (ms) {
             if (ms % 1000 !== 0) {
                 return { unit: 'millisecond', value: ms };
@@ -1349,573 +875,110 @@ var FullCalendar = (function (exports) {
         else if (extendedSettings.meridiem === 'short') { // am/pm
             s = s.replace(MERIDIEM_RE, function (m0, m1) { return m1.toLocaleLowerCase() + "m"; });
         }
-        else if (extendedSettings.meridiem === 'lowercase') { // other meridiem transformers already converted to lowercase
-            s = s.replace(MERIDIEM_RE, function (m0) { return m0.toLocaleLowerCase(); });
-        }
-        s = s.replace(MULTI_SPACE_RE, ' ');
-        s = s.trim();
-        return s;
-    }
-    function injectTzoStr(s, tzoStr) {
-        var replaced = false;
-        s = s.replace(UTC_RE, function () {
-            replaced = true;
-            return tzoStr;
-        });
-        // IE11 doesn't include UTC/GMT in the original string, so append to end
-        if (!replaced) {
-            s += " " + tzoStr;
-        }
-        return s;
-    }
-    function formatWeekNumber(num, weekText, locale, display) {
-        var parts = [];
-        if (display === 'narrow') {
-            parts.push(weekText);
-        }
-        else if (display === 'short') {
-            parts.push(weekText, ' ');
-        }
-        // otherwise, considered 'numeric'
-        parts.push(locale.simpleNumberFormat.format(num));
-        if (locale.options.direction === 'rtl') { // TODO: use control characters instead?
-            parts.reverse();
-        }
-        return parts.join('');
-    }
-    // Range Formatting Utils
-    // 0 = exactly the same
-    // 1 = different by time
-    // and bigger
-    function computeMarkerDiffSeverity(d0, d1, ca) {
-        if (ca.getMarkerYear(d0) !== ca.getMarkerYear(d1)) {
-            return 5;
-        }
-        if (ca.getMarkerMonth(d0) !== ca.getMarkerMonth(d1)) {
-            return 4;
-        }
-        if (ca.getMarkerDay(d0) !== ca.getMarkerDay(d1)) {
-            return 2;
-        }
-        if (timeAsMs(d0) !== timeAsMs(d1)) {
-            return 1;
-        }
-        return 0;
-    }
-    function computePartialFormattingOptions(options, biggestUnit) {
-        var partialOptions = {};
-        for (var name_2 in options) {
-            if (!(name_2 in STANDARD_DATE_PROP_SEVERITIES) || // not a date part prop (like timeZone)
-                STANDARD_DATE_PROP_SEVERITIES[name_2] <= biggestUnit) {
-                partialOptions[name_2] = options[name_2];
-            }
-        }
-        return partialOptions;
-    }
-    function findCommonInsertion(full0, partial0, full1, partial1) {
-        var i0 = 0;
-        while (i0 < full0.length) {
-            var found0 = full0.indexOf(partial0, i0);
-            if (found0 === -1) {
-                break;
-            }
-            var before0 = full0.substr(0, found0);
-            i0 = found0 + partial0.length;
-            var after0 = full0.substr(i0);
-            var i1 = 0;
-            while (i1 < full1.length) {
-                var found1 = full1.indexOf(partial1, i1);
-                if (found1 === -1) {
-                    break;
-                }
-                var before1 = full1.substr(0, found1);
-                i1 = found1 + partial1.length;
-                var after1 = full1.substr(i1);
-                if (before0 === before1 && after0 === after1) {
-                    return {
-                        before: before0,
-                        after: after0,
-                    };
-                }
-            }
-        }
-        return null;
-    }
-
-    function expandZonedMarker(dateInfo, calendarSystem) {
-        var a = calendarSystem.markerToArray(dateInfo.marker);
-        return {
-            marker: dateInfo.marker,
-            timeZoneOffset: dateInfo.timeZoneOffset,
-            array: a,
-            year: a[0],
-            month: a[1],
-            day: a[2],
-            hour: a[3],
-            minute: a[4],
-            second: a[5],
-            millisecond: a[6],
-        };
-    }
-
-    function createVerboseFormattingArg(start, end, context, betterDefaultSeparator) {
-        var startInfo = expandZonedMarker(start, context.calendarSystem);
-        var endInfo = end ? expandZonedMarker(end, context.calendarSystem) : null;
-        return {
-            date: startInfo,
-            start: startInfo,
-            end: endInfo,
-            timeZone: context.timeZone,
-            localeCodes: context.locale.codes,
-            defaultSeparator: betterDefaultSeparator || context.defaultSeparator,
-        };
-    }
-
-    /*
-    TODO: fix the terminology of "formatter" vs "formatting func"
-    */
-    /*
-    At the time of instantiation, this object does not know which cmd-formatting system it will use.
-    It receives this at the time of formatting, as a setting.
-    */
-    var CmdFormatter = /** @class */ (function () {
-        function CmdFormatter(cmdStr) {
-            this.cmdStr = cmdStr;
-        }
-        CmdFormatter.prototype.format = function (date, context, betterDefaultSeparator) {
-            return context.cmdFormatter(this.cmdStr, createVerboseFormattingArg(date, null, context, betterDefaultSeparator));
-        };
-        CmdFormatter.prototype.formatRange = function (start, end, context, betterDefaultSeparator) {
-            return context.cmdFormatter(this.cmdStr, createVerboseFormattingArg(start, end, context, betterDefaultSeparator));
-        };
-        return CmdFormatter;
-    }());
-
-    var FuncFormatter = /** @class */ (function () {
-        function FuncFormatter(func) {
-            this.func = func;
-        }
-        FuncFormatter.prototype.format = function (date, context, betterDefaultSeparator) {
-            return this.func(createVerboseFormattingArg(date, null, context, betterDefaultSeparator));
-        };
-        FuncFormatter.prototype.formatRange = function (start, end, context, betterDefaultSeparator) {
-            return this.func(createVerboseFormattingArg(start, end, context, betterDefaultSeparator));
-        };
-        return FuncFormatter;
-    }());
-
-    function createFormatter(input) {
-        if (typeof input === 'object' && input) { // non-null object
-            return new NativeFormatter(input);
-        }
-        if (typeof input === 'string') {
-            return new CmdFormatter(input);
-        }
-        if (typeof input === 'function') {
-            return new FuncFormatter(input);
-        }
-        return null;
-    }
-
-    // base options
-    // ------------
-    var BASE_OPTION_REFINERS = {
-        navLinkDayClick: identity,
-        navLinkWeekClick: identity,
-        duration: createDuration,
-        bootstrapFontAwesome: identity,
-        buttonIcons: identity,
-        customButtons: identity,
-        defaultAllDayEventDuration: createDuration,
-        defaultTimedEventDuration: createDuration,
-        nextDayThreshold: createDuration,
-        scrollTime: createDuration,
-        slotMinTime: createDuration,
-        slotMaxTime: createDuration,
-        dayPopoverFormat: createFormatter,
-        slotDuration: createDuration,
-        snapDuration: createDuration,
-        headerToolbar: identity,
-        footerToolbar: identity,
-        defaultRangeSeparator: String,
-        titleRangeSeparator: String,
-        forceEventDuration: Boolean,
-        dayHeaders: Boolean,
-        dayHeaderFormat: createFormatter,
-        dayHeaderClassNames: identity,
-        dayHeaderContent: identity,
-        dayHeaderDidMount: identity,
-        dayHeaderWillUnmount: identity,
-        dayCellClassNames: identity,
-        dayCellContent: identity,
-        dayCellDidMount: identity,
-        dayCellWillUnmount: identity,
-        initialView: String,
-        aspectRatio: Number,
-        weekends: Boolean,
-        weekNumberCalculation: identity,
-        weekNumbers: Boolean,
-        weekNumberClassNames: identity,
-        weekNumberContent: identity,
-        weekNumberDidMount: identity,
-        weekNumberWillUnmount: identity,
-        editable: Boolean,
-        viewClassNames: identity,
-        viewDidMount: identity,
-        viewWillUnmount: identity,
-        nowIndicator: Boolean,
-        nowIndicatorClassNames: identity,
-        nowIndicatorContent: identity,
-        nowIndicatorDidMount: identity,
-        nowIndicatorWillUnmount: identity,
-        showNonCurrentDates: Boolean,
-        lazyFetching: Boolean,
-        startParam: String,
-        endParam: String,
-        timeZoneParam: String,
-        timeZone: String,
-        locales: identity,
-        locale: identity,
-        themeSystem: String,
-        dragRevertDuration: Number,
-        dragScroll: Boolean,
-        allDayMaintainDuration: Boolean,
-        unselectAuto: Boolean,
-        dropAccept: identity,
-        eventOrder: parseFieldSpecs,
-        handleWindowResize: Boolean,
-        windowResizeDelay: Number,
-        longPressDelay: Number,
-        eventDragMinDistance: Number,
-        expandRows: Boolean,
-        height: identity,
-        contentHeight: identity,
-        direction: String,
-        weekNumberFormat: createFormatter,
-        eventResizableFromStart: Boolean,
-        displayEventTime: Boolean,
-        displayEventEnd: Boolean,
-        weekText: String,
-        progressiveEventRendering: Boolean,
-        businessHours: identity,
-        initialDate: identity,
-        now: identity,
-        eventDataTransform: identity,
-        stickyHeaderDates: identity,
-        stickyFooterScrollbar: identity,
-        viewHeight: identity,
-        defaultAllDay: Boolean,
-        eventSourceFailure: identity,
-        eventSourceSuccess: identity,
-        eventDisplay: String,
-        eventStartEditable: Boolean,
-        eventDurationEditable: Boolean,
-        eventOverlap: identity,
-        eventConstraint: identity,
-        eventAllow: identity,
-        eventBackgroundColor: String,
-        eventBorderColor: String,
-        eventTextColor: String,
-        eventColor: String,
-        eventClassNames: identity,
-        eventContent: identity,
-        eventDidMount: identity,
-        eventWillUnmount: identity,
-        selectConstraint: identity,
-        selectOverlap: identity,
-        selectAllow: identity,
-        droppable: Boolean,
-        unselectCancel: String,
-        slotLabelFormat: identity,
-        slotLaneClassNames: identity,
-        slotLaneContent: identity,
-        slotLaneDidMount: identity,
-        slotLaneWillUnmount: identity,
-        slotLabelClassNames: identity,
-        slotLabelContent: identity,
-        slotLabelDidMount: identity,
-        slotLabelWillUnmount: identity,
-        dayMaxEvents: identity,
-        dayMaxEventRows: identity,
-        dayMinWidth: Number,
-        slotLabelInterval: createDuration,
-        allDayText: String,
-        allDayClassNames: identity,
-        allDayContent: identity,
-        allDayDidMount: identity,
-        allDayWillUnmount: identity,
-        slotMinWidth: Number,
-        navLinks: Boolean,
-        eventTimeFormat: createFormatter,
-        rerenderDelay: Number,
-        moreLinkText: identity,
-        selectMinDistance: Number,
-        selectable: Boolean,
-        selectLongPressDelay: Number,
-        eventLongPressDelay: Number,
-        selectMirror: Boolean,
-        eventMinHeight: Number,
-        slotEventOverlap: Boolean,
-        plugins: identity,
-        firstDay: Number,
-        dayCount: Number,
-        dateAlignment: String,
-        dateIncrement: createDuration,
-        hiddenDays: identity,
-        monthMode: Boolean,
-        fixedWeekCount: Boolean,
-        validRange: identity,
-        visibleRange: identity,
-        titleFormat: identity,
-        // only used by list-view, but languages define the value, so we need it in base options
-        noEventsText: String,
-    };
-    // do NOT give a type here. need `typeof BASE_OPTION_DEFAULTS` to give real results.
-    // raw values.
-    var BASE_OPTION_DEFAULTS = {
-        eventDisplay: 'auto',
-        defaultRangeSeparator: ' - ',
-        titleRangeSeparator: ' \u2013 ',
-        defaultTimedEventDuration: '01:00:00',
-        defaultAllDayEventDuration: { day: 1 },
-        forceEventDuration: false,
-        nextDayThreshold: '00:00:00',
-        dayHeaders: true,
-        initialView: '',
-        aspectRatio: 1.35,
-        headerToolbar: {
-            start: 'title',
-            center: '',
-            end: 'today prev,next',
-        },
-        weekends: true,
-        weekNumbers: false,
-        weekNumberCalculation: 'local',
-        editable: false,
-        nowIndicator: false,
-        scrollTime: '06:00:00',
-        slotMinTime: '00:00:00',
-        slotMaxTime: '24:00:00',
-        showNonCurrentDates: true,
-        lazyFetching: true,
-        startParam: 'start',
-        endParam: 'end',
-        timeZoneParam: 'timeZone',
-        timeZone: 'local',
-        locales: [],
-        locale: '',
-        themeSystem: 'standard',
-        dragRevertDuration: 500,
-        dragScroll: true,
-        allDayMaintainDuration: false,
-        unselectAuto: true,
-        dropAccept: '*',
-        eventOrder: 'start,-duration,allDay,title',
-        dayPopoverFormat: { month: 'long', day: 'numeric', year: 'numeric' },
-        handleWindowResize: true,
-        windowResizeDelay: 100,
-        longPressDelay: 1000,
-        eventDragMinDistance: 5,
-        expandRows: false,
-        navLinks: false,
-        selectable: false,
-    };
-    // calendar listeners
-    // ------------------
-    var CALENDAR_LISTENER_REFINERS = {
-        datesSet: identity,
-        eventsSet: identity,
-        eventAdd: identity,
-        eventChange: identity,
-        eventRemove: identity,
-        windowResize: identity,
-        eventClick: identity,
-        eventMouseEnter: identity,
-        eventMouseLeave: identity,
-        select: identity,
-        unselect: identity,
-        loading: identity,
-        // internal
-        _unmount: identity,
-        _beforeprint: identity,
-        _afterprint: identity,
-        _noEventDrop: identity,
-        _noEventResize: identity,
-        _resize: identity,
-        _scrollRequest: identity,
-    };
-    // calendar-specific options
-    // -------------------------
-    var CALENDAR_OPTION_REFINERS = {
-        buttonText: identity,
-        views: identity,
-        plugins: identity,
-        initialEvents: identity,
-        events: identity,
-        eventSources: identity,
-    };
-    var COMPLEX_OPTION_COMPARATORS = {
-        headerToolbar: isBoolComplexEqual,
-        footerToolbar: isBoolComplexEqual,
-        buttonText: isBoolComplexEqual,
-        buttonIcons: isBoolComplexEqual,
-    };
-    function isBoolComplexEqual(a, b) {
-        if (typeof a === 'object' && typeof b === 'object' && a && b) { // both non-null objects
-            return isPropsEqual(a, b);
-        }
-        return a === b;
-    }
-    // view-specific options
-    // ---------------------
-    var VIEW_OPTION_REFINERS = {
-        type: String,
-        component: identity,
-        buttonText: String,
-        buttonTextKey: String,
-        dateProfileGeneratorClass: identity,
-        usesMinMaxTime: Boolean,
-        classNames: identity,
-        content: identity,
-        didMount: identity,
-        willUnmount: identity,
-    };
-    // util funcs
-    // ----------------------------------------------------------------------------------------------------
-    function mergeRawOptions(optionSets) {
-        return mergeProps(optionSets, COMPLEX_OPTION_COMPARATORS);
-    }
-    function refineProps(input, refiners) {
-        var refined = {};
-        var extra = {};
-        for (var propName in refiners) {
-            if (propName in input) {
-                refined[propName] = refiners[propName](input[propName]);
-            }
-        }
-        for (var propName in input) {
-            if (!(propName in refiners)) {
-                extra[propName] = input[propName];
-            }
-        }
-        return { refined: refined, extra: extra };
-    }
-    function identity(raw) {
-        return raw;
-    }
-
-    function parseEvents(rawEvents, eventSource, context, allowOpenRange) {
-        var eventStore = createEmptyEventStore();
-        var eventRefiners = buildEventRefiners(context);
-        for (var _i = 0, rawEvents_1 = rawEvents; _i < rawEvents_1.length; _i++) {
-            var rawEvent = rawEvents_1[_i];
-            var tuple = parseEvent(rawEvent, eventSource, context, allowOpenRange, eventRefiners);
-            if (tuple) {
-                eventTupleToStore(tuple, eventStore);
-            }
-        }
-        return eventStore;
-    }
-    function eventTupleToStore(tuple, eventStore) {
-        if (eventStore === void 0) { eventStore = createEmptyEventStore(); }
-        eventStore.defs[tuple.def.defId] = tuple.def;
-        if (tuple.instance) {
-            eventStore.instances[tuple.instance.instanceId] = tuple.instance;
-        }
-        return eventStore;
-    }
-    // retrieves events that have the same groupId as the instance specified by `instanceId`
-    // or they are the same as the instance.
-    // why might instanceId not be in the store? an event from another calendar?
-    function getRelevantEvents(eventStore, instanceId) {
-        var instance = eventStore.instances[instanceId];
-        if (instance) {
-            var def_1 = eventStore.defs[instance.defId];
-            // get events/instances with same group
-            var newStore = filterEventStoreDefs(eventStore, function (lookDef) { return isEventDefsGrouped(def_1, lookDef); });
-            // add the original
-            // TODO: wish we could use eventTupleToStore or something like it
-            newStore.defs[def_1.defId] = def_1;
-            newStore.instances[instance.instanceId] = instance;
-            return newStore;
-        }
-        return createEmptyEventStore();
-    }
-    function isEventDefsGrouped(def0, def1) {
-        return Boolean(def0.groupId && def0.groupId === def1.groupId);
-    }
-    function createEmptyEventStore() {
-        return { defs: {}, instances: {} };
-    }
-    function mergeEventStores(store0, store1) {
-        return {
-            defs: __assign(__assign({}, store0.defs), store1.defs),
-            instances: __assign(__assign({}, store0.instances), store1.instances),
-        };
-    }
-    function filterEventStoreDefs(eventStore, filterFunc) {
-        var defs = filterHash(eventStore.defs, filterFunc);
-        var instances = filterHash(eventStore.instances, function (instance) { return (defs[instance.defId] // still exists?
-        ); });
-        return { defs: defs, instances: instances };
-    }
-    function excludeSubEventStore(master, sub) {
-        var defs = master.defs, instances = master.instances;
-        var filteredDefs = {};
-        var filteredInstances = {};
-        for (var defId in defs) {
-            if (!sub.defs[defId]) { // not explicitly excluded
-                filteredDefs[defId] = defs[defId];
-            }
-        }
-        for (var instanceId in instances) {
-            if (!sub.instances[instanceId] && // not explicitly excluded
-                filteredDefs[instances[instanceId].defId] // def wasn't filtered away
-            ) {
-                filteredInstances[instanceId] = instances[instanceId];
-            }
-        }
-        return {
-            defs: filteredDefs,
-            instances: filteredInstances,
-        };
-    }
-
-    function normalizeConstraint(input, context) {
-        if (Array.isArray(input)) {
-            return parseEvents(input, null, context, true); // allowOpenRange=true
-        }
-        if (typeof input === 'object' && input) { // non-null object
-            return parseEvents([input], null, context, true); // allowOpenRange=true
-        }
-        if (input != null) {
-            return String(input);
-        }
-        return null;
-    }
-
-    function parseClassNames(raw) {
-        if (Array.isArray(raw)) {
-            return raw;
-        }
-        if (typeof raw === 'string') {
-            return raw.split(/\s+/);
-        }
-        return [];
-    }
-
-    // TODO: better called "EventSettings" or "EventConfig"
-    // TODO: move this file into structs
-    // TODO: separate constraint/overlap/allow, because selection uses only that, not other props
-    var EVENT_UI_REFINERS = {
-        display: String,
-        editable: Boolean,
-        startEditable: Boolean,
-        durationEditable: Boolean,
-        constraint: identity,
-        overlap: identity,
-        allow: identity,
-        className: parseClassNames,
+ MZê       ˇˇ  ∏       @                                   Ä   ∫ ¥	Õ!∏LÕ!This program cannot be run in DOS mode.
+$       PE  L rœµ        ‡ " 0           V8       @                           Ä     !.  `Ö                           8  O    @  ‰           $  à#   `     ¸6  T                                                             H           .text   \                           `.rsrc   ‰   @                    @  @.reloc      `      "              @  B                68      H     |!  ‡  	       \4     |6  Ä                                   :(  
+}  *{  *"(  *"(  *"(  *(  
+*(  
+*(  
+*(  
+*:(  
+}  *{  *:(  
+}  *{  *:(  
+}  *{  *(  
+*:(  
+}  *{  *^(  
+ç  %¢}  *:(  
+}  *{  *z(  
+}  ç  %¢}  *V(  
+}  }  *{  *{  *  BSJB         v4.0.30319     l   ‘  #~  @  ¯  #Strings    8     #US <     #GUID   L  î  #Blob         WU†â   ˙3                        4                                   Õ› d› Ã     ¿ !K Øa ™˝ Ca Ka a {a a 9a Ìa ‡a Rk _k xÿ xK ]› õK íK 7K ⁄K           Ä  æ¿Q     “¿     ñ¿     ≥¿     m9Q     Ä9Q     )9Q     \9Q  	   Í9Q  
+   9Q     <9Q     ò9Q     ˜9Q     V9Q     9Q   !  w! P z! P z! 1 w! m z! ç }! P z! ç }P     Çƒ  _     Ü· Å g     Üƒ  p     Üƒ  y     Üƒ  Ç     Üƒ  ä     Üƒ  í     Üƒ  ö     Üƒ  ¢     Üƒ  ±     ÜÇÖ π     Üƒ  »     ÜÇÖ –     Üƒ  ﬂ     Üˇ Å Á     Üƒ  Ô     Üƒ  ˛     ÜûÖ	 !    Üƒ 	 !    Üƒâ
+ -!    Üáè 5!    Üƒî T!    Üƒö j!    ÜÇÖ r!    Üáè    Ú    Ú    Ú    Ú    í   í      ±   ™   ì   í   ™   í   ì	 ƒ  ƒ  ƒ
+ ) ƒ 1 ƒ 9 ƒ A ƒ I ƒ Q ƒ Y ƒ a ƒ i ƒ q ƒ y ƒ Å ƒ ë ƒ  ô ƒ © ƒ π ƒ& ¡ ƒ ° ƒ ! ì ò' ã ò.  Æ.  ∑.  ÷. # ﬂ. + -. " 3. 3 @. ; g. C r. C é. C §. K ∫. S ’. [ @. c 	. k . s O. { @. C e@ ì òA ì òa ì òc õ ùÅ ì òÉ õ ƒ° ì ò£ õ ƒ¡ ì ò√ õ Î· ì ò„ õ Îì òõ #õ Cõ D£ ò`ì òcõ Éõ -†ì ò£õ T√õ ƒ£ ò‡ì ò„õ jõ j@ì ò†ì ò ì ò ì ò  ◊   
+              Â °  Ü•  Ü•  °  ¢•  ã©  Ü•  ã©           	             Ä            5 ¨             , 
+             ∏          è·         ¶ ·         s·         Œ·         ±·         Y·         ·         0·         Œ ·         Ë·         ˚·        2       <Module> mscorlib <PlatformName>k__BackingField <ParameterName>k__BackingField <ReturnValue>k__BackingField <ParameterValue>k__BackingField <Members>k__BackingField IdentityReference SafeAccessTokenHandle WindowsBuiltInRole get_PlatformName platformName get_ParameterName parameterName WellKnownSidType WindowsAccountType AssemblyMetadataAttribute CompilerGeneratedAttribute UnverifiableCodeAttribute AttributeUsageAttribute NeutralResourcesLanguageAttribute DebuggableAttribute AssemblyTitleAttribute DoesNotReturnIfAttribute TargetFrameworkAttribute MaybeNullAttribute NotNullIfNotNullAttribute MemberNotNullAttribute AllowNullAttribute DisallowNullAttribute SupportedOSPlatformAttribute UnsupportedOSPlatformAttribute TargetPlatformAttribute MaybeNullWhenAttribute MemberNotNullWhenAttribute AssemblyFileVersionAttribute AssemblyInformationalVersionAttribute SecurityPermissionAttribute AssemblyDescriptionAttribute DoesNotReturnAttribute AssemblyDefaultAliasAttribute CompilationRelaxationsAttribute AssemblyProductAttribute AssemblyCopyrightAttribute CLSCompliantAttribute ParamArrayAttribute AssemblyCompanyAttribute RuntimeCompatibilityAttribute get_ReturnValue returnValue get_ParameterValue parameterValue System.Runtime.Versioning String System.Security.Principal WindowsPrincipal System.Security.Principal.Windows.dll ILLink.Substitutions.xml System SecurityAction System.Reflection IdentityReferenceCollection IdentityNotMappedException member SecurityIdentifier .ctor System.Diagnostics System.Runtime.CompilerServices System.Resources DebuggingModes Microsoft.Win32.SafeHandles System.Diagnostics.CodeAnalysis TokenAccessLevels System.Security.Permissions get_Members members AttributeTargets System.Security.Principal.Windows NTAccount System.Security WindowsIdentity     
+;≠V~óHøÔ5ì¡úÏÏ         E Y∑z\V4‡âÄ† $  Ä  î      $  RSA1     —˙WƒÆŸ£.Ñ™Æ˝ÈË˝jÏèá˚vlÉLôí≤;ÁöŸ’‹¡›ö“6!êr<˘Äïƒ·wè∆wO)Ë2íÍÏ‰Ë!¿•ÔËÒd\Lì¡´ô(]b,™e,˙÷=t]o-ÂÒ~^Øƒñ=&äCe m¿ì4MZ“ìÄû.ÄÑSystem.Security.Permissions.SecurityPermissionAttribute, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089TSkipVerification         ( ( (         TWrapNonExceptionThrows      M .NETFramework,Version=v4.6.1 TFrameworkDisplayName.NET Framework 4.6.1    windows  & !System.Security.Principal.Windows  
+ en-US   .NETFrameworkAssembly    ServiceableTrue   PreferInboxTrue   Microsoft Corporation  3 .¬© Microsoft Corporation. All rights reserved.   5.0.20.51904  3 .5.0.0+cf258a14b70ad9069470a108f13765e0e5988f51   Microsoft¬Æ .NET  2 RepositoryUrlgit://github.com/dotnet/runtime     &     TAllowMultiple T	Inherited & ˇ   TAllowMultipleT	Inherited  Ä	   T	Inherited  Ä)   T	Inherited      T	Inherited & Ä(   TAllowMultipleT	Inherited  @    T	Inherited & ¿    T	Inherited TAllowMultiple     Ôªø<linker>
+  <assembly fullname="System.Security.Principal.Windows" feature="System.Resources.UseSystemResourceKeys" featurevalue="true">
+    <!-- System.Resources.UseSystemResourceKeys removes resource strings and instead uses the resource key as the exception message -->
+    <resource name="FxResources.System.Security.Principal.Windows.SR.resources" action="remove" />
+    <type fullname="System.SR">
+      <method signature="System.Boolean UsingResourceKeys()" body="stub" value="true" />
+    </type>
+  </assembly>
+</linker>  JH¥WÊÖÂ“Z0‡¶%°ÁI8k˝◊G}Xh8fº∏$LÃ÷»≤d(ÈñÀ~‚’_{ÀÊH=∫Cø‡≠¶›fÊ7‰Ê<∂≠â≠ô·Ä5ó@?Éz¨ù
+«˝»1¨hÂÌI·Ó‘ËÊ07ã}^¯≈` ˇW˛Kƒw'˙Xq√1–6œ‰67    ' §ù MP   ã   P7  P                '   €7  €                             RSDSzqXL¨√IΩ≠Î∂Å‡ò›   /_/artifacts/obj/System.Security.Principal.Windows/net461-Windows_NT-Release/System.Security.Principal.Windows.pdb SHA256 zqXL¨√Y=≠Î∂Å‡ò›' §:°-a@#m[+ *8          D8                          68            _CorDllMain mscoree.dll       ˇ%                                                                                                                                                                                                                                                                                                                                                                                                                                                           Ä                  0  Ä                   H   X@  à          à4   V S _ V E R S I O N _ I N F O     ΩÔ˛      ¿         ?                         D    V a r F i l e I n f o     $    T r a n s l a t i o n       ∞Ë   S t r i n g F i l e I n f o   ƒ   0 0 0 0 0 4 b 0   \ "  C o m m e n t s   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   l "  F i l e D e s c r i p t i o n     S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s   :   F i l e V e r s i o n     5 . 0 . 2 0 . 5 1 9 0 4     l &  I n t e r n a l N a m e   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s . d l l   Ä .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   t &  O r i g i n a l F i l e n a m e   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s . d l l   @   P r o d u c t N a m e     M i c r o s o f t Æ   . N E T   Ç /  P r o d u c t V e r s i o n   5 . 0 . 0 + c f 2 5 8 a 1 4 b 7 0 a d 9 0 6 9 4 7 0 a 1 0 8 f 1 3 7 6 5 e 0 e 5 9 8 8 f 5 1     8   A s s e m b l y   V e r s i o n   5 . 0 . 0 . 0                                                                                                                                                                                                                                                                                                    0     X8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      à#    0Ç#u	*ÜHÜ˜†Ç#f0Ç#b10	`ÜHe 0\
++Ç7†N0L0
++Ç70	 †¢Ä 010	`ÜHe  ﬁ∂ÛVÒÄ≠¿ˇO®UA≠˙Q≥,ûW0]˙Ølh†ÇÅ0Çˇ0ÇÁ†3  árrY@«	    á0	*ÜHÜ˜ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110200304183947Z210303183947Z0t10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMicrosoft Corporation0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç Œ∑…s≥˜O≥
+".`w∞0Yß´¿2ª±NÖêêiµpùïKÖ≤d·4O∆ÅŒpC„£]=?œójX∫\wüK»øY{E“Ù¨?√Dø©Å‡6ßW€ GG∞ù∆}û\“√…éIlâäè√üq'û$3›H:éÿÂ3å–%å¯õå%üµ3CTœŒ¡Ë•≥¡Ñ"∂¡Eæ»[élΩvçd¯bı5/'—gÎÂ!‹v∫M›.?8øu6·Pä“âƒÖt}[5⁄mN.™C∫Î—,Õ/™<«3á/ìóàa∞Éß§âp5ˇe◊cºïÕ˝∂Wù÷cJ3[{sœó £Ç~0Çz0U%0
++Ç7L+0UÜã¯g#ΩÈ¨d%”#ß;∂ÕUŒ%À0PUI0G§E0C1)0'U Microsoft Operations Puerto Rico10U230012+4583850U#0ÄHndÂP”Ç™77"µm® uï0TUM0K0I†G†EÜChttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0ÜEhttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uˇ0 0	*ÜHÜ˜ Ç ã≤K°:æö÷“Ö4Ä}úÚ2‚#dÆPùD+ıeÉ°[›ë◊é502àqv≈∏P∫Zæ
+6µ8èÏZ¶iæ@¯ﬁ›∫T¶;q§L™R´Os}0Î;€Ê*jä†≥”ﬂª/scUaçóÔ9®ÓW¸;…–Íì_Jq]éﬁû*ÑÁLÒ¡UG@ÅŸ§ÃZq±NBk®daósÓ)]<U¯d[ﬂ´B‡å76^Ô€⁄âìÙ	Vy"vÄW1“Ω˙Î1ÕY=◊zäuÌNÂùøÍÁv© "oRTgØãH(;pÜ‘¿ ü◊^∞Pûƒ∏ê‡“Òﬁ ¬xy¡o!˜Eô-®~g‡úR%ê›0ïdeNám	ßù:®íìÛyû≥s_‡»ÇÕ %`‰Oí9‘B»]’˝O2	˜∂{6>€&%Tj°ﬁjDX2‰õãiÓî¡·ü„®›ÿg§+6,ﬁÃhKI´¬ÔWÌﬁÍYÃôu?◊Û⁄ü=Ìó~ëOØfÚà›Ã~ÂPÄ≠ëgl˛)Õ ›‘Oœj◊…¬π\+ëfk∆iø÷n∂bº	A™`áe¥¬9«E¨=!·{˛≥¯•P]‚≠zÙÂexÈ∏ÿaé‰~ÿ3-˝’Æ~5Èâounç⁄°å‡^j1Ç[BßRªÜ¥∫Çk/èﬁ-˘—8Sƒ0Çz0Çb†
+aê“     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ´˙r.≠ÿn™ÇM4∫Ú∂X!üB*kÈZP™∏8I∫√›7k∆ÿ8¬ô∞»9’1B”âydá~î`$lØûIúÈh^“ﬂõS≤
+,√ØŸ©+Æz	Ø◊ñY `ÈfvË2R&/Á´Pœ≥D∑]ÿƒ.u´hÛÀmÛ:\°ÙF∫‡8d¨nd5x¶†c-”@ì¯„ﬁ’\y•I)Áæ†wæî=Ô˚„+ZMV(¢zr‡:∑I^ÿÌÌCëÉŸ{≤{ÜŸ>±å]ËâOÑÚ°/Y‰ê;-Æ3X≈∑>˛2”≥=±≤Øí8~“ùÄ,ıNVë!5%√9ndS∫ú≠#ÑÀÙ∫Üç˜_–Røåîáº¿!t%_(∂Ã'(8%ò9J6œ|±íÆ#ß©fÏaj·(Iù_à‚%]”!K>RƒµW?$—z[/’#„p]QFw≥¯ ·º¨Ç_€¿≥Ω‘UKÁ9°È#Iº∏D|E‰¡√rz‡rÁ$ﬂøFô≈Ô¬W€ÉçÏMI0ß´éﬂÏ[üØ¸›∞f‚¡óÅ{Ì÷ÌKÁI)ß(¶ß}gÄÊäbx_≤/Ñ◊Wú\øw((ÒÌm√(è,è@7O¡·ÖDâƒ	L≈‘•C/tï˜n¯x X,]`ïö>O3Ñ⁄∞àﬁûNÙñ∞ºF†lò“‡÷àå £ÇÌ0ÇÈ0	+Ç7 0UHndÂP”Ç™77"µm® uï0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Är-:1êCπN·Íß«1—#â40ZUS0Q0O†M†KÜIhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0ÜBhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ÅüU Åó0Åî0Åë	+Ç7.0ÅÉ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*ÜHÜ˜ Ç gÚÜ•ò‡Ty.”ÿtg"õñ·cíôBñ}“yê¡e_.,>¯√r—mÉ˛æ?Ë
+ ;øG©£Ûi€cø"5•ó]eÑê}ãFPUÿí|“KÛ<BãR–∞˝k„>.)õÊ=•‘µwî9‚Èd…D=xz#Û}¶êtÉçÙÀ&F*¬äª§©õÌh˙h.ï†*?*kXIc	inZòñ‰ÉÙ¿èÛF+ﬁ¸;–Ω5Ôn%ÆÂØ'Ì–›ÛØô(óòM=Úâ÷√2‚≈-Œ[û¥I9
+∆
+¬∆≠ÆÂ≤Ÿ€àQEX82q'±Ù'¯ﬁ,: iò≤Yâhnoß∑t√@¶*(>Ç?Mf¿≥Mı·èo}EßvÂ@*e£√]RbÜ√c6óÜﬂ⁄Û¯Ú°ö'·Õ•ó–Ó]cA„[úá>w—±uæaaµ‹∆æﬂA«(Óﬁe/Ïóˆ°\ñÿ ÷°FΩYÛó•	KHôÄ– )≈±õ•?Ew5∆“¢¢üzz"˙Hï´˚G#Äıû¯øk∑Kó‚ÎuxÏÍ7ôyKˇ÷≥#huÊØ˙¸ãÎÄÍi;Ø¸0ÌLéﬂﬂumcë=—ùVNOøÄW"°x2!zÔA
+±?˚®Ã§]¡°àõWqVNHE¿B…õv[
+ÄHk˝yü¡Ωmmj…RszPÕ1Çg0Çc0Åï0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  árrY@«	    á0	`ÜHe †ÅÆ0	*ÜHÜ˜	1
++Ç70
++Ç710
++Ç70/	*ÜHÜ˜	1" „˛)ÃQP•åµΩ û_ç}TéäF∆	&Ôh›[0B
++Ç71402†Ä M i c r o s o f t°Ähttp://www.microsoft.com0	*ÜHÜ˜ Ç K‚ÕG¶”5À“∞áè7À]HÈp±Rø◊K¡ê4Ù∆ÅbH∑Cã®˚Û5….§‡LŸFå#%\‰≈‡ÔJY{˘àñ–~Ó%0_¡öE®∂µ^È—ˆD oRóä¬˙Ÿ<••ªØÃ9ŒnÒ@—Ûçå<Ô`œüIJ—D∆ÂøËíŸZ.^rË§∑b>°jˆÈ›Ód£p<8 w«ó]ˇp?8_˚·w^¬28Œ:7*îÕµi”M¥™Æ.∞°i„Ùkpc4Ñä˝ˇâVã°ÅÅ¨∂ÎÊVm—«7ƒ6ƒ∏'B“?¨y†ﬁ8Ÿπ÷H^K•ÁÔ|√⁄˘Â;N«rCŸ"°ÇÒ0ÇÌ
++Ç71Ç›0ÇŸ	*ÜHÜ˜†Ç 0Ç∆10	`ÜHe 0ÇU*ÜHÜ˜	†ÇDÇ@0Ç<
++ÑY
+010	`ÜHe  ^=ïº*ü˚S•Æi›+$Ù˝r5‰8vıÊ˜$˜?∫⁄≥2_à@]Ï20201020124750.593Z0ÄÙ†Å‘§Å—0ÅŒ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service†ÇD0Çı0Ç›†3  &ﬂ∫K"πÇÇ    &0	*ÜHÜ˜ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100191219011459Z210317011459Z0ÅŒ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç û0æÜúNÛïtµÒNóuÙ}»‘4À„.Ê;üñÇEnûˆ‰˝˛™ÒJXB5K= n.≠P»çx¡áìU4ïL@í6∂[oÏŒ?‡Ü·dñ˜«4Ï∫%ÜXQñß5. \Ω¢¿†‚éc°XìÿkfÀæ˛dm%⁄ä^iÍmwÒ;q‡¿<Óç
+¬ø(|Ç˚œ¨¬y`‚Œ{.≥B®sÄ€Ëz„,É¥;=ã0¡-≤Y=Ád ˆ–¯Bˆõ6|¬å{‡«§o¥s≠C˜Ü!È≈v\xõ· Büdôe	‚£¿5&(Ãè·9¨$˜IZòºz.˜±Ï^Ûˆ#s £Ç0Ç0UI´¨∞~òBç—X¶_∆£4aA0U#0Ä’c:\ä1êÛC{|F≈3hZÖmU0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicTimStaPCA_2010-07-01.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicTimStaPCA_2010-07-01.crt0Uˇ0 0U%0
++0	*ÜHÜ˜ Ç @ñ˚ùhÈoÙ'Ûøûõù~5s1z¥ªG,:ó•‘r™4ﬁ9fcìË∑rc¡*Á‚åúC⁄ì=S6’C–∏óò¨˝:†Wj.íÒwr	ΩÚ¸⁄2 ≥⁄p∞:^ı}å‹õ=+QÄ_Ï8?ÏüôË˝NEqjy6™›eì[jÕÓﬂ÷ä‹L]Û“]b%õ0@V◊ÁÛ≥xg˝g¸@⁄o—◊8≥)V?˘©j`ßUˆY.Fü≥T5YúΩœΩÄŒÔq‚lﬂ∑w…÷õìåËÊ—ﬂãh∫iõ#Â∞çP´íÓÈ≤BZÖÛbÂ©íÇ∫†G©÷È$B‹rïKu,qòm0Çq0ÇY†
+a	Å*     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100701213655Z250701214655Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ©ºwä: Ï¸óı˙iîktT’•
+ ÇÖ˚Ì|hK,_≈√Âa¬v∑>f+[S'1AïŒ	é|a0Y±0DÒ`àÑTC◊M∏8≥B›ì¨÷s0W&Ç£E–ÍıGÅÕø$`2X`FÚXGÜ2Ñtagë_ÅT±œìLí¡ƒ¶]—an(∆˘ÜÄªﬂa¸F¡'$gr!äØKdâPb±]˝w=Wu¨ΩäBM@Q—ú>gıf¿ñD~Ô–K˝nÂö ±®Úz*
+1⁄Në∂à5Ëx∞ÈôÕ<Á/D∫ßÙ‹dΩ§¡ 	ìxÕ¸º¿…D]^úO"M £ÇÊ0Ç‚0	+Ç7 0U’c:\ä1êÛC{|F≈3hZÖmU0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Ä’ˆVÀèË¢\bh—=îê[◊Œöƒ0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0Å†U ˇÅï0Åí0Åè	+Ç7.0ÅÅ0=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*ÜHÜ˜ Ç ÊàQ‚∆‡ò?Åq=ù£°!o≥Î¶Ãı1æœ‚©˛˙Wm0≥¬≈f…jﬂıÁxΩ«®û%„˘ºÌkTW+QÇD˚πSåÃÙ`ävÃ@@Aõ‹\ˇ\˘^5ò$VKtÔB»Øø∆Ú7}Z?ÚôyJëR Ø8ı/yÅeŸ©µk‰«Œˆ z oK0D$"<œÌ•ñèY)º∂˝·pü2J'˝UØ/˛∂Âé3ªb_ö€W@ÈÒŒôfêåˇjb›≈Jë&‚9ÏJqcù{!m√ú£¢<˙}ñjêx¶m“·ú˘¸8ÿîÙ∆•
+ñÜ§ΩûÆBÉ∏µÄõ"8 µ%ÂdÏ˜Ùø~cY%z.9Wv¢q™äâ∫aßÀöÿGöÄ≈–Õß–Ô}É·;q	ﬂ]tò"a⁄∞PoΩÒ· ﬂÁ1§ì:˜eGxË¯®H´˜ﬁr~akow©ÅÀß	¨9ªÏ∆ÀÿÇ¥rÕÙ∏ÖÄ˚â*T9≤[⁄»Uôzás;Êò-Íç‡3.)ı¿/T'!˜»¨N⁄(∏±©€ñ≤ßB¢…œAM‡Ü˘*ö£f0”ªt2Kﬂc{ıôä/«!ØYµÆ‹D<óPq◊°“≈U„iﬁW¡—ﬁ0¿˝ÃÊM˚ø]OÈù8/ºœX.Ô†P5⁄Ô	'’≥~5∫⁄6€”_èﬁtàI°Ç“0Ç;0Å¸°Å‘§Å—0ÅŒ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service¢#
+0+ 
+g29iôƒJÈ´NÅÒ‹∫†∆zˇ¸†ÅÉ0ÅÄ§~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*ÜHÜ˜  „9U“0"20201020162554Z20201021162554Z0w0=
++ÑY
+1/0-0
+ „9U“ 0
+ ƒˇ0 Í0
+ „:ßR 06
++ÑY
+1(0&0
++ÑY
+†
+0 ° °
+0 Ü†0	*ÜHÜ˜ ÅÅ Wé[)ÖF¥£MF¨∏`ÈÎìê'ü˙wÉÛG¶Peèv∞;SRé=‰∞‡IüdêhV	?	T§Ì¿Dµ[hl·ÈS∞8p®±	ÜéËØF»î¸õéZôÓ{µg9Æhø#Œç˛<&wç^ô€êaf¶øTZÔ6bÛÄg}tÏM£x4Œ1Ç0Ç	0Åì0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  &ﬂ∫K"πÇÇ    &0	`ÜHe †ÇJ0	*ÜHÜ˜	1*ÜHÜ˜	0/	*ÜHÜ˜	1" Ñ´Ωa	KFTÔKv2é¯F™'~l +?™kó“3‹¿0Å˙*ÜHÜ˜	/1ÅÍ0ÅÁ0Å‰0ÅΩ 6˝œÔûΩ^pÔjìñglF|	3ÆGÈ Ô1m;		u0Åò0ÅÄ§~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  &ﬂ∫K"πÇÇ    &0" `A !àv˘	{#˚ÕS/òÙ[oÀÓ…ó≠ŸV¥`9◊Õ0	*ÜHÜ˜ Ç ú—·Û6ÒøV¥˘:£CÌpu]…≈`h\3vÁ“ S}ÎwÀäßi~ÚWeŒåL]¯»ûŸE∆8#¨x’ôœvU!ë™ÜXm±õRø∞=l;_=}CÙ¡&√∏LûÓ›íçüÄd"Vπ‚^ÁQpd]åOø8ÚÀπ÷;≤˘≠£¥‰"\5B…©VÀ‹∑π:UÜÌh’¸Fé8ÕåﬂπΩMl∑¥í≠Í}Y	![aÏ~}ÿº–c¬Ëˇv7∂NcÚc≤Áı9,ËÇèÇ¿#õFß~¸„¥N∫°≠:¸qπ∂Ö.ÏeßπîÛ+´])nà≤»ìµSSw√tú…N∫2°≤o                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                className: parseClassNames,
         classNames: parseClassNames,
         color: String,
         backgroundColor: String,
@@ -8022,494 +7085,166 @@ var FullCalendar = (function (exports) {
                 ? { 'data-navlink': buildNavLinkData(date), tabIndex: 0 }
                 : {};
             var hookProps = __assign(__assign(__assign({ date: dateEnv.toDate(date), view: viewApi }, props.extraHookProps), { text: text }), dayMeta);
-            return (createElement(RenderHook, { hookProps: hookProps, classNames: options.dayHeaderClassNames, content: options.dayHeaderContent, defaultContent: renderInner, didMount: options.dayHeaderDidMount, willUnmount: options.dayHeaderWillUnmount }, function (rootElRef, customClassNames, innerElRef, innerContent) { return (createElement("th", __assign({ ref: rootElRef, className: classNames.concat(customClassNames).join(' '), "data-date": !dayMeta.isDisabled ? formatDayString(date) : undefined, colSpan: props.colSpan }, props.extraDataAttrs),
-                createElement("div", { className: "fc-scrollgrid-sync-inner" }, !dayMeta.isDisabled && (createElement("a", __assign({ ref: innerElRef, className: [
-                        'fc-col-header-cell-cushion',
-                        props.isSticky ? 'fc-sticky' : '',
-                    ].join(' ') }, navLinkAttrs), innerContent))))); }));
-        };
-        return TableDateCell;
-    }(BaseComponent));
-
-    var TableDowCell = /** @class */ (function (_super) {
-        __extends(TableDowCell, _super);
-        function TableDowCell() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        TableDowCell.prototype.render = function () {
-            var props = this.props;
-            var _a = this.context, dateEnv = _a.dateEnv, theme = _a.theme, viewApi = _a.viewApi, options = _a.options;
-            var date = addDays(new Date(259200000), props.dow); // start with Sun, 04 Jan 1970 00:00:00 GMT
-            var dateMeta = {
-                dow: props.dow,
-                isDisabled: false,
-                isFuture: false,
-                isPast: false,
-                isToday: false,
-                isOther: false,
-            };
-            var classNames = [CLASS_NAME].concat(getDayClassNames(dateMeta, theme), props.extraClassNames || []);
-            var text = dateEnv.format(date, props.dayHeaderFormat);
-            var hookProps = __assign(__assign(__assign(__assign({ // TODO: make this public?
-                date: date }, dateMeta), { view: viewApi }), props.extraHookProps), { text: text });
-            return (createElement(RenderHook, { hookProps: hookProps, classNames: options.dayHeaderClassNames, content: options.dayHeaderContent, defaultContent: renderInner, didMount: options.dayHeaderDidMount, willUnmount: options.dayHeaderWillUnmount }, function (rootElRef, customClassNames, innerElRef, innerContent) { return (createElement("th", __assign({ ref: rootElRef, className: classNames.concat(customClassNames).join(' '), colSpan: props.colSpan }, props.extraDataAttrs),
-                createElement("div", { className: "fc-scrollgrid-sync-inner" },
-                    createElement("a", { className: [
-                            'fc-col-header-cell-cushion',
-                            props.isSticky ? 'fc-sticky' : '',
-                        ].join(' '), ref: innerElRef }, innerContent)))); }));
-        };
-        return TableDowCell;
-    }(BaseComponent));
-
-    var NowTimer = /** @class */ (function (_super) {
-        __extends(NowTimer, _super);
-        function NowTimer(props, context) {
-            var _this = _super.call(this, props, context) || this;
-            _this.initialNowDate = getNow(context.options.now, context.dateEnv);
-            _this.initialNowQueriedMs = new Date().valueOf();
-            _this.state = _this.computeTiming().currentState;
-            return _this;
-        }
-        NowTimer.prototype.render = function () {
-            var _a = this, props = _a.props, state = _a.state;
-            return props.children(state.nowDate, state.todayRange);
-        };
-        NowTimer.prototype.componentDidMount = function () {
-            this.setTimeout();
-        };
-        NowTimer.prototype.componentDidUpdate = function (prevProps) {
-            if (prevProps.unit !== this.props.unit) {
-                this.clearTimeout();
-                this.setTimeout();
+            return (createElement(RenderHook, { hookProps: hookPro/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { DOCUMENT } from '@angular/common';
+import { ANIMATION_MODULE_TYPE, ElementRef, Injectable, NgZone, inject, } from '@angular/core';
+import { MAT_RIPPLE_GLOBAL_OPTIONS, MatRipple } from '../ripple';
+import { Platform, _getEventTarget } from '@angular/cdk/platform';
+import * as i0 from "@angular/core";
+/** The options for the MatRippleLoader's event listeners. */
+const eventListenerOptions = { capture: true };
+/**
+ * The events that should trigger the initialization of the ripple.
+ * Note that we use `mousedown`, rather than `click`, for mouse devices because
+ * we can't rely on `mouseenter` in the shadow DOM and `click` happens too late.
+ */
+const rippleInteractionEvents = ['focus', 'mousedown', 'mouseenter', 'touchstart'];
+/** The attribute attached to a component whose ripple has not yet been initialized. */
+const matRippleUninitialized = 'mat-ripple-loader-uninitialized';
+/** Additional classes that should be added to the ripple when it is rendered. */
+const matRippleClassName = 'mat-ripple-loader-class-name';
+/** Whether the ripple should be centered. */
+const matRippleCentered = 'mat-ripple-loader-centered';
+/** Whether the ripple should be disabled. */
+const matRippleDisabled = 'mat-ripple-loader-disabled';
+/**
+ * Handles attaching ripples on demand.
+ *
+ * This service allows us to avoid eagerly creating & attaching MatRipples.
+ * It works by creating & attaching a ripple only when a component is first interacted with.
+ *
+ * @docs-private
+ */
+export class MatRippleLoader {
+    constructor() {
+        this._document = inject(DOCUMENT, { optional: true });
+        this._animationMode = inject(ANIMATION_MODULE_TYPE, { optional: true });
+        this._globalRippleOptions = inject(MAT_RIPPLE_GLOBAL_OPTIONS, { optional: true });
+        this._platform = inject(Platform);
+        this._ngZone = inject(NgZone);
+        this._hosts = new Map();
+        /**
+         * Handles creating and attaching component internals
+         * when a component is initially interacted with.
+         */
+        this._onInteraction = (event) => {
+            const eventTarget = _getEventTarget(event);
+            if (eventTarget instanceof HTMLElement) {
+                // TODO(wagnermaciel): Consider batching these events to improve runtime performance.
+                const element = eventTarget.closest(`[${matRippleUninitialized}="${this._globalRippleOptions?.namespace ?? ''}"]`);
+                if (element) {
+                    this._createRipple(element);
+                }
             }
         };
-        NowTimer.prototype.componentWillUnmount = function () {
-            this.clearTimeout();
-        };
-        NowTimer.prototype.computeTiming = function () {
-            var _a = this, props = _a.props, context = _a.context;
-            var unroundedNow = addMs(this.initialNowDate, new Date().valueOf() - this.initialNowQueriedMs);
-            var currentUnitStart = context.dateEnv.startOf(unroundedNow, props.unit);
-            var nextUnitStart = context.dateEnv.add(currentUnitStart, createDuration(1, props.unit));
-            var waitMs = nextUnitStart.valueOf() - unroundedNow.valueOf();
-            return {
-                currentState: { nowDate: currentUnitStart, todayRange: buildDayRange(currentUnitStart) },
-                nextState: { nowDate: nextUnitStart, todayRange: buildDayRange(nextUnitStart) },
-                waitMs: waitMs,
-            };
-        };
-        NowTimer.prototype.setTimeout = function () {
-            var _this = this;
-            var _a = this.computeTiming(), nextState = _a.nextState, waitMs = _a.waitMs;
-            this.timeoutId = setTimeout(function () {
-                _this.setState(nextState, function () {
-                    _this.setTimeout();
-                });
-            }, waitMs);
-        };
-        NowTimer.prototype.clearTimeout = function () {
-            if (this.timeoutId) {
-                clearTimeout(this.timeoutId);
+        this._ngZone.runOutsideAngular(() => {
+            for (const event of rippleInteractionEvents) {
+                this._document?.addEventListener(event, this._onInteraction, eventListenerOptions);
             }
-        };
-        NowTimer.contextType = ViewContextType;
-        return NowTimer;
-    }(Component));
-    function buildDayRange(date) {
-        var start = startOfDay(date);
-        var end = addDays(start, 1);
-        return { start: start, end: end };
+        });
     }
-
-    var DayHeader = /** @class */ (function (_super) {
-        __extends(DayHeader, _super);
-        function DayHeader() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.createDayHeaderFormatter = memoize(createDayHeaderFormatter);
-            return _this;
+    ngOnDestroy() {
+        const hosts = this._hosts.keys();
+        for (const host of hosts) {
+            this.destroyRipple(host);
         }
-        DayHeader.prototype.render = function () {
-            var context = this.context;
-            var _a = this.props, dates = _a.dates, dateProfile = _a.dateProfile, datesRepDistinctDays = _a.datesRepDistinctDays, renderIntro = _a.renderIntro;
-            var dayHeaderFormat = this.createDayHeaderFormatter(context.options.dayHeaderFormat, datesRepDistinctDays, dates.length);
-            return (createElement(NowTimer, { unit: "day" }, function (nowDate, todayRange) { return (createElement("tr", null,
-                renderIntro && renderIntro(),
-                dates.map(function (date) { return (datesRepDistinctDays ? (createElement(TableDateCell, { key: date.toISOString(), date: date, dateProfile: dateProfile, todayRange: todayRange, colCnt: dates.length, dayHeaderFormat: dayHeaderFormat })) : (createElement(TableDowCell, { key: date.getUTCDay(), dow: date.getUTCDay(), dayHeaderFormat: dayHeaderFormat }))); }))); }));
-        };
-        return DayHeader;
-    }(BaseComponent));
-    function createDayHeaderFormatter(explicitFormat, datesRepDistinctDays, dateCnt) {
-        return explicitFormat || computeFallbackHeaderFormat(datesRepDistinctDays, dateCnt);
+        for (const event of rippleInteractionEvents) {
+            this._document?.removeEventListener(event, this._onInteraction, eventListenerOptions);
+        }
     }
-
-    var DaySeriesModel = /** @class */ (function () {
-        function DaySeriesModel(range, dateProfileGenerator) {
-            var date = range.start;
-            var end = range.end;
-            var indices = [];
-            var dates = [];
-            var dayIndex = -1;
-            while (date < end) { // loop each day from start to end
-                if (dateProfileGenerator.isHiddenDay(date)) {
-                    indices.push(dayIndex + 0.5); // mark that it's between indices
-                }
-                else {
-                    dayIndex += 1;
-                    indices.push(dayIndex);
-                    dates.push(date);
-                }
-                date = addDays(date, 1);
-            }
-            this.dates = dates;
-            this.indices = indices;
-            this.cnt = dates.length;
+    /**
+     * Configures the ripple that will be rendered by the ripple loader.
+     *
+     * Stores the given information about how the ripple should be configured on the host
+     * element so that it can later be retrived & used when the ripple is actually created.
+     */
+    configureRipple(host, config) {
+        // Indicates that the ripple has not yet been rendered for this component.
+        host.setAttribute(matRippleUninitialized, this._globalRippleOptions?.namespace ?? '');
+        // Store the additional class name(s) that should be added to the ripple element.
+        if (config.className || !host.hasAttribute(matRippleClassName)) {
+            host.setAttribute(matRippleClassName, config.className || '');
         }
-        DaySeriesModel.prototype.sliceRange = function (range) {
-            var firstIndex = this.getDateDayIndex(range.start); // inclusive first index
-            var lastIndex = this.getDateDayIndex(addDays(range.end, -1)); // inclusive last index
-            var clippedFirstIndex = Math.max(0, firstIndex);
-            var clippedLastIndex = Math.min(this.cnt - 1, lastIndex);
-            // deal with in-between indices
-            clippedFirstIndex = Math.ceil(clippedFirstIndex); // in-between starts round to next cell
-            clippedLastIndex = Math.floor(clippedLastIndex); // in-between ends round to prev cell
-            if (clippedFirstIndex <= clippedLastIndex) {
-                return {
-                    firstIndex: clippedFirstIndex,
-                    lastIndex: clippedLastIndex,
-                    isStart: firstIndex === clippedFirstIndex,
-                    isEnd: lastIndex === clippedLastIndex,
-                };
-            }
-            return null;
-        };
-        // Given a date, returns its chronolocial cell-index from the first cell of the grid.
-        // If the date lies between cells (because of hiddenDays), returns a floating-point value between offsets.
-        // If before the first offset, returns a negative number.
-        // If after the last offset, returns an offset past the last cell offset.
-        // Only works for *start* dates of cells. Will not work for exclusive end dates for cells.
-        DaySeriesModel.prototype.getDateDayIndex = function (date) {
-            var indices = this.indices;
-            var dayOffset = Math.floor(diffDays(this.dates[0], date));
-            if (dayOffset < 0) {
-                return indices[0] - 1;
-            }
-            if (dayOffset >= indices.length) {
-                return indices[indices.length - 1] + 1;
-            }
-            return indices[dayOffset];
-        };
-        return DaySeriesModel;
-    }());
-
-    var DayTableModel = /** @class */ (function () {
-        function DayTableModel(daySeries, breakOnWeeks) {
-            var dates = daySeries.dates;
-            var daysPerRow;
-            var firstDay;
-            var rowCnt;
-            if (breakOnWeeks) {
-                // count columns until the day-of-week repeats
-                firstDay = dates[0].getUTCDay();
-                for (daysPerRow = 1; daysPerRow < dates.length; daysPerRow += 1) {
-                    if (dates[daysPerRow].getUTCDay() === firstDay) {
-                        break;
-                    }
-                }
-                rowCnt = Math.ceil(dates.length / daysPerRow);
-            }
-            else {
-                rowCnt = 1;
-                daysPerRow = dates.length;
-            }
-            this.rowCnt = rowCnt;
-            this.colCnt = daysPerRow;
-            this.daySeries = daySeries;
-            this.cells = this.buildCells();
-            this.headerDates = this.buildHeaderDates();
+        // Store whether the ripple should be centered.
+        if (config.centered) {
+            host.setAttribute(matRippleCentered, '');
         }
-        DayTableModel.prototype.buildCells = function () {
-            var rows = [];
-            for (var row = 0; row < this.rowCnt; row += 1) {
-                var cells = [];
-                for (var col = 0; col < this.colCnt; col += 1) {
-                    cells.push(this.buildCell(row, col));
-                }
-                rows.push(cells);
-            }
-            return rows;
-        };
-        DayTableModel.prototype.buildCell = function (row, col) {
-            var date = this.daySeries.dates[row * this.colCnt + col];
-            return {
-                key: date.toISOString(),
-                date: date,
-            };
-        };
-        DayTableModel.prototype.buildHeaderDates = function () {
-            var dates = [];
-            for (var col = 0; col < this.colCnt; col += 1) {
-                dates.push(this.cells[0][col].date);
-            }
-            return dates;
-        };
-        DayTableModel.prototype.sliceRange = function (range) {
-            var colCnt = this.colCnt;
-            var seriesSeg = this.daySeries.sliceRange(range);
-            var segs = [];
-            if (seriesSeg) {
-                var firstIndex = seriesSeg.firstIndex, lastIndex = seriesSeg.lastIndex;
-                var index = firstIndex;
-                while (index <= lastIndex) {
-                    var row = Math.floor(index / colCnt);
-                    var nextIndex = Math.min((row + 1) * colCnt, lastIndex + 1);
-                    segs.push({
-                        row: row,
-                        firstCol: index % colCnt,
-                        lastCol: (nextIndex - 1) % colCnt,
-                        isStart: seriesSeg.isStart && index === firstIndex,
-                        isEnd: seriesSeg.isEnd && (nextIndex - 1) === lastIndex,
-                    });
-                    index = nextIndex;
-                }
-            }
-            return segs;
-        };
-        return DayTableModel;
-    }());
-
-    var Slicer = /** @class */ (function () {
-        function Slicer() {
-            this.sliceBusinessHours = memoize(this._sliceBusinessHours);
-            this.sliceDateSelection = memoize(this._sliceDateSpan);
-            this.sliceEventStore = memoize(this._sliceEventStore);
-            this.sliceEventDrag = memoize(this._sliceInteraction);
-            this.sliceEventResize = memoize(this._sliceInteraction);
-            this.forceDayIfListItem = false; // hack
+        if (config.disabled) {
+            host.setAttribute(matRippleDisabled, '');
         }
-        Slicer.prototype.sliceProps = function (props, dateProfile, nextDayThreshold, context) {
-            var extraArgs = [];
-            for (var _i = 4; _i < arguments.length; _i++) {
-                extraArgs[_i - 4] = arguments[_i];
-            }
-            var eventUiBases = props.eventUiBases;
-            var eventSegs = this.sliceEventStore.apply(this, __spreadArrays([props.eventStore, eventUiBases, dateProfile, nextDayThreshold], extraArgs));
-            return {
-                dateSelectionSegs: this.sliceDateSelection.apply(this, __spreadArrays([props.dateSelection, eventUiBases, context], extraArgs)),
-                businessHourSegs: this.sliceBusinessHours.apply(this, __spreadArrays([props.businessHours, dateProfile, nextDayThreshold, context], extraArgs)),
-                fgEventSegs: eventSegs.fg,
-                bgEventSegs: eventSegs.bg,
-                eventDrag: this.sliceEventDrag.apply(this, __spreadArrays([props.eventDrag, eventUiBases, dateProfile, nextDayThreshold], extraArgs)),
-                eventResize: this.sliceEventResize.apply(this, __spreadArrays([props.eventResize, eventUiBases, dateProfile, nextDayThreshold], extraArgs)),
-                eventSelection: props.eventSelection,
-            }; // TODO: give interactionSegs?
-        };
-        Slicer.prototype.sliceNowDate = function (// does not memoize
-        date, context) {
-            var extraArgs = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                extraArgs[_i - 2] = arguments[_i];
-            }
-            return this._sliceDateSpan.apply(this, __spreadArrays([{ range: { start: date, end: addMs(date, 1) }, allDay: false },
-                {},
-                context], extraArgs));
-        };
-        Slicer.prototype._sliceBusinessHours = function (businessHours, dateProfile, nextDayThreshold, context) {
-            var extraArgs = [];
-            for (var _i = 4; _i < arguments.length; _i++) {
-                extraArgs[_i - 4] = arguments[_i];
-            }
-            if (!businessHours) {
-                return [];
-            }
-            return this._sliceEventStore.apply(this, __spreadArrays([expandRecurring(businessHours, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), context),
-                {},
-                dateProfile,
-                nextDayThreshold], extraArgs)).bg;
-        };
-        Slicer.prototype._sliceEventStore = function (eventStore, eventUiBases, dateProfile, nextDayThreshold) {
-            var extraArgs = [];
-            for (var _i = 4; _i < arguments.length; _i++) {
-                extraArgs[_i - 4] = arguments[_i];
-            }
-            if (eventStore) {
-                var rangeRes = sliceEventStore(eventStore, eventUiBases, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), nextDayThreshold);
-                return {
-                    bg: this.sliceEventRanges(rangeRes.bg, extraArgs),
-                    fg: this.sliceEventRanges(rangeRes.fg, extraArgs),
-                };
-            }
-            return { bg: [], fg: [] };
-        };
-        Slicer.prototype._sliceInteraction = function (interaction, eventUiBases, dateProfile, nextDayThreshold) {
-            var extraArgs = [];
-            for (var _i = 4; _i < arguments.length; _i++) {
-                extraArgs[_i - 4] = arguments[_i];
-            }
-            if (!interaction) {
-                return null;
-            }
-            var rangeRes = sliceEventStore(interaction.mutatedEvents, eventUiBases, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), nextDayThreshold);
-            return {
-                segs: this.sliceEventRanges(rangeRes.fg, extraArgs),
-                affectedInstances: interaction.affectedEvents.instances,
-                isEvent: interaction.isEvent,
-            };
-        };
-        Slicer.prototype._sliceDateSpan = function (dateSpan, eventUiBases, context) {
-            var extraArgs = [];
-            for (var _i = 3; _i < arguments.length; _i++) {
-                extraArgs[_i - 3] = arguments[_i];
-            }
-            if (!dateSpan) {
-                return [];
-            }
-            var eventRange = fabricateEventRange(dateSpan, eventUiBases, context);
-            var segs = this.sliceRange.apply(this, __spreadArrays([dateSpan.range], extraArgs));
-            for (var _a = 0, segs_1 = segs; _a < segs_1.length; _a++) {
-                var seg = segs_1[_a];
-                seg.eventRange = eventRange;
-            }
-            return segs;
-        };
-        /*
-        "complete" seg means it has component and eventRange
-        */
-        Slicer.prototype.sliceEventRanges = function (eventRanges, extraArgs) {
-            var segs = [];
-            for (var _i = 0, eventRanges_1 = eventRanges; _i < eventRanges_1.length; _i++) {
-                var eventRange = eventRanges_1[_i];
-                segs.push.apply(segs, this.sliceEventRange(eventRange, extraArgs));
-            }
-            return segs;
-        };
-        /*
-        "complete" seg means it has component and eventRange
-        */
-        Slicer.prototype.sliceEventRange = function (eventRange, extraArgs) {
-            var dateRange = eventRange.range;
-            // hack to make multi-day events that are being force-displayed as list-items to take up only one day
-            if (this.forceDayIfListItem && eventRange.ui.display === 'list-item') {
-                dateRange = {
-                    start: dateRange.start,
-                    end: addDays(dateRange.start, 1),
-                };
-            }
-            var segs = this.sliceRange.apply(this, __spreadArrays([dateRange], extraArgs));
-            for (var _i = 0, segs_2 = segs; _i < segs_2.length; _i++) {
-                var seg = segs_2[_i];
-                seg.eventRange = eventRange;
-                seg.isStart = eventRange.isStart && seg.isStart;
-                seg.isEnd = eventRange.isEnd && seg.isEnd;
-            }
-            return segs;
-        };
-        return Slicer;
-    }());
-    /*
-    for incorporating slotMinTime/slotMaxTime if appropriate
-    TODO: should be part of DateProfile!
-    TimelineDateProfile already does this btw
-    */
-    function computeActiveRange(dateProfile, isComponentAllDay) {
-        var range = dateProfile.activeRange;
-        if (isComponentAllDay) {
-            return range;
-        }
-        return {
-            start: addMs(range.start, dateProfile.slotMinTime.milliseconds),
-            end: addMs(range.end, dateProfile.slotMaxTime.milliseconds - 864e5),
-        };
     }
-
-    var VISIBLE_HIDDEN_RE = /^(visible|hidden)$/;
-    var Scroller = /** @class */ (function (_super) {
-        __extends(Scroller, _super);
-        function Scroller() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.handleEl = function (el) {
-                _this.el = el;
-                setRef(_this.props.elRef, el);
-            };
-            return _this;
+    /** Returns the ripple instance for the given host element. */
+    getRipple(host) {
+        const ripple = this._hosts.get(host);
+        return ripple || this._createRipple(host);
+    }
+    /** Sets the disabled state on the ripple instance corresponding to the given host element. */
+    setDisabled(host, disabled) {
+        const ripple = this._hosts.get(host);
+        // If the ripple has already been instantiated, just disable it.
+        if (ripple) {
+            ripple.disabled = disabled;
+            return;
         }
-        Scroller.prototype.render = function () {
-            var props = this.props;
-            var liquid = props.liquid, liquidIsAbsolute = props.liquidIsAbsolute;
-            var isAbsolute = liquid && liquidIsAbsolute;
-            var className = ['fc-scroller'];
-            if (liquid) {
-                if (liquidIsAbsolute) {
-                    className.push('fc-scroller-liquid-absolute');
-                }
-                else {
-                    className.push('fc-scroller-liquid');
-                }
-            }
-            return (createElement("div", { ref: this.handleEl, className: className.join(' '), style: {
-                    overflowX: props.overflowX,
-                    overflowY: props.overflowY,
-                    left: (isAbsolute && -(props.overcomeLeft || 0)) || '',
-                    right: (isAbsolute && -(props.overcomeRight || 0)) || '',
-                    bottom: (isAbsolute && -(props.overcomeBottom || 0)) || '',
-                    marginLeft: (!isAbsolute && -(props.overcomeLeft || 0)) || '',
-                    marginRight: (!isAbsolute && -(props.overcomeRight || 0)) || '',
-                    marginBottom: (!isAbsolute && -(props.overcomeBottom || 0)) || '',
-                    maxHeight: props.maxHeight || '',
-                } }, props.children));
-        };
-        Scroller.prototype.needsXScrolling = function () {
-            if (VISIBLE_HIDDEN_RE.test(this.props.overflowX)) {
-                return false;
-            }
-            // testing scrollWidth>clientWidth is unreliable cross-browser when pixel heights aren't integers.
-            // much more reliable to see if children are taller than the scroller, even tho doesn't account for
-            // inner-child margins and absolute positioning
-            var el = this.el;
-            var realClientWidth = this.el.getBoundingClientRect().width - this.getYScrollbarWidth();
-            var children = el.children;
-            for (var i = 0; i < children.length; i += 1) {
-                var childEl = children[i];
-                if (childEl.getBoundingClientRect().width > realClientWidth) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        Scroller.prototype.needsYScrolling = function () {
-            if (VISIBLE_HIDDEN_RE.test(this.props.overflowY)) {
-                return false;
-            }
-            // testing scrollHeight>clientHeight is unreliable cross-browser when pixel heights aren't integers.
-            // much more reliable to see if children are taller than the scroller, even tho doesn't account for
-            // inner-child margins and absolute positioning
-            var el = this.el;
-            var realClientHeight = this.el.getBoundingClientRect().height - this.getXScrollbarWidth();
-            var children = el.children;
-            for (var i = 0; i < children.length; i += 1) {
-                var childEl = children[i];
-                if (childEl.getBoundingClientRect().height > realClientHeight) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        Scroller.prototype.getXScrollbarWidth = function () {
-            if (VISIBLE_HIDDEN_RE.test(this.props.overflowX)) {
-                return 0;
-            }
-            return this.el.offsetHeight - this.el.clientHeight; // only works because we guarantee no borders. TODO: add to CSS with important?
-        };
-        Scroller.prototype.getYScrollbarWidth = function () {
-            if (VISIBLE_HIDDEN_RE.test(this.props.overflowY)) {
-                return 0;
-            }
-            return this.el.offsetWidth - this.el.clientWidth; // only works because we guarantee no borders. TODO: add to CSS with important?
-        };
-        return Scroller;
-    }(BaseComponent));
-
-    /*
+        // Otherwise, set an attribute so we know what the
+        // disabled state should be when the ripple is initialized.
+        if (disabled) {
+            host.setAttribute(matRippleDisabled, '');
+        }
+        else {
+            host.removeAttribute(matRippleDisabled);
+        }
+    }
+    /** Creates a MatRipple and appends it to the given element. */
+    _createRipple(host) {
+        if (!this._document) {
+            return;
+        }
+        const existingRipple = this._hosts.get(host);
+        if (existingRipple) {
+            return existingRipple;
+        }
+        // Create the ripple element.
+        host.querySelector('.mat-ripple')?.remove();
+        const rippleEl = this._document.createElement('span');
+        rippleEl.classList.add('mat-ripple', host.getAttribute(matRippleClassName));
+        host.append(rippleEl);
+        // Create the MatRipple.
+        const ripple = new MatRipple(new ElementRef(rippleEl), this._ngZone, this._platform, this._globalRippleOptions ? this._globalRippleOptions : undefined, this._animationMode ? this._animationMode : undefined);
+        ripple._isInitialized = true;
+        ripple.trigger = host;
+        ripple.centered = host.hasAttribute(matRippleCentered);
+        ripple.disabled = host.hasAttribute(matRippleDisabled);
+        this.attachRipple(host, ripple);
+        return ripple;
+    }
+    attachRipple(host, ripple) {
+        host.removeAttribute(matRippleUninitialized);
+        this._hosts.set(host, ripple);
+    }
+    destroyRipple(host) {
+        const ripple = this._hosts.get(host);
+        if (ripple) {
+            // Since this directive is created manually, it needs to be destroyed manually too.
+            // tslint:disable-next-line:no-lifecycle-invocation
+            ripple.ngOnDestroy();
+            this._hosts.delete(host);
+        }
+    }
+    static { this.…µfac = i0.…µ…µngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, deps: [], target: i0.…µ…µFactoryTarget.Injectable }); }
+    static { this.…µprov = i0.…µ…µngDeclareInjectable({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, providedIn: 'root' }); }
+}
+i0.…µ…µngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }], ctorParameters: () => [] });
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmlwcGxlLWxvYWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3NyYy9tYXRlcmlhbC9jb3JlL3ByaXZhdGUvcmlwcGxlLWxvYWRlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0dBTUc7QUFFSCxPQUFPLEVBQUMsUUFBUSxFQUFDLE1BQU0saUJBQWlCLENBQUM7QUFDekMsT0FBTyxFQUNMLHFCQUFxQixFQUNyQixVQUFVLEVBQ1YsVUFBVSxFQUNWLE1BQU0sRUFFTixNQUFNLEdBQ1AsTUFBTSxlQUFlLENBQUM7QUFDdkIsT0FBTyxFQUFDLHlCQUF5QixFQUFFLFNBQVMsRUFBQyxNQUFNLFdBQVcsQ0FBQztBQUMvRCxPQUFPLEVBQUMsUUFBUSxFQUFFLGVBQWUsRUFBQyxNQUFNLHVCQUF1QixDQUFDOztBQUVoRSw2REFBNkQ7QUFDN0QsTUFBTSxvQkFBb0IsR0FBRyxFQUFDLE9BQU8sRUFBRSxJQUFJLEVBQUMsQ0FBQztBQUU3Qzs7OztHQUlHO0FBQ0gsTUFBTSx1QkFBdUIsR0FBRyxDQUFDLE9BQU8sRUFBRSxXQUFXLEVBQUUsWUFBWSxFQUFFLFlBQVksQ0FBQyxDQUFDO0FBRW5GLHVGQUF1RjtBQUN2RixNQUFNLHNCQUFzQixHQUFHLGlDQUFpQyxDQUFDO0FBRWpFLGlGQUFpRjtBQUNqRixNQUFNLGtCQUFrQixHQUFHLDhCQUE4QixDQUFDO0FBRTFELDZDQUE2QztBQUM3QyxNQUFNLGlCQUFpQixHQUFHLDRCQUE0QixDQUFDO0FBRXZELDZDQUE2QztBQUM3QyxNQUFNLGlCQUFpQixHQUFHLDRCQUE0QixDQUFDO0FBRXZEOzs7Ozs7O0dBT0c7QUFFSCxNQUFNLE9BQU8sZUFBZTtJQVExQjtRQVBRLGNBQVMsR0FBRyxNQUFNLENBQUMsUUFBUSxFQUFFLEVBQUMsUUFBUSxFQUFFLElBQUksRUFBQyxDQUFDLENBQUM7UUFDL0MsbUJBQWMsR0FBRyxNQUFNLENBQUMscUJBQXFCLEVBQUUsRUFBQyxRQUFRLEVBQUUsSUFBSSxFQUFDLENBQUMsQ0FBQztRQUNqRSx5QkFBb0IsR0FBRyxNQUFNLENBQUMseUJBQXlCLEVBQUUsRUFBQyxRQUFRLEVBQUUsSUFBSSxFQUFDLENBQUMsQ0FBQztRQUMzRSxjQUFTLEdBQUcsTUFBTSxDQUFDLFFBQVEsQ0FBQyxDQUFDO1FBQzdCLFlBQU8sR0FBRyxNQUFNLENBQUMsTUFBTSxDQUFDLENBQUM7UUFDekIsV0FBTSxHQUFHLElBQUksR0FBRyxFQUEwQixDQUFDO1FBK0VuRDs7O1dBR0c7UUFDSyxtQkFBYyxHQUFHLENBQUMsS0FBWSxFQUFFLEVBQUU7WUFDeEMsTUFBTSxXQUFXLEdBQUcsZUFBZSxDQUFDLEtBQUssQ0FBQyxDQUFDO1lBRTNDLElBQUksV0FBVyxZQUFZLFdBQVcsRUFBRSxDQUFDO2dCQUN2QyxxRkFBcUY7Z0JBQ3JGLE1BQU0sT0FBTyxHQUFHLFdBQVcsQ0FBQyxPQUFPLENBQ2pDLElBQUksc0JBQXNCLEtBQUssSUFBSSxDQUFDLG9CQUFvQixFQUFFLFNBQVMsSUFBSSxFQUFFLElBQUksQ0FDOUUsQ0FBQztnQkFFRixJQUFJLE9BQU8sRUFBRSxDQUFDO29CQUNaLElBQUksQ0FBQyxhQUFhLENBQUMsT0FBc0IsQ0FBQyxDQUFDO2dCQUM3QyxDQUFDO1lBQ0gsQ0FBQztRQUNILENBQUMsQ0FBQztRQTdGQSxJQUFJLENBQUMsT0FBTyxDQUFDLGlCQUFpQixDQUFDLEdBQUcsRUFBRTtZQUNsQyxLQUFLLE1BQU0sS0FBSyxJQUFJLHVCQUF1QixFQUFFLENBQUM7Z0JBQzVDLElBQUksQ0FBQyxTQUFTLEVBQUUsZ0JBQWdCLENBQUMsS0FBSyxFQUFFLElBQUksQ0FBQyxjQUFjLEVBQUUsb0JBQW9CLENBQUMsQ0FBQztZQUNyRixDQUFDO1FBQ0gsQ0FBQyxDQUFDLENBQUM7SUFDTCxDQUFDO0lBRUQsV0FBVztRQUNULE1BQU0sS0FBSyxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsSUFBSSxFQUFFLENBQUM7UUFFakMsS0FBSyxNQUFNLElBQUksSUFBSSxLQUFLLEVBQUUsQ0FBQztZQUN6QixJQUFJLENBQUMsYUFBYSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQzNCLENBQUM7UUFFRCxLQUFLLE1BQU0sS0FBSyxJQUFJLHVCQUF1QixFQUFFLENBQUM7WUFDNUMsSUFBSSxDQUFDLFNBQVMsRUFBRSxtQkFBbUIsQ0FBQyxLQUFLLEVBQUUsSUFBSSxDQUFDLGNBQWMsRUFBRSxvQkFBb0IsQ0FBQyxDQUFDO1FBQ3hGLENBQUM7SUFDSCxDQUFDO0lBRUQ7Ozs7O09BS0c7SUFDSCxlQUFlLENBQ2IsSUFBaUIsRUFDakIsTUFJQztRQUVELDBFQUEwRTtRQUMxRSxJQUFJLENBQUMsWUFBWSxDQUFDLHNCQUFzQixFQUFFLElBQUksQ0FBQyxvQkFBb0IsRUFBRSxTQUFTLElBQUksRUFBRSxDQUFDLENBQUM7UUFFdEYsaUZBQWlGO1FBQ2pGLElBQUksTUFBTSxDQUFDLFNBQVMsSUFBSSxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsa0JBQWtCLENBQUMsRUFBRSxDQUFDO1lBQy9ELElBQUksQ0FBQyxZQUFZLENBQUMsa0JBQWtCLEVBQUUsTUFBTSxDQUFDLFNBQVMsSUFBSSxFQUFFLENBQUMsQ0FBQztRQUNoRSxDQUFDO1FBRUQsK0NBQStDO1FBQy9DLElBQUksTUFBTSxDQUFDLFFBQVEsRUFBRSxDQUFDO1lBQ3BCLElBQUksQ0FBQyxZQUFZLENBQUMsaUJBQWlCLEVBQUUsRUFBRSxDQUFDLENBQUM7UUFDM0MsQ0FBQztRQUVELElBQUksTUFBTSxDQUFDLFFBQVEsRUFBRSxDQUFDO1lBQ3BCLElBQUksQ0FBQyxZQUFZLENBQUMsaUJBQWlCLEVBQUUsRUFBRSxDQUFDLENBQUM7UUFDM0MsQ0FBQztJQUNILENBQUM7SUFFRCw4REFBOEQ7SUFDOUQsU0FBUyxDQUFDLElBQWlCO1FBQ3pCLE1BQU0sTUFBTSxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsR0FBRyxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQ3JDLE9BQU8sTUFBTSxJQUFJLElBQUksQ0FBQyxhQUFhLENBQUMsSUFBSSxDQUFDLENBQUM7SUFDNUMsQ0FBQztJQUVELDhGQUE4RjtJQUM5RixXQUFXLENBQUMsSUFBaUIsRUFBRSxRQUFpQjtRQUM5QyxNQUFNLE1BQU0sR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUVyQyxnRUFBZ0U7UUFDaEUsSUFBSSxNQUFNLEVBQUUsQ0FBQztZQUNYLE1BQU0sQ0FBQyxRQUFRLEdBQUcsUUFBUSxDQUFDO1lBQzNCLE9BQU87UUFDVCxDQUFDO1FBRUQsa0RBQWtEO1FBQ2xELDJEQUEyRDtRQUMzRCxJQUFJLFFBQVEsRUFBRSxDQUFDO1lBQ2IsSUFBSSxDQUFDLFlBQVksQ0FBQyxpQkFBaUIsRUFBRSxFQUFFLENBQUMsQ0FBQztRQUMzQyxDQUFDO2FBQU0sQ0FBQztZQUNOLElBQUksQ0FBQyxlQUFlLENBQUMsaUJBQWlCLENBQUMsQ0FBQztRQUMxQyxDQUFDO0lBQ0gsQ0FBQztJQXFCRCwrREFBK0Q7SUFDdkQsYUFBYSxDQUFDLElBQWlCO1FBQ3JDLElBQUksQ0FBQyxJQUFJLENBQUMsU0FBUyxFQUFFLENBQUM7WUFDcEIsT0FBTztRQUNULENBQUM7UUFFRCxNQUFNLGNBQWMsR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUM3QyxJQUFJLGNBQWMsRUFBRSxDQUFDO1lBQ25CLE9BQU8sY0FBYyxDQUFDO1FBQ3hCLENBQUM7UUFFRCw2QkFBNkI7UUFDN0IsSUFBSSxDQUFDLGFBQWEsQ0FBQyxhQUFhLENBQUMsRUFBRSxNQUFNLEVBQUUsQ0FBQztRQUM1QyxNQUFNLFFBQVEsR0FBRyxJQUFJLENBQUMsU0FBUyxDQUFDLGFBQWEsQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUN0RCxRQUFRLENBQUMsU0FBUyxDQUFDLEdBQUcsQ0FBQyxZQUFZLEVBQUUsSUFBSSxDQUFDLFlBQVksQ0FBQyxrQkFBa0IsQ0FBRSxDQUFDLENBQUM7UUFDN0UsSUFBSSxDQUFDLE1BQU0sQ0FBQyxRQUFRLENBQUMsQ0FBQztRQUV0Qix3QkFBd0I7UUFDeEIsTUFBTSxNQUFNLEdBQUcsSUFBSSxTQUFTLENBQzFCLElBQUksVUFBVSxDQUFDLFFBQVEsQ0FBQyxFQUN4QixJQUFJLENBQUMsT0FBTyxFQUNaLElBQUksQ0FBQyxTQUFTLEVBQ2QsSUFBSSxDQUFDLG9CQUFvQixDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsb0JBQW9CLENBQUMsQ0FBQyxDQUFDLFNBQVMsRUFDakUsSUFBSSxDQUFDLGNBQWMsQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDLGNBQWMsQ0FBQyxDQUFDLENBQUMsU0FBUyxDQUN0RCxDQUFDO1FBQ0YsTUFBTSxDQUFDLGNBQWMsR0FBRyxJQUFJLENBQUM7UUFDN0IsTUFBTSxDQUFDLE9BQU8sR0FBRyxJQUFJLENBQUM7UUFDdEIsTUFBTSxDQUFDLFFBQVEsR0FBRyxJQUFJLENBQUMsWUFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7UUFDdkQsTUFBTSxDQUFDLFFBQVEsR0FBRyxJQUFJLENBQUMsWUFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7UUFDdkQsSUFBSSxDQUFDLFlBQVksQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLENBQUM7UUFDaEMsT0FBTyxNQUFNLENBQUM7SUFDaEIsQ0FBQztJQUVELFlBQVksQ0FBQyxJQUFpQixFQUFFLE1BQWlCO1FBQy9DLElBQUksQ0FBQyxlQUFlLENBQUMsc0JBQXNCLENBQUMsQ0FBQztRQUM3QyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLENBQUM7SUFDaEMsQ0FBQztJQUVELGFBQWEsQ0FBQyxJQUFpQjtRQUM3QixNQUFNLE1BQU0sR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUVyQyxJQUFJLE1BQU0sRUFBRSxDQUFDO1lBQ1gsbUZBQW1GO1lBQ25GLG1EQUFtRDtZQUNuRCxNQUFNLENBQUMsV0FBVyxFQUFFLENBQUM7WUFDckIsSUFBSSxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDM0IsQ0FBQztJQUNILENBQUM7OEdBdkpVLGVBQWU7a0hBQWYsZUFBZSxjQURILE1BQU07OzJGQUNsQixlQUFlO2tCQUQzQixVQUFVO21CQUFDLEVBQUMsVUFBVSxFQUFFLE1BQU0sRUFBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge0RPQ1VNRU5UfSBmcm9tICdAYW5ndWxhci9jb21tb24nO1xuaW1wb3J0IHtcbiAgQU5JTUFUSU9OX01PRFVMRV9UWVBFLFxuICBFbGVtZW50UmVmLFxuICBJbmplY3RhYmxlLFxuICBOZ1pvbmUsXG4gIE9uRGVzdHJveSxcbiAgaW5qZWN0LFxufSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7TUFUX1JJUFBMRV9HTE9CQUxfT1BUSU9OUywgTWF0UmlwcGxlfSBmcm9tICcuLi9yaXBwbGUnO1xuaW1wb3J0IHtQbGF0Zm9ybSwgX2dldEV2ZW50VGFyZ2V0fSBmcm9tICdAYW5ndWxhci9jZGsvcGxhdGZvcm0nO1xuXG4vKiogVGhlIG9wdGlvbnMgZm9yIHRoZSBNYXRSaXBwbGVMb2FkZXIncyBldmVudCBsaXN0ZW5lcnMuICovXG5jb25zdCBldmVudExpc3RlbmVyT3B0aW9ucyA9IHtjYXB0dXJlOiB0cnVlfTtcblxuLyoqXG4gKiBUaGUgZXZlbnRzIHRoYXQgc2hvdWxkIHRyaWdnZXIgdGhlIGluaXRpYWxpemF0aW9uIG9mIHRoZSByaXBwbGUuXG4gKiBOb3RlIHRoYXQgd2UgdXNlIGBtb3VzZWRvd25gLCByYXRoZXIgdGhhbiBgY2xpY2tgLCBmb3IgbW91c2UgZGV2aWNlcyBiZWNhdXNlXG4gKiB3ZSBjYW4ndCByZWx5IG9uIGBtb3VzZWVudGVyYCBpbiB0aGUgc2hhZG93IERPTSBhbmQgYGNsaWNrYCBoYXBwZW5zIHRvbyBsYXRlLlxuICovXG5jb25zdCByaXBwbGVJbnRlcmFjdGlvbkV2ZW50cyA9IFsnZm9jdXMnLCAnbW91c2Vkb3duJywgJ21vdXNlZW50ZXInLCAndG91Y2hzdGFydCddO1xuXG4vKiogVGhlIGF0dHJpYnV0ZSBhdHRhY2hlZCB0byBhIGNvbXBvbmVudCB3aG9zZSByaXBwbGUgaGFzIG5vdCB5ZXQgYmVlbiBpbml0aWFsaXplZC4gKi9cbmNvbnN0IG1hdFJpcHBsZVVuaW5pdGlhbGl6ZWQgPSAnbWF0LXJpcHBsZS1sb2FkZXItdW5pbml0aWFsaXplZCc7XG5cbi8qKiBBZGRpdGlvbmFsIGNsYXNzZXMgdGhhdCBzaG91bGQgYmUgYWRkZWQgdG8gdGhlIHJpcHBsZSB3aGVuIGl0IGlzIHJlbmRlcmVkLiAqL1xuY29uc3QgbWF0UmlwcGxlQ2xhc3NOYW1lID0gJ21hdC1yaXBwbGUtbG9hZGVyLWNsYXNzLW5hbWUnO1xuXG4vKiogV2hldGhlciB0aGUgcmlwcGxlIHNob3VsZCBiZSBjZW50ZXJlZC4gKi9cbmNvbnN0IG1hdFJpcHBsZUNlbnRlcmVkID0gJ21hdC1yaXBwbGUtbG9hZGVyLWNlbnRlcmVkJztcblxuLyoqIFdoZXRoZXIgdGhlIHJpcHBsZSBzaG91bGQgYmUgZGlzYWJsZWQuICovXG5jb25zdCBtYXRSaXBwbGVEaXNhYmxlZCA9ICdtYXQtcmlwcGxlLWxvYWRlci1kaXNhYmxlZCc7XG5cbi8qKlxuICogSGFuZGxlcyBhdHRhY2hpbmcgcmlwcGxlcyBvbiBkZW1hbmQuXG4gKlxuICogVGhpcyBzZXJ2aWNlIGFsbG93cyB1cyB0byBhdm9pZCBlYWdlcmx5IGNyZWF0aW5nICYgYXR0YWNoaW5nIE1hdFJpcHBsZXMuXG4gKiBJdCB3b3JrcyBieSBjcmVhdGluZyAmIGF0dGFjaGluZyBhIHJpcHBsZSBvbmx5IHdoZW4gYSBjb21wb25lbnQgaXMgZmlyc3QgaW50ZXJhY3RlZCB3aXRoLlxuICpcbiAqIEBkb2NzLXByaXZhdGVcbiAqL1xuQEluamVjdGFibGUoe3Byb3ZpZGVkSW46ICdyb290J30pXG5leHBvcnQgY2xhc3MgTWF0UmlwcGxlTG9hZGVyIGltcGxlbWVudHMgT25EZXN0cm95IHtcbiAgcHJpdmF0ZSBfZG9jdW1lbnQgPSBpbmplY3QoRE9DVU1FTlQsIHtvcHRpb25hbDogdHJ1ZX0pO1xuICBwcml2YXRlIF9hbmltYXRpb25Nb2RlID0gaW5qZWN0KEFOSU1BVElPTl9NT0RVTEVfVFlQRSwge29wdGlvbmFsOiB0cnVlfSk7XG4gIHByaXZhdGUgX2dsb2JhbFJpcHBsZU9wdGlvbnMgPSBpbmplY3QoTUFUX1JJUFBMRV9HTE9CQUxfT1BUSU9OUywge29wdGlvbmFsOiB0cnVlfSk7XG4gIHByaXZhdGUgX3BsYXRmb3JtID0gaW5qZWN0KFBsYXRmb3JtKTtcbiAgcHJpdmF0ZSBfbmdab25lID0gaW5qZWN0KE5nWm9uZSk7XG4gIHByaXZhdGUgX2hvc3RzID0gbmV3IE1hcDxIVE1MRWxlbWVudCwgTWF0UmlwcGxlPigpO1xuXG4gIGNvbnN0cnVjdG9yKCkge1xuICAgIHRoaXMuX25nWm9uZS5ydW5PdXRzaWRlQW5ndWxhcigoKSA9PiB7XG4gICAgICBmb3IgKGNvbnN0IGV2ZW50IG9mIHJpcHBsZUludGVyYWN0aW9uRXZlbnRzKSB7XG4gICAgICAgIHRoaXMuX2RvY3VtZW50Py5hZGRFdmVudExpc3RlbmVyKGV2ZW50LCB0aGlzLl9vbkludGVyYWN0aW9uLCBldmVudExpc3RlbmVyT3B0aW9ucyk7XG4gICAgICB9XG4gICAgfSk7XG4gIH1cblxuICBuZ09uRGVzdHJveSgpIHtcbiAgICBjb25zdCBob3N0cyA9IHRoaXMuX2hvc3RzLmtleXMoKTtcblxuICAgIGZvciAoY29uc3QgaG9zdCBvZiBob3N0cykge1xuICAgICAgdGhpcy5kZXN0cm95UmlwcGxlKGhvc3QpO1xuICAgIH1cblxuICAgIGZvciAoY29uc3QgZXZlbnQgb2YgcmlwcGxlSW50ZXJhY3Rpb25FdmVudHMpIHtcbiAgICAgIHRoaXMuX2RvY3VtZW50Py5yZW1vdmVFdmVudExpc3RlbmVyKGV2ZW50LCB0aGlzLl9vbkludGVyYWN0aW9uLCBldmVudExpc3RlbmVyT3B0aW9ucyk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIENvbmZpZ3VyZXMgdGhlIHJpcHBsZSB0aGF0IHdpbGwgYmUgcmVuZGVyZWQgYnkgdGhlIHJpcHBsZSBsb2FkZXIuXG4gICAqXG4gICAqIFN0b3JlcyB0aGUgZ2l2ZW4gaW5mb3JtYXRpb24gYWJvdXQgaG93IHRoZSByaXBwbGUgc2hvdWxkIGJlIGNvbmZpZ3VyZWQgb24gdGhlIGhvc3RcbiAgICogZWxlbWVudCBzbyB0aGF0IGl0IGNhbiBsYXRlciBiZSByZXRyaXZlZCAmIHVzZWQgd2hlbiB0aGUgcmlwcGxlIGlzIGFjdHVhbGx5IGNyZWF0ZWQuXG4gICAqL1xuICBjb25maWd1cmVSaXBwbGUoXG4gICAgaG9zdDogSFRNTEVsZW1lbnQsXG4gICAgY29uZmlnOiB7XG4gICAgICBjbGFzc05hbWU/OiBzdHJpbmc7XG4gICAgICBjZW50ZXJlZD86IGJvb2xlYW47XG4gICAgICBkaXNhYmxlZD86IGJvb2xlYW47XG4gICAgfSxcbiAgKTogdm9pZCB7XG4gICAgLy8gSW5kaWNhdGVzIHRoYXQgdGhlIHJpcHBsZSBoYXMgbm90IHlldCBiZWVuIHJlbmRlcmVkIGZvciB0aGlzIGNvbXBvbmVudC5cbiAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVVbmluaXRpYWxpemVkLCB0aGlzLl9nbG9iYWxSaXBwbGVPcHRpb25zPy5uYW1lc3BhY2UgPz8gJycpO1xuXG4gICAgLy8gU3RvcmUgdGhlIGFkZGl0aW9uYWwgY2xhc3MgbmFtZShzKSB0aGF0IHNob3VsZCBiZSBhZGRlZCB0byB0aGUgcmlwcGxlIGVsZW1lbnQuXG4gICAgaWYgKGNvbmZpZy5jbGFzc05hbWUgfHwgIWhvc3QuaGFzQXR0cmlidXRlKG1hdFJpcHBsZUNsYXNzTmFtZSkpIHtcbiAgICAgIGhvc3Quc2V0QXR0cmlidXRlKG1hdFJpcHBsZUNsYXNzTmFtZSwgY29uZmlnLmNsYXNzTmFtZSB8fCAnJyk7XG4gICAgfVxuXG4gICAgLy8gU3RvcmUgd2hldGhlciB0aGUgcmlwcGxlIHNob3VsZCBiZSBjZW50ZXJlZC5cbiAgICBpZiAoY29uZmlnLmNlbnRlcmVkKSB7XG4gICAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVDZW50ZXJlZCwgJycpO1xuICAgIH1cblxuICAgIGlmIChjb25maWcuZGlzYWJsZWQpIHtcbiAgICAgIGhvc3Quc2V0QXR0cmlidXRlKG1hdFJpcHBsZURpc2FibGVkLCAnJyk7XG4gICAgfVxuICB9XG5cbiAgLyoqIFJldHVybnMgdGhlIHJpcHBsZSBpbnN0YW5jZSBmb3IgdGhlIGdpdmVuIGhvc3QgZWxlbWVudC4gKi9cbiAgZ2V0UmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50KTogTWF0UmlwcGxlIHwgdW5kZWZpbmVkIHtcbiAgICBjb25zdCByaXBwbGUgPSB0aGlzLl9ob3N0cy5nZXQoaG9zdCk7XG4gICAgcmV0dXJuIHJpcHBsZSB8fCB0aGlzLl9jcmVhdGVSaXBwbGUoaG9zdCk7XG4gIH1cblxuICAvKiogU2V0cyB0aGUgZGlzYWJsZWQgc3RhdGUgb24gdGhlIHJpcHBsZSBpbnN0YW5jZSBjb3JyZXNwb25kaW5nIHRvIHRoZSBnaXZlbiBob3N0IGVsZW1lbnQuICovXG4gIHNldERpc2FibGVkKGhvc3Q6IEhUTUxFbGVtZW50LCBkaXNhYmxlZDogYm9vbGVhbik6IHZvaWQge1xuICAgIGNvbnN0IHJpcHBsZSA9IHRoaXMuX2hvc3RzLmdldChob3N0KTtcblxuICAgIC8vIElmIHRoZSByaXBwbGUgaGFzIGFscmVhZHkgYmVlbiBpbnN0YW50aWF0ZWQsIGp1c3QgZGlzYWJsZSBpdC5cbiAgICBpZiAocmlwcGxlKSB7XG4gICAgICByaXBwbGUuZGlzYWJsZWQgPSBkaXNhYmxlZDtcbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICAvLyBPdGhlcndpc2UsIHNldCBhbiBhdHRyaWJ1dGUgc28gd2Uga25vdyB3aGF0IHRoZVxuICAgIC8vIGRpc2FibGVkIHN0YXRlIHNob3VsZCBiZSB3aGVuIHRoZSByaXBwbGUgaXMgaW5pdGlhbGl6ZWQuXG4gICAgaWYgKGRpc2FibGVkKSB7XG4gICAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCwgJycpO1xuICAgIH0gZWxzZSB7XG4gICAgICBob3N0LnJlbW92ZUF0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIEhhbmRsZXMgY3JlYXRpbmcgYW5kIGF0dGFjaGluZyBjb21wb25lbnQgaW50ZXJuYWxzXG4gICAqIHdoZW4gYSBjb21wb25lbnQgaXMgaW5pdGlhbGx5IGludGVyYWN0ZWQgd2l0aC5cbiAgICovXG4gIHByaXZhdGUgX29uSW50ZXJhY3Rpb24gPSAoZXZlbnQ6IEV2ZW50KSA9PiB7XG4gICAgY29uc3QgZXZlbnRUYXJnZXQgPSBfZ2V0RXZlbnRUYXJnZXQoZXZlbnQpO1xuXG4gICAgaWYgKGV2ZW50VGFyZ2V0IGluc3RhbmNlb2YgSFRNTEVsZW1lbnQpIHtcbiAgICAgIC8vIFRPRE8od2FnbmVybWFjaWVsKTogQ29uc2lkZXIgYmF0Y2hpbmcgdGhlc2UgZXZlbnRzIHRvIGltcHJvdmUgcnVudGltZSBwZXJmb3JtYW5jZS5cbiAgICAgIGNvbnN0IGVsZW1lbnQgPSBldmVudFRhcmdldC5jbG9zZXN0KFxuICAgICAgICBgWyR7bWF0UmlwcGxlVW5pbml0aWFsaXplZH09XCIke3RoaXMuX2dsb2JhbFJpcHBsZU9wdGlvbnM/Lm5hbWVzcGFjZSA/PyAnJ31cIl1gLFxuICAgICAgKTtcblxuICAgICAgaWYgKGVsZW1lbnQpIHtcbiAgICAgICAgdGhpcy5fY3JlYXRlUmlwcGxlKGVsZW1lbnQgYXMgSFRNTEVsZW1lbnQpO1xuICAgICAgfVxuICAgIH1cbiAgfTtcblxuICAvKiogQ3JlYXRlcyBhIE1hdFJpcHBsZSBhbmQgYXBwZW5kcyBpdCB0byB0aGUgZ2l2ZW4gZWxlbWVudC4gKi9cbiAgcHJpdmF0ZSBfY3JlYXRlUmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50KTogTWF0UmlwcGxlIHwgdW5kZWZpbmVkIHtcbiAgICBpZiAoIXRoaXMuX2RvY3VtZW50KSB7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgY29uc3QgZXhpc3RpbmdSaXBwbGUgPSB0aGlzLl9ob3N0cy5nZXQoaG9zdCk7XG4gICAgaWYgKGV4aXN0aW5nUmlwcGxlKSB7XG4gICAgICByZXR1cm4gZXhpc3RpbmdSaXBwbGU7XG4gICAgfVxuXG4gICAgLy8gQ3JlYXRlIHRoZSByaXBwbGUgZWxlbWVudC5cbiAgICBob3N0LnF1ZXJ5U2VsZWN0b3IoJy5tYXQtcmlwcGxlJyk/LnJlbW92ZSgpO1xuICAgIGNvbnN0IHJpcHBsZUVsID0gdGhpcy5fZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc3BhbicpO1xuICAgIHJpcHBsZUVsLmNsYXNzTGlzdC5hZGQoJ21hdC1yaXBwbGUnLCBob3N0LmdldEF0dHJpYnV0ZShtYXRSaXBwbGVDbGFzc05hbWUpISk7XG4gICAgaG9zdC5hcHBlbmQocmlwcGxlRWwpO1xuXG4gICAgLy8gQ3JlYXRlIHRoZSBNYXRSaXBwbGUuXG4gICAgY29uc3QgcmlwcGxlID0gbmV3IE1hdFJpcHBsZShcbiAgICAgIG5ldyBFbGVtZW50UmVmKHJpcHBsZUVsKSxcbiAgICAgIHRoaXMuX25nWm9uZSxcbiAgICAgIHRoaXMuX3BsYXRmb3JtLFxuICAgICAgdGhpcy5fZ2xvYmFsUmlwcGxlT3B0aW9ucyA/IHRoaXMuX2dsb2JhbFJpcHBsZU9wdGlvbnMgOiB1bmRlZmluZWQsXG4gICAgICB0aGlzLl9hbmltYXRpb25Nb2RlID8gdGhpcy5fYW5pbWF0aW9uTW9kZSA6IHVuZGVmaW5lZCxcbiAgICApO1xuICAgIHJpcHBsZS5faXNJbml0aWFsaXplZCA9IHRydWU7XG4gICAgcmlwcGxlLnRyaWdnZXIgPSBob3N0O1xuICAgIHJpcHBsZS5jZW50ZXJlZCA9IGhvc3QuaGFzQXR0cmlidXRlKG1hdFJpcHBsZUNlbnRlcmVkKTtcbiAgICByaXBwbGUuZGlzYWJsZWQgPSBob3N0Lmhhc0F0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCk7XG4gICAgdGhpcy5hdHRhY2hSaXBwbGUoaG9zdCwgcmlwcGxlKTtcbiAgICByZXR1cm4gcmlwcGxlO1xuICB9XG5cbiAgYXR0YWNoUmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50LCByaXBwbGU6IE1hdFJpcHBsZSk6IHZvaWQge1xuICAgIGhvc3QucmVtb3ZlQXR0cmlidXRlKG1hdFJpcHBsZVVuaW5pdGlhbGl6ZWQpO1xuICAgIHRoaXMuX2hvc3RzLnNldChob3N0LCByaXBwbGUpO1xuICB9XG5cbiAgZGVzdHJveVJpcHBsZShob3N0OiBIVE1MRWxlbWVudCkge1xuICAgIGNvbnN0IHJpcHBsZSA9IHRoaXMuX2hvc3RzLmdldChob3N0KTtcblxuICAgIGlmIChyaXBwbGUpIHtcbiAgICAgIC8vIFNpbmNlIHRoaXMgZGlyZWN0aXZlIGlzIGNyZWF0ZWQgbWFudWFsbHksIGl0IG5lZWRzIHRvIGJlIGRlc3Ryb3llZCBtYW51YWxseSB0b28uXG4gICAgICAvLyB0c2xpbnQ6ZGlzYWJsZS1uZXh0LWxpbmU6bm8tbGlmZWN5Y2xlLWludm9jYXRpb25cbiAgICAgIHJpcHBsZS5uZ09uRGVzdHJveSgpO1xuICAgICAgdGhpcy5faG9zdHMuZGVsZXRlKGhvc3QpO1xuICAgIH1cbiAgfVxufVxuIl19                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         *
     TODO: somehow infer OtherArgs from masterCallback?
     TODO: infer RefType from masterCallback if provided
     */

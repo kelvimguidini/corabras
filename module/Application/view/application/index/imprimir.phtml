@@ -76,11 +76,11 @@
     foreach ($pedido['produtos'] as $prod):
         $qtd_total += $prod['quantidade'];
         $modelo = mb_strtoupper($prod['modelo'], 'UTF-8');
-        $medida = mb_strtoupper($prod['medida'] ?? $prod['cor'] ?? '', 'UTF-8');
+        $cor    = mb_strtoupper($prod['cor'], 'UTF-8');
     ?>
         <tr>
             <td class="right"><b><?= $prod['quantidade'] ?></b></td>
-            <td colspan="4">PÇS <?= $modelo ?> <?= $medida ?></td>
+            <td colspan="4">PÇS <?= $modelo ?> <?= $cor ?></td>
         </tr>
     <?php endforeach; ?>
 

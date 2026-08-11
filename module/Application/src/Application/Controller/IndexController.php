@@ -8,68 +8,34 @@
 
 namespace Application\Controller;
 
-use Laminas\Mvc\MvcEvent;
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\ViewModel;
+use Zend\Cache\Storage\ExceptionEvent;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\View\Model\ViewModel;
+use Zend\Session\Storage\SessionStorage;
+use Zend\Session\SessionManager;
+use Zend\Session\Container;
 use Dompdf\Dompdf;
-use Doctrine\ORM\EntityManager;
+
 
 class IndexController extends AbstractActionController
 {
-  private EntityManager $em;
-  protected $baseUrl = 'http://sh00094.teste.website/~fddd5815';
-
-  // public function onDispatch(MvcEvent $e)
-  // {
-  //   $request = $this->getRequest();
-  //   $uri = $request->getUri();
-
-  //   $scheme = $uri->getScheme();      // http | https
-  //   $host   = $uri->getHost();        // domínio/hostname
-  //   $port   = $uri->getPort();        // porta (80, 443 ou outra)
-  //   $path   = $request->getBasePath(); // normalmente "/public"
-
-  //   // 🔧 Monta a porta corretamente:
-  //   // - só adiciona se não for padrão
-  //   $portString = '';
-  //   if ($port && !in_array($port, [80, 443])) {
-  //     $portString = ':' . $port;
-  //   }
-
-  //   // 🔧 Base URL final (com pasta public)
-  //   $this->baseUrl  = sprintf(
-  //     '%s://%s%s%s',
-  //     $scheme,
-  //     $host,
-  //     $portString,
-  //     $path
-  //   );
-
-  //   return parent::onDispatch($e);
-  // }
-
-  public function __construct(EntityManager $em)
-  {
-    if ($em) {
-      $this->em = $em;
-    }
-  }
-
 
   public function indexAction()
   {
-    // session_start();
+    session_start();
 
     $encoding = mb_internal_encoding();
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
-    $request = $this->getRequest();
 
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+
+    $request = $this->getRequest();
 
     $idVenda = $this->params()->fromRoute("id", 0);
     $produtos_lista = null;
     if ($idVenda > 0) {
-      $produtos_lista = $this->em->getRepository("Application\Model\Produto")->findBy(array('venda' => $idVenda));
-      $venda = $this->em->getRepository("Application\Model\Venda")->find($idVenda);
+      $produtos_lista = $em->getRepository("Application\Model\Produto")->findBy(array('venda' => $idVenda));
+      $venda = $em->getRepository("Application\Model\Venda")->find($idVenda);
     } else {
       $venda = new \Application\Model\Venda();
     }
@@ -127,15 +93,15 @@ class IndexController extends AbstractActionController
 
         $cesta = array();
 
-        $this->em->persist($venda);
+        $em->persist($venda);
 
-        $this->em->flush();
+        $em->flush();
 
         if ($idVenda > 0) {
           foreach ($produtos_lista as $pro) {
-            $p = $this->em->find("Application\Model\Produto", $pro->getId());
-            $this->em->remove($p);
-            $this->em->flush();
+            $p = $em->find("Application\Model\Produto", $pro->getId());
+            $em->remove($p);
+            $em->flush();
           }
         }
 
@@ -145,19 +111,15 @@ class IndexController extends AbstractActionController
             $produto = new \Application\Model\Produto();
 
             $produto->setModelo($request->getPost("modelo_" . $i));
-            $medidaPost = $request->getPost("medida_" . $i);
-            if ($medidaPost === null) {
-              $medidaPost = $request->getPost("cor_" . $i);
-            }
-            $produto->setMedida($medidaPost);
+            $produto->setCor($request->getPost("cor_" . $i));
             $produto->setquantidade($request->getPost("quantidade_" . $i));
             $produto->setValor($request->getPost("valor_" . $i));
             $produto->setVenda($venda);
 
             array_push($cesta, $produto);
 
-            $this->em->persist($produto);
-            $this->em->flush();
+            $em->persist($produto);
+            $em->flush();
           }
         }
 
@@ -168,15 +130,23 @@ class IndexController extends AbstractActionController
           return $this->redirect()->toRoute('pedidos');
         }
 
+        // $situ = new \Application\Model\Situacao();
+
+        // $situ->setData(date("d/m/Y"));
+        // $situ->setSituacao("Recebido");
+        // $situ->setVenda($venda);
+
+        // $em->persist($situ);
+        // $em->flush();
 
         $result["html"] = $this->gerarPdfComprovante($cesta);
-      } catch (\Exception $e) {
+      } catch (ExceptionEvent $e) {
         $result["resp"] = "Erro ao salvar! Por favor tente novamente.";
         $result["tipo_mens"] = 'danger';
       }
     }
 
-    $lista = $this->em->getRepository("Application\Model\Cidade")->findBy(
+    $lista = $em->getRepository("Application\Model\Cidade")->findBy(
       array(),
       array('nome' => 'ASC')
     );
@@ -190,8 +160,6 @@ class IndexController extends AbstractActionController
     if (isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('pedidos');
     }
-
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
     $request = $this->getRequest();
     if ($request->isPost()) {
       $usuario = $request->getPost("usuario");
@@ -215,20 +183,20 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
 
+    $request = $this->getRequest();
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
     $id = $this->params()->fromRoute("id", 0);
 
-    $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
+    $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
       ->setMaxResults(1);
 
     $venda = $db->getSingleResult();
     $venda->setAberto(true);
-    $this->em->persist($venda);
-    $this->em->flush();
-
-    $view = new ViewModel();
+    $em->persist($venda);
+    $em->flush();
     $view->setTerminal(true);
 
-    return $view;
+    return new ViewModel();
   }
 
   public function tramitarAction()
@@ -237,7 +205,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
+
     $request = $this->getRequest();
     $situacao = "Recebido";
 
@@ -250,26 +218,29 @@ class IndexController extends AbstractActionController
         $array_tramitar = $_POST['item_tramitar'];
       }
 
+
+      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+
       $array_tramitar_carga = isset($_POST['carga_tramitar']) ? $_POST['carga_tramitar'] : array();
 
       if (($situacao == "Entrega" || $situacao == "Finalizados") && count($array_tramitar_carga) > 0) {
 
         foreach ($array_tramitar_carga as $item_tramitar) {
 
-          $carga = $this->em->getRepository("Application\Model\Carga")->find($item_tramitar);
+          $carga = $em->getRepository("Application\Model\Carga")->find($item_tramitar);
           $carga->setSituacao($situacao);
 
-          $db = $this->em->createQuery('select v from Application\Model\Venda v where IDENTITY(v.carga) = ' . $item_tramitar);
+          $db = $em->createQuery('select v from Application\Model\Venda v where IDENTITY(v.carga) = ' . $item_tramitar);
           $vendas = $db->getArrayResult();
 
-          $this->em->persist($carga);
-          $this->em->flush();
+          $em->persist($carga);
+          $em->flush();
           $array_tramitar = array();
 
           foreach ($vendas as $venda) {
             $array_tramitar[] = $venda["id"];
 
-            $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $venda["id"])
+            $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $venda["id"])
               ->setMaxResults(1);
 
             $venda = $db->getSingleResult();
@@ -277,23 +248,23 @@ class IndexController extends AbstractActionController
 
             $venda->setCarga($carga);
 
-            $this->em->persist($venda);
-            $this->em->flush();
+            $em->persist($venda);
+            $em->flush();
           }
         }
       }
 
       if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
 
-        $db = $this->em->createQuery('select c from Application\Model\Carga c where c.id = ' . $idcarga)
+        $db = $em->createQuery('select c from Application\Model\Carga c where c.id = ' . $idcarga)
           ->setMaxResults(1);
 
         $carga = $db->getSingleResult();
       }
-      //\Laminas\Debug\Debug::dump($carga);
+      //\Zend\Debug\Debug::dump($carga);
       foreach ($array_tramitar as $item_tramitar) {
 
-        $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
+        $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
           ->setMaxResults(1);
 
         $venda = $db->getSingleResult();
@@ -303,50 +274,50 @@ class IndexController extends AbstractActionController
         if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
           $venda->setCarga($carga);
 
-          $this->em->persist($venda);
-          $this->em->flush();
+          $em->persist($venda);
+          $em->flush();
         } else if ($situacao == 'Recebido') {
           $cargaTemp = $venda->getCarga()->getId();
           $venda->setCarga(null);
 
-          $this->em->persist($venda);
-          $this->em->flush();
+          $em->persist($venda);
+          $em->flush();
         } else {
-          $this->em->persist($venda);
-          $this->em->flush();
+          $em->persist($venda);
+          $em->flush();
         }
-        //\Laminas\Debug\Debug::dump($cargaTemp );
+        //\Zend\Debug\Debug::dump($cargaTemp );
         if (($venda->getCarga() != null && $venda->getCarga()->getId() != null) || $cargaTemp != null) {
 
           $idCargaTemp = $cargaTemp != null ? $cargaTemp : $venda->getCarga()->getId();
 
-          $db = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp);
+          $db = $em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp);
           $cargas = $db->getArrayResult();
 
 
           if (count($cargas) == 0) {
-            $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
-            $this->em->remove($c);
-            $this->em->flush();
+            $c = $em->getRepository("Application\Model\Carga")->find($idCargaTemp);
+            $em->remove($c);
+            $em->flush();
           } else {
-            $db2 = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
+            $db2 = $em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
             $carga2 = $db2->getArrayResult();
 
-            //\Laminas\Debug\Debug::dump($carga2);
+            //\Zend\Debug\Debug::dump($carga2);
             if (count($carga2) == 0) {
-              $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
+              $c = $em->getRepository("Application\Model\Carga")->find($idCargaTemp);
               $c->setSituacao($situacao);
 
-              $this->em->persist($c);
-              $this->em->flush();
+              $em->persist($c);
+              $em->flush();
             }
           }
         }
 
 
-        // $s = $this->em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
-        // $this->em->remove($s);
-        // $this->em->flush();
+        // $s = $em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
+        // $em->remove($s);
+        // $em->flush();
 
         // $situ = new \Application\Model\Situacao();
 
@@ -355,8 +326,8 @@ class IndexController extends AbstractActionController
         // $situ->setSituacao($situacao);
         // $situ->setVenda($venda);
 
-        // $this->em->persist($situ);
-        // $this->em->flush();
+        // $em->persist($situ);
+        // $em->flush();
       }
 
       $result["resp"] = "Tramitado com sucesso!";
@@ -371,13 +342,15 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
+
     $request = $this->getRequest();
 
     if ($request->isPost()) {
       $idvenda = $request->getPost("idvenda");
 
-      $vendaOld = $this->em->getRepository("Application\Model\Venda")->find($idvenda);
+      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+
+      $vendaOld = $em->getRepository("Application\Model\Venda")->find($idvenda);
       $produtos = json_decode(stripslashes($_POST['prods']));
 
       $venda = new \Application\Model\Venda();
@@ -406,28 +379,37 @@ class IndexController extends AbstractActionController
       $venda->setEnderecoEntrega($vendaOld->getEnderecoEntrega());
       $venda->setObs($vendaOld->getObs());
 
-      $this->em->persist($venda);
-      $this->em->flush();
+      $em->persist($venda);
+      $em->flush();
 
+
+      // $situ = new \Application\Model\Situacao();
+
+      // $situ->setData(date("d/m/Y"));
+      // $situ->setSituacao();
+      // $situ->setVenda($venda);
+
+      // $em->persist($situ);
+      // $em->flush();
 
       foreach ($produtos as $idProduto => $qtd) {
         if (!is_null($qtd) && $qtd !== '') {
-          $prodOld = $this->em->getRepository("Application\Model\Produto")->find($idProduto);
+          $prodOld = $em->getRepository("Application\Model\Produto")->find($idProduto);
 
 
           $produto = new \Application\Model\Produto();
 
           $produto->setModelo($prodOld->getModelo());
-          $produto->setMedida($prodOld->getMedida());
+          $produto->setCor($prodOld->getCor());
           $produto->setQuantidade($qtd);
           $produto->setValor($prodOld->getValor());
           $produto->setVenda($venda);
 
-          $this->em->persist($produto);
+          $em->persist($produto);
           $prodOld->setquantidade($prodOld->getQuantidade() - $qtd);
 
-          $this->em->persist($prodOld);
-          $this->em->flush();
+          $em->persist($prodOld);
+          $em->flush();
         }
       }
     } else {
@@ -445,35 +427,42 @@ class IndexController extends AbstractActionController
     }
     try {
       $encoding = mb_internal_encoding();
-      /** @var \Laminas\Http\PhpEnvironment\Request $request */
+      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
       $request = $this->getRequest();
 
       $offSet = $this->params()->fromRoute("offset", 0);
       $situ = $this->params()->fromRoute("situacao", "Recebido");
 
-      // If situation is 'Recebido' show all records (no limit)
-      $limitePadrao = ($situ === 'Recebido') ? 0 : 100;
+      $limitePadrao = 50;
       $limite = $request->isPost() ? (int) $request->getPost("limite", $limitePadrao) : $limitePadrao;
-      $filtro = [];
+
       // Define a ordenação conforme a situação
       $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
 
-      $qb = $this->em->createQueryBuilder();
+      $qb = $em->createQueryBuilder();
       $qb->select('v', 'c')
         ->from('Application\Model\Venda', 'v')
         ->leftJoin('v.carga', 'c')
         ->where('v.situacao = :situacao')
         ->setParameter('situacao', $situ)
         ->orderBy('v.ja_aberto', 'ASC')
-        ->addOrderBy($direcao, 'ASC');
+        ->addOrderBy($direcao, 'ASC')
+        ->setFirstResult($offSet)
+        ->setMaxResults($limite);
 
-      // Pagination will be applied after filters so we can compute total correctly.
+      $filtro = [
+        'next' => $offSet + $limite,
+        'preview' => $offSet - $limite,
+        'situacao' => $situ,
+        'limite' => $limite,
+      ];
+
       // -------------------- FILTROS (POST) --------------------
       if ($request->isPost()) {
 
         $cliente   = mb_strtoupper($request->getPost("nome"), $encoding);
         $cpfCnpj   = $request->getPost("cpfcnpj");
-        $cidade = (array) $request->getPost("cidade", []);
+        $cidade    = $request->getPost("cidade");
         $dataEnt   = $request->getPost("data_entrega");
         $vendedor  = mb_strtoupper($request->getPost("vendedor"), $encoding);
         $modelo    = $request->getPost("modelo");
@@ -502,9 +491,8 @@ class IndexController extends AbstractActionController
         if ($cpfCnpj) {
           $qb->andWhere('v.cpfcnpj = :cpfCnpj')->setParameter('cpfCnpj', $cpfCnpj);
         }
-        if (!empty($cidade)) {
-          $qb->andWhere('v.cidade IN (:cidades)')
-            ->setParameter('cidades', $cidade);
+        if ($cidade) {
+          $qb->andWhere('v.cidade = :cidade')->setParameter('cidade', $cidade);
         }
         if ($vendedor) {
           $qb->andWhere('UPPER(v.nome_vendedor) LIKE :vendedor')->setParameter('vendedor', "%$vendedor%");
@@ -538,43 +526,13 @@ class IndexController extends AbstractActionController
       }
 
       // -------------------- EXECUÇÃO --------------------
-
-      // Compute total number of matching records (without pagination)
-      $qbCount = clone $qb;
-      $qbCount->select('COUNT(DISTINCT v.id)');
-      // ordering not required for count
-      $qbCount->resetDQLPart('orderBy');
-      $qbCount->setFirstResult(null);
-      $qbCount->setMaxResults(null);
-      $total = (int) $qbCount->getQuery()->getSingleScalarResult();
-
-      // Apply pagination only when $limite > 0. A $limite of 0 means "no limit" (return all).
-      if ($limite > 0) {
-        $qb->setFirstResult($offSet)
-          ->setMaxResults($limite);
-        $next = $offSet + $limite;
-        $preview = max(0, $offSet - $limite);
-      } else {
-        $next = 0;
-        $preview = 0;
-      }
-
-      $filtro += [
-        'next' => $next,
-        'preview' => $preview,
-        'situacao' => $situ,
-        'limite' => $limite,
-        'offset' => $offSet,
-        'total'  => $total,
-      ];
-
       $vendas = $qb->getQuery()->getArrayResult();
 
       // -------------------- PRODUTOS RELACIONADOS --------------------
       $produtos = [];
       if (!empty($vendas)) {
         $vendasId = array_column($vendas, 'id');
-        $qbProd = $this->em->createQueryBuilder();
+        $qbProd = $em->createQueryBuilder();
         $qbProd->select('p')
           ->from('Application\Model\Produto', 'p')
           ->where('p.venda IN (:vendas)')
@@ -585,10 +543,10 @@ class IndexController extends AbstractActionController
       }
 
       // -------------------- OUTRAS CONSULTAS (pode cachear) --------------------
-      $cidades = $this->em->getRepository("Application\Model\Cidade")
+      $cidades = $em->getRepository("Application\Model\Cidade")
         ->findBy([], ['nome' => 'ASC']);
 
-      $queryCargasCombo = $this->em->createQuery(
+      $queryCargasCombo = $em->createQuery(
         "SELECT c FROM Application\Model\Carga c 
          WHERE (c.situacao IN ('Carregamento','Entrega'))
          AND c.id IN (
@@ -600,7 +558,7 @@ class IndexController extends AbstractActionController
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
-      $cargas = $this->em->createQuery('SELECT c FROM Application\Model\Carga c')
+      $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c')
         ->getArrayResult();
 
       $data_atual = date("Y/m/d");
@@ -615,9 +573,9 @@ class IndexController extends AbstractActionController
         'data_atual' => $data_atual,
       ]);
     } catch (\Exception $e) {
-      error_log($e->getMessage());
-      error_log($e->getTraceAsString());
-      throw $e;
+      \Zend\Debug\Debug::dump($e->getMessage());
+      \Zend\Debug\Debug::dump($e->getTraceAsString());
+      exit;
     }
   }
 
@@ -625,11 +583,12 @@ class IndexController extends AbstractActionController
   {
     session_start();
 
-    $db = $this->em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 
-    //\Laminas\Debug\Debug::dump($cargas);
+    //\Zend\Debug\Debug::dump($cargas);
     return new ViewModel(array('carregamentos' => $cargas));
   }
 
@@ -639,7 +598,8 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+
     $request = $this->getRequest();
 
     if ($request->isPost()) {
@@ -657,8 +617,8 @@ class IndexController extends AbstractActionController
       $carga->setRetorno(trim($retorno));
       $carga->setSituacao($situacao);
 
-      $this->em->persist($carga);
-      $this->em->flush();
+      $em->persist($carga);
+      $em->flush();
 
       $view = new ViewModel(array('id' => $carga->getId()));
       $view->setTerminal(true);
@@ -672,8 +632,8 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
-    $lista = $this->em->getRepository("Application\Model\Carga")->findAll();
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $lista = $em->getRepository("Application\Model\Carga")->findAll();
     $view = new ViewModel(array('lista' => $lista));
     $view->setTerminal(true);
     return $view;
@@ -685,10 +645,11 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
 
     $id = $this->params()->fromRoute("id", 0);
 
-    $db = $this->em->createQuery('select c, v, p from Application\Model\Carga c LEFT JOIN c.vendas v LEFT JOIN v.produtos p where c.id = ' . $id);
+    $db = $em->createQuery('select c, v, p from Application\Model\Carga c LEFT JOIN c.vendas v LEFT JOIN v.produtos p where c.id = ' . $id);
     $cargas = $db->getArrayResult();
 
 
@@ -699,28 +660,187 @@ class IndexController extends AbstractActionController
 
   public function gerarPdfComprovante($produtos)
   {
-    if (!isset($produtos[0]->venda)) {
-      return;
+    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+
+    if (isset($produtos[0]->venda)) {
+
+      $html = "
+      <style type=\"text/css\">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+      <table border=\"1\" width='100%' style='border-collapse: collapse;'>
+        <thead>
+          <tr>
+            <th colspan=\"5\"><table width='100%'>
+                <tbody>
+                  <tr>
+                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/logo-1.png') . "\" alt=\"Image\" width=\"150\" height=\"60\"></td>
+                    <td style='text-align:center;vertical-align:middle'><span style=\"font-weight:bold; font-size:19px\">CORABRAS TELHAS DE CONCRETO</span><br><br><span style=\"font-weight:bold\">CNPJ </span> 82.888.702/0001-18<br>Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br><span style=\"color:#3166FF; font-size:18px\">www.corabras.com.br</span></td>
+                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/Corabras_Selo-1.png') . "\" width=\"150\" height=\"112\"></td>
+                  </tr>
+                </tbody>
+                </table>
+               </th>
+          </tr>
+          <tr>
+            <th>Vendedor:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->nome_vendedor . "</td>
+            <th>Data Cadastro:</th>
+            <td>" . $produtos[0]->venda->getData_cadastro() . "</td>
+          </tr>
+          <tr>
+            <th>Nome Cliente:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->nome . "</td>
+            <th>Documento:</th>
+            <td>" . $produtos[0]->venda->cpfcnpj . "</td>
+          </tr>
+          <tr>
+            <th>Telefone do Cliente:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->telefone . "</td>
+                        <th>Contato:</th>
+            <td>" . $produtos[0]->venda->contato . "</td>
+          </tr>
+          <tr>
+            <th>Endereço:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->endereco . "</td>
+
+            <th>Cidade:</th>
+            <td>" . $produtos[0]->venda->cidade . "</td>
+          </tr>
+          <tr>
+            <th>Data Entrega:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->getData_entrega() . "</td>
+            <th>Urgente:</th>
+            <td>";
+      $html .= $produtos[0]->venda->urgente;
+      $html .= "</td>
+          </tr>
+          <tr>
+            <th>Tipo Nota Fiscal:</th>
+            <td colspan=\"2\">" . $produtos[0]->venda->tipo_nf . "</td>
+
+            <th>Nota Fiscal:</th>
+            <td>";
+      $html .= $produtos[0]->venda->nota_fiscal ? "Sim" : "Não";
+      $html .= "</td>
+          </tr>
+          <tr>
+            <th>Forma de Pagamento:</th>
+            <td colspan=\"2\">";
+
+      switch ($produtos[0]->venda->forma_pagamento) {
+        case "AV":
+          $html .= "À Vista";
+          break;
+        case "CH":
+          $html .= "Cheque";
+          break;
+        case "TR":
+          $html .= "Transferência";
+          break;
+        case "OU":
+          $html .= $produtos[0]->venda->descricao_outra_forma_pagamento;
+          break;
+      }
+
+      $html .= "</td>
+            <th>Pagamento:</th>
+            <td>";
+
+      switch ($produtos[0]->venda->pagamento) {
+        case "EN":
+          $html .= "Na Entrega";
+          break;
+        case "AN":
+          $html .= "Antecipado";
+          break;
+      }
+
+      $html .= "</td>
+          </tr>
+          <tr>
+            <th>Endereço Entrega:</th>
+            <td colspan=\"4\">";
+      if ($produtos[0]->venda->envio) {
+        if ($produtos[0]->venda->local_entrega) {
+          $html .= $produtos[0]->venda->endereco;
+        } else {
+          $html .= $produtos[0]->venda->endereco_entrega;
+        }
+      } else {
+        $html .= "Retirar";
+      }
+      $html .= "</td>
+          </tr>
+
+          <tr>
+            <th >Observação:</th>
+            <td colspan=\"4\">" . $produtos[0]->venda->obs . "</td>
+          </tr>
+      <thead>
+
+      <tbody>
+        <tr>
+          <th colspan=\"5\">&nbsp;</th>
+                </tr>
+        <tr style=\"background-color: #f4f2f7;\">
+          <th>Modelo</th>
+          <th>Cor</th>
+          <th>Quantidade</th>
+          <th>Valor</th>
+          <th>Total</th>
+                </tr>";
+
+
+
+      $totalGeral = 0;
+      foreach ($produtos as $produto) {
+        $total = floatval(str_replace(',', '.', $produto->valor)) * $produto->quantidade;
+        $totalGeral += $total;
+
+        $valor = number_format($produto->valor, 2, ',', '.');
+        $valorTotal = number_format($total, 2, ',', '.');
+
+        $html .= "<tr>
+          <td>" . $produto->modelo . "</td>
+          <td>" . $produto->cor . "</td>
+          <td>" . $produto->quantidade . "</td>
+          <th>R$ " . $valor . "</td>
+          <td>R$ " . $valorTotal . "</td>
+                </tr>";
+      }
+      $valorTotalGeral = number_format($totalGeral, 2, ',', '.');
+      $html .= "<tr>
+          <th colspan=\"4\">Total</th>
+          <td>R$ " . $valorTotalGeral . "</td>
+                </tr>
+                <tr>
+            <th colspan=\"5\">
+                <table width='100%' class=\"tg\">
+                    <tbody>
+                        <tr>
+                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Banco Brasil</span><br>Agencia: <span style=\"font-weight:bold\">1840-6</span><br>C/C: <span style=\"font-weight:bold\">134 538-9</span><br>Coral &amp; Coral Ltda. <br>CNPJ 82.888.702/0001-18</th>
+                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Itaú </span><br>Agencia: <span style=\"font-weight:bold\">4336  </span><br>C/C: <span style=\"font-weight:bold\">22492-0</span><br>Coral &amp; Coral Ltda.<br>CNPJ 82.888.702/0001-18</th>
+                            <th class=\"tg-0pky\"><span style=\"font-weight:bold\">Caixa</span><br>Agência: <span style=\"font-weight:bold\">2407 </span><br>Operação: <span style=\"font-weight:bold\">003</span><br>C/C: <span style=\"font-weight:bold\">3924-4</span><br>Coral &amp; Coral Ltda.  <br>CNPJ 82.888.702/0001-18</th>
+                          </tr>
+                    </tbody>
+                </table>
+               </th>
+          </tr>
+      </tbody>
+    </table>";
+
+
+      $filename = "Comprovante_cadastro";
+
+      $this->gerarPdf($html, $filename);
     }
-
-    $view = new ViewModel([
-      'produtos' => $produtos,
-      'venda'    => $produtos[0]->venda,
-      'imgLogo1' => $this->baseUrl . '/img/logo-1.jpg',
-      'imgLogo2' => $this->baseUrl . '/img/Corabras_Selo-1.jpg',
-    ]);
-
-    // Caminho da view: module/Application/view/application/index/comprovante.phtml
-    $view->setTemplate('application/index/comprovante');
-
-    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('ViewRenderer');
-
-    $html = $renderer->render($view);
-
-    $this->gerarPdf($html, "Comprovante_cadastro");
   }
-
 
   public function imprimirAction()
   {
@@ -728,42 +848,127 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
-    mb_internal_encoding("UTF-8");
+    $encoding = mb_internal_encoding();
 
     $idVenda = $this->params()->fromRoute("id", 0);
-    $filename = "Declaracao_entrega_" . $idVenda;
+    $filename = "Declacao_entrega_" . $idVenda;
 
-    // Busca a venda
-    $db = $this->em->createQuery(
-      'SELECT v, p, c 
-         FROM Application\Model\Venda v 
-         LEFT JOIN v.produtos p 
-         LEFT JOIN v.carga c 
-         WHERE v.id = :id'
-    )->setParameter('id', $idVenda);
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
 
+    $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
+    //\Zend\Debug\Debug::dump($pedido);
+    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
 
-    // Renderiza o HTML da view
-    $view = new \Laminas\View\Model\ViewModel([
-      'pedido' => $pedido,
-      'dataAtual' => date("d/m/Y"),
-      'logo' => $this->baseUrl . '/img/logo-1.jpg',
-    ]);
-    $view->setTemplate('application/index/imprimir');
+    $html = "
+        <style type=\"text/css\">
+            .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+            .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+              overflow:hidden;padding:5px 5px;word-break:normal;}
+            .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+              font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
+            .tg .tg-1wig{font-weight:bold;text-align:left;vertical-align:top}
+            .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
+            .tg .tg-baqh{text-align:center;vertical-align:top}
+            .tg .tg-c3ow{border-color:inherit;vertical-align:top}
+            .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+            .tg .tg-dvpl{border-color:inherit;text-align:right;vertical-align:top}
+            .tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
+            .tg .tg-0lax{text-align:left;vertical-align:top}
+            .tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+            </style>
+            <table class=\"tg\">
+            <tbody>
+              <tr>
+                <td class=\"tg-9wq8\" colspan=\"2\"><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" ></td>
+                <td class=\"tg-9wq8\" colspan=\"3\"><span style=\"font-weight:bold\">DECLARAÇÃO</span></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CLIENTE</span></td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome'] . "</td>
+              </tr>
+              <tr>
+                <td class=\"tg-c3ow\"><span style=\"font-weight:bold\">Endereço: </span></td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['endereco'] . " - " . $pedido['cidade'] . "</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CONTATO</span></td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['contato'] . "</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">TELEFONE</span></td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['telefone'] . "</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">VENDEDOR</span></td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome_vendedor'] . "</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\" colspan=\"5\"><span style=\"font-weight:bold\">Declaro ter recebido a mercadoria descrita abaixo:</span></td>
+              </tr>";
+    $qtd_total = 0;
+    foreach ($pedido['produtos'] as $prod) {
+      $qtd_total += $prod['quantidade'];
+      $html .= "<tr>
+              <td class=\"tg-dvpl\"><span style=\"font-weight:bold\">" . $prod['quantidade'] . "</span></td>
+              <td class=\"tg-0pky\" colspan=\"4\">PÇS " . mb_strtoupper($prod['modelo'], $encoding) . " " . mb_strtoupper($prod['cor'], $encoding) . "</td>
+            </tr>";
+    }
 
-    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
-    $renderer = $this->getEvent()->getApplication()
-      ->getServiceManager()
-      ->get('ViewRenderer');
+    $html .= "<tr>
+                <td class=\"tg-dvpl\" colspan=\"5\"><span style=\"font-weight:bold\">BRASÍLIA-DF " . date("d/m/Y") . "</span></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\" colspan=\"5\">QUEBRAS NO CARREGAMENTO: </td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\" colspan=\"5\">PEÇAS PARA REPOSIÇÃO:</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0pky\">TOTAL DE TELHAS E/OU ACESSÓRIOS: </td>
+                <td class=\"tg-0pky\" colspan=\"4\">" . $qtd_total . " PEÇAS</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
+                <td class=\"tg-0lax\"></td>
+              </tr>
+              <tr>
+                <td class=\"tg-baqh\" colspan=\"4\">Responsável pela descarga</td>
+                <td class=\"tg-0lax\"></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\"></td>
+                <td class=\"tg-0lax\" colspan=\"4\"><br></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\"></td>
+                <td class=\"tg-baqh\" colspan=\"4\">Motorista</td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
+                <td class=\"tg-0lax\"></td>
+              </tr>
+              <tr>
+                <td class=\"tg-baqh\" colspan=\"4\">Nome completo do conferente</td>
+                <td class=\"tg-0lax\"></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\"></td>
+                <td class=\"tg-baqh\" colspan=\"4\"><br><br></td>
+              </tr>
+              <tr>
+                <td class=\"tg-0lax\"></td>
+                <td class=\"tg-amwm\" colspan=\"4\">Assinatura do conferente</td>
+              </tr>
+              <tr>
+                <td class=\"tg-1wig\" colspan=\"5\">Afirmo que conferi o carregamento e o pedido, confirmando as quantidades acima descritas, SENDO ENTÃO RESPONSÁVEL pela entrega nas quantidades exatas me passadas pelo romaneio</td>
+              </tr>
+            </tbody>
+        </table>";
 
-    $html = $renderer->render($view);
-
-    // Gera o PDF
-    return $this->gerarPdf($html, $filename);
+    //echo $html;
+    $this->gerarPdf($html, $filename);
   }
-
 
   public function reciboAction()
   {
@@ -771,22 +976,16 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Recibo_entrega_" . $idVenda;
 
-    // --- consulta ---
-    $db = $this->em->createQuery('
-        SELECT v, p, c 
-        FROM Application\Model\Venda v 
-        LEFT JOIN v.produtos p 
-        LEFT JOIN v.carga c 
-        WHERE v.id = :id
-    ')->setParameter('id', $idVenda);
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
 
+    $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
+    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
 
-    // --- cálculos ---
+
     $qtd_total = 0;
     $valor_total = 0;
     foreach ($pedido['produtos'] as $prod) {
@@ -797,24 +996,63 @@ class IndexController extends AbstractActionController
     $valor_total_g = number_format($valor_total, 2, ',', '.');
     $valor_extenso = $this->valorExtenso($valor_total);
 
+    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+    date_default_timezone_set('America/Sao_Paulo');
+
+    $html2 = "<style type=\"text/css\">
+                .tg  {border: none;margin-top:25px;}
+                .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+                  overflow:hidden;padding:5px 5px;word-break:normal;}
+                .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+                  font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
+                .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle;}
+                .tg .tg-9yu8{border-color:inherit;text-align:center;vertical-align:middle;text-decoration: underline;font-size: 20px;}
+                .tg .tg-9wxp{border-color:inherit;text-align:center;vertical-align:middle;font-size:40px;}
+                .tg .tg-5wxp{border-color:inherit;text-align:center;vertical-align:middle;width: 25px;}
+                .tg .tg-c3ow{border-color:inherit;vertical-align:top}
+                .tg .tg-0pky{border-color:inherit;text-align:right;vertical-align:top}
+                .tg .tg-0lax{text-align:left;vertical-align:top}
+                table, tr, td { border: none !important;}
+                </style>";
+
+    for ($i = 0; $i < 2; $i++) {
+      $html2 .= "<table class=\"tg\" cellspacing=\"0\" cellpadding=\"0\">
+                <tbody>
+                    <tr>
+                        <td class=\"tg-5wxp\" ><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" width=\"100px\" height=\"80px\"; ></td>
+                        <td class=\"tg-9wxp\" colspan=\"2\"><span style=\"font-weight:bold\">CORABRAS</span></td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-9yu8\" colspan=\"3\"><span style=\"font-weight:bold\">RECIBO</span></td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-c3ow\" colspan=\"3\">Recebemos de " . $pedido['nome'] . " a quantia supra algarismada de <span style=\"font-weight:bold\">R$ " . $valor_total_g . " (" . $valor_extenso . ") </span> referente ao pagamento de telhas de concreto.</td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-9wq8\" colspan=\"2\"></td>
+                        <td class=\"tg-0pky\">" . strftime('%A, %d de %B de %Y', strtotime('today')) . "</td>
+                    </tr>
+                    <tr>
+                        <td class=\"tg-0lax\" colspan=\"2\"><span style=\"font-weight:bold\">" . $qtd_total . " PEÇAS</span></td>
+                        <td class=\"tg-0pky\"><br><br><br><br>______________________________________________________________</td>
+                    </tr>
+                </tbody>
+            </table>";
+    }
 
 
-    // --- RENDERIZA O TEMPLATE ---
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()
-      ->get('Laminas\View\Renderer\RendererInterface');
-
-    $html = $renderer->render('application/index/recibo', [
-      'pedido'         => $pedido,
-      'qtd_total'      => $qtd_total,
-      'valor_total_g'  => $valor_total_g,
-      'valor_extenso'  => $valor_extenso,
-      'logo' => $this->baseUrl . '/img/logo-1.jpg',
-    ]);
-
-    // --- GERA O PDF ---
-    $this->gerarPdf($html, $filename);
+    //echo $html2;
+    $this->gerarPdf($html2, $filename);
   }
-
 
   public function sairAction()
   {
@@ -836,7 +1074,8 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
     $encoding = mb_internal_encoding();
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+
     $request = $this->getRequest();
 
     if ($request->isPost()) {
@@ -845,14 +1084,14 @@ class IndexController extends AbstractActionController
 
       $cliente->setNome(mb_strtoupper(trim($nome)), $encoding);
 
-      $this->em->persist($cliente);
-      $this->em->flush();
+      $em->persist($cliente);
+      $em->flush();
 
       $result["resp"] = "Salvo com sucesso!";
       $result["tipo_mens"] = 'success';
     }
 
-    $lista = $this->em->getRepository("Application\Model\Cidade")->findBy(
+    $lista = $em->getRepository("Application\Model\Cidade")->findBy(
       array(),
       array('nome' => 'ASC')
     );
@@ -869,9 +1108,10 @@ class IndexController extends AbstractActionController
     }
     $id = $this->params()->fromRoute("id", 0);
 
-    $cidade = $this->em->getRepository("Application\Model\Cidade")->find($id);
-    $this->em->remove($cidade);
-    $this->em->flush();
+    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
+    $em->remove($cidade);
+    $em->flush();
 
     $result["resp"] = "Salvo com sucesso!";
     $result["tipo_mens"] = 'success';
@@ -881,17 +1121,11 @@ class IndexController extends AbstractActionController
 
   public function gerarPdf($html, $filename)
   {
+    // include autoloader
+    require_once  __DIR__ . '/../../../../../vendor/dompdf/autoload.inc.php';
 
     // instantiate and use the dompdf class
-    $dompdf = new \Dompdf\Dompdf([
-      'isRemoteEnabled' => true,
-      'isHtml5ParserEnabled' => true,
-    ]);
-
-    $dompdf->set_option('isPdfObjectStream', false);
-    $dompdf->set_option('isPdfCompressionEnabled', false);
-    $dompdf->set_option("pdf_version", "1.4");
-    $dompdf->set_option('isRemoteEnabled', true);
+    $dompdf = new Dompdf();
 
     $dompdf->loadHtml($html);
 

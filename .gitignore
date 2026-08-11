@@ -8,7 +8,8 @@ vendor/
 
 # Local config
 config/autoload/*.local.php
-blocos.code-workspace
+telhas.code-workspace
+.git_corrupt_backup/
 
 # Data
 data/logs/
@@ -27,4 +28,3 @@ data/DoctrineORMModule/cache/
 demos/
 extras/documentation
 log
-

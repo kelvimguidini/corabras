@@ -26,7 +26,7 @@ jobs:
         run: |
           composer install --no-dev --prefer-dist --optimize-autoloader
 
-      # 4 — Upload do Projeto via FTP para o subdomínio blocos.corabras.frii.site
+      # 4 — Upload do Projeto via FTP
       - name: Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -37,7 +37,7 @@ jobs:
           protocol: ftp
           timeout: 60000
           local-dir: ./
-          server-dir: /blocos.corabras.frii.site/
+          server-dir: /
           exclude: |
             **/.git**
             **/.git/**
@@ -54,6 +54,6 @@ jobs:
             **Dockerfile**
             **docker/**
             **.dockerignore**
-            **blocos.code-workspace**
+            **telhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php

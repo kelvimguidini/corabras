@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: mariadb:10.5
-    container_name: blocos_db
+    container_name: telhas_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -11,7 +11,7 @@ services:
       MYSQL_USER: fddd5815_corabras
       MYSQL_PASSWORD: Corabras*2020
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
 
@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: blocos_app
+    container_name: telhas_app
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
@@ -34,9 +34,9 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: blocos_nginx
+    container_name: telhas_nginx
     ports:
-      - "9000:80"
+      - "9001:80"
     volumes:
       - .:/var/www/html
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -45,4 +45,3 @@ services:
 
 volumes:
   db_data:
-
