@@ -1,13 +1,14 @@
 RewriteEngine On
 
+# Não reescreve arquivos e pastas que existem fisicamente
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^.*$ - [L]
+RewriteRule ^.*$ - [NC,L]
 
-RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
-RewriteRule ^(.*) - [E=BASE:%1]
-RewriteRule ^(.*)$ %{ENV:BASE}/index.php [L]
+# Redireciona todas as outras requisições para o index.php
+RewriteRule ^(.*)$ index.php [NC,L]
 
 AddDefaultCharset UTF-8
 
