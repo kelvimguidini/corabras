@@ -1,0 +1,218 @@
+ <div id="main" class="container-fluid">
+  <h3 class="page-header">Detalhes da Venda</h3>
+  
+  <div class="row">
+    <div class="col-md-4">
+      <p><strong>Id</strong></p>
+  	  <p><?php echo $this->venda->getId();?></p>
+    </div>
+	
+	<div class="col-md-4">
+      <p><strong>Data</strong></p>
+  	  <p><?php echo $this->venda->getData();?></p>
+    </div>
+	
+	<div class="col-md-4">
+      <p><strong>Cliente</strong></p>
+  	  <p><?php echo $this->venda->getCliente()->nome;?></p>
+    </div>
+
+    <div class="col-md-4">
+      <p><strong>Modelo</strong></p>
+  	  <p><?php echo $this->venda->getModelo();?></p>
+    </div>
+	
+	<div class="col-md-4">
+      <p><strong>Cor</strong></p>
+  	  <p><?php echo $this->venda->getCor();?></p>
+    </div>
+	
+	<div class="col-md-4">
+      <p><strong>Quantidade</strong></p>
+  	  <p><?php echo $this->venda->getQuantidade();?></p>
+    </div>
+	
+    <div class="col-md-4">
+      <p><strong>Valor Unitário</strong></p>
+  	  <p>R$ <?php echo $this->venda->getValor_individual();?></p>
+    </div>
+	
+	<div class="col-md-8">
+      <p><strong>Forma de Pagamento</strong></p>
+  	  <p><?php echo $this->venda->getForma_Pagamento()==1?'À Vista':'À prazo';?></p>
+    </div>
+	
+ </div>
+ <hr />
+ 
+ <?php 
+$comissao = 0;
+ $colorido = $this->venda->getCor() != "Cinza Pérola";
+ $frete = $this->venda->getModelo() == "MAX"? 0.19 : 0.14;
+ $valorUnitario = number_format($this->venda->getValor_individual() - $frete, 2, ',', '.');
+ if($this->venda->getForma_Pagamento() == 1){
+     if($colorido){
+         if($this->venda->getModelo() == "FIT" || $this->venda->getModelo() == "COPPO VENETTO"){
+              
+             if($valorUnitario < 1.65){
+                 $comissao = 3;
+             }else if($valorUnitario >= 1.65 && $valorUnitario < 1.70){
+                 $comissao = 5;
+             }else if($valorUnitario >= 1.70 && $valorUnitario < 1.77){
+                 $comissao = 7;
+             }else if($valorUnitario >= 1.77 && $valorUnitario < 1.85){
+                 $comissao = 10;
+             }else if($valorUnitario >= 1.85 && $valorUnitario < 1.94){
+                 $comissao = 15;
+             }else if($valorUnitario >= 1.94){
+                 $comissao = 20;
+             }
+         }else{
+             if($valorUnitario < 2.37){
+                 $comissao = 3;
+             }else if($valorUnitario >= 2.37 && $valorUnitario < 2.46){
+                 $comissao = 5;
+             }else if($valorUnitario >= 2.46 && $valorUnitario < 2.56){
+                 $comissao = 7;
+             }else if($valorUnitario >= 2.56 && $valorUnitario < 2.70){
+                 $comissao = 10;
+             }else if($valorUnitario >= 2.70 && $valorUnitario < 2.84){
+                 $comissao = 15;
+             }else if($valorUnitario >= 2.84){
+                 $comissao = 20;
+             }
+         }
+     }else{
+         if($this->venda->getModelo() == "FIT" || $this->venda->getModelo() == "COPPO VENETTO"){
+             
+             if($valorUnitario < 1.40){
+                 $comissao = 3;
+             }else if($valorUnitario >= 1.40 && $valorUnitario < 1.45){
+                 $comissao = 5;
+             }else if($valorUnitario >= 1.45 && $valorUnitario < 1.52){
+                 $comissao = 7;
+             }else if($valorUnitario >= 1.52 && $valorUnitario < 1.60){
+                 $comissao = 10;
+             }else if($valorUnitario >= 1.60 && $valorUnitario < 1.68){
+                 $comissao = 15;
+             }else if($valorUnitario >= 1.68){
+                 $comissao = 20;
+             }
+         }else{
+             if($valorUnitario < 1.97){
+                 $comissao = 3;
+             }else if($valorUnitario >= 1.97 && $valorUnitario < 2.06){
+                 $comissao = 5;
+             }else if($valorUnitario >= 2.06 && $valorUnitario < 2.16){
+                 $comissao = 7;
+             }else if($valorUnitario >= 2.16 && $valorUnitario < 2.30){
+                 $comissao = 10;
+             }else if($valorUnitario >= 2.30 && $valorUnitario < 2.42){
+                 $comissao = 15;
+             }else if($valorUnitario >= 2.42){
+                 $comissao = 20;
+             }
+         }
+     }
+ }else{
+     if($colorido){
+         if($this->venda->getModelo() == "FIT" || $this->venda->getModelo() == "COPPO VENETTO"){
+             
+             if($valorUnitario < 1.69){
+                 $comissao = 3;
+             }else if($valorUnitario >= 1.69 && $valorUnitario < 1.77){
+                 $comissao = 5;
+             }else if($valorUnitario >= 1.77 && $valorUnitario < 1.84){
+                 $comissao = 7;
+             }else if($valorUnitario >= 1.84 && $valorUnitario < 1.91){
+                 $comissao = 10;
+             }else if($valorUnitario >= 1.91 && $valorUnitario < 2.01){
+                 $comissao = 15;
+             }else if($valorUnitario >= 2.01){
+                 $comissao = 20;
+             }
+         }else{
+             if($valorUnitario < 2.49){
+                 $comissao = 3;
+             }else if($valorUnitario >= 2.49 && $valorUnitario < 2.59){
+                 $comissao = 5;
+             }else if($valorUnitario >= 2.59 && $valorUnitario < 2.68){
+                 $comissao = 7;
+             }else if($valorUnitario >= 2.68 && $valorUnitario < 2.97){
+                 $comissao = 10;
+             }else if($valorUnitario >= 2.97 && $valorUnitario < 3.12){
+                 $comissao = 15;
+             }else if($valorUnitario >= 3.12){
+                 $comissao = 20;
+             }
+         }
+     }else{
+         if($this->venda->getModelo() == "FIT" || $this->venda->getModelo() == "COPPO VENETTO"){
+             
+             if($valorUnitario < 1.45){
+                 $comissao = 3;
+             }else if($valorUnitario >= 1.45 && $valorUnitario < 1.52){
+                 $comissao = 5;
+             }else if($valorUnitario >= 1.52 && $valorUnitario < 1.59){
+                 $comissao = 7;
+             }else if($valorUnitario >= 1.59 && $valorUnitario < 1.66){
+                 $comissao = 10;
+             }else if($valorUnitario >= 1.66 && $valorUnitario < 1.74){
+                 $comissao = 15;
+             }else if($valorUnitario >= 1.74){
+                 $comissao = 20;
+             }
+         }else{
+             if($valorUnitario < 2.10){
+                 $comissao = 3;
+             }else if($valorUnitario >= 2.10 && $valorUnitario < 2.19){
+                 $comissao = 5;
+             }else if($valorUnitario >= 2.19 && $valorUnitario < 2.28){
+                 $comissao = 7;
+             }else if($valorUnitario >= 2.28 && $valorUnitario < 2.37){
+                 $comissao = 10;
+             }else if($valorUnitario >= 2.37 && $valorUnitario < 2.49){
+                 $comissao = 15;
+             }else if($valorUnitario >= 2.49){
+                 $comissao = 20;
+             }
+         }
+     }
+ }
+
+ ?>
+ 
+ <div class="row">
+ 	<h4 class="page-header">Comissão</h4>
+ 	<div class="col-md-2">
+      <p><strong>Taxa Frete</strong></p>
+  	  <p>R$ <?php echo $frete?></p>
+    </div>
+ 	<div class="col-md-2">
+      <p><strong>Percentual</strong></p>
+  	  <p><?php echo $comissao;?>%</p>
+    </div>
+    <div class="col-md-2">
+      <p><strong>Valor Unitáio sem frete</strong></p>
+  	  <p>R$ <?php echo $valorUnitario?></p>
+    </div>
+    <div class="col-md-2">
+      <p><strong>Valor Total Venda</strong></p>
+  	  <p>R$ <?php echo number_format($this->venda->getQuantidade() * $this->venda->getValor_individual(), 2, ',', '.');?></p>
+    </div>
+    <div class="col-md-2">
+      <p><strong>Comissão Individual</strong></p>
+  	  <p>R$ <?php echo number_format((str_replace(',', '.', $valorUnitario) / 100) * $comissao , 2, ',', '.');?></p>
+    </div>
+    <div class="col-md-2">
+      <p><strong>Comissão total</strong></p>
+  	  <p>R$ <?php echo number_format(((str_replace(',', '.', $valorUnitario) / 100) * $comissao)*$this->venda->getQuantidade() , 2, ',', '.');?></p>
+    </div>
+ </div>
+ <hr />
+ 
+ <div id="actions" class="row">
+   <div class="col-md-12">
+	 <a href="<?php echo $this->url('cadastrar', array('action' => 'cadastrar', 'id' => $this->venda->getId())); ?>" class="btn btn-default  pull-right">Editar</a>
+   </div>
+ </div>

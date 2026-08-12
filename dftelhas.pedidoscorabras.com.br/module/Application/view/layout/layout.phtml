@@ -1,0 +1,68 @@
+<?= $this->doctype() ?>
+
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <?= $this->headTitle('DF Telhas - Lançamento de vendas')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?= $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!-- Le styles -->
+        <?= $this->headLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'])
+            ->prependStylesheet($this->basePath('css/style.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
+            ->prependStylesheet($this->basePath('css/jquery-ui.css'))
+            ->prependStylesheet($this->basePath('css/jquery.dataTables.min.css'))
+        ?>
+
+        <!-- Scripts -->
+        <?= $this->headScript()
+            ->prependFile($this->basePath('js/jquery.maskMoney.js'))
+            ->prependFile($this->basePath('js/jquery.dataTables.min.js'))
+            ->prependFile($this->basePath('js/jquery-ui.js'))
+            ->prependFile($this->basePath('js/bootstrap.min.js'))
+            ->prependFile($this->basePath('js/jquery-3.1.0.min.js'))
+            ->prependFile($this->basePath('js/excellentexport/dist/excellentexport.js'))
+        ?>
+    </head>
+    <body>
+         <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+           <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+             <span class="sr-only">Toggle navigation</span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<?= $this->url('home'); ?>">DF Telhas</a>
+           </div>
+           <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+            <?php if(isset($_SESSION['usuarioNome'])){?>
+             <li><a href="<?= $this->url('home'); ?>">Inicio</a></li>
+             <li><a href="<?= $this->url('cadastrar'); ?>">Nova Vendas</a></li>
+             <li><a href="<?= $this->url('relatorio'); ?>">Relatório</a></li>
+             <li><a href="<?= $this->url('custo'); ?>">Tabela De Custo</a></li>
+             <li><a href="<?= $this->url('sair'); ?>">Sair</a></li>
+             <?php }?>
+            </ul>
+           </div>
+          </div>
+         </nav>
+         <div id="main" class="container-fluid">
+            <?= $this->content ?>
+            <hr>
+            <footer>
+                <p>&copy;</p>
+            </footer>
+        </div>
+        <?= $this->inlineScript() ?>
+    </body>
+</html>

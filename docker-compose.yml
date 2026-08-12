@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.5
+    container_name: corabras_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fddd5815_corabras
+      MYSQL_USER: fddd5815_corabras
+      MYSQL_PASSWORD: Corabras*2020
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: corabras_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    expose:
+      - "9003"
+    environment:
+      XDEBUG_MODE: debug,develop
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003 start_with_request=yes
+      PHP_IDE_CONFIG: serverName=zf2
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: corabras_nginx
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+      - "9002:9002"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+volumes:
+  db_data:

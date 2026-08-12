@@ -80,7 +80,41 @@ jobs:
             **/config/autoload/doctrine.local.php
             **/vendor/**
 
-      # 4 — Upload Portal (index.html) para Raiz /
+      # 4 — Upload de dfTelhas via FTP
+      - name: Deploy dfTelhas via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          timeout: 60000
+          local-dir: ./dftelhas.pedidoscorabras.com.br/
+          server-dir: /dftelhas.pedidoscorabras.com.br/
+          exclude: |
+            **/.git**
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/tests/**
+            **/storage/**
+            **/public/storage/**
+            **/tmp/**
+            **/.env**
+            **vite.config.js**
+            **nginx.conf**
+            **docker-compose.yml**
+            **Dockerfile**
+            **docker/**
+            **.dockerignore**
+            **dfTelhas.sln**
+            **dfTelhas.code-workspace**
+            **/config/autoload/*.local.php
+            **/config/autoload/doctrine.local.php
+            **/vendor/**
+
+      # 5 — Upload Portal (index.html) para Raiz /
       - name: Deploy Portal Landing Page para Raiz /
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -95,7 +129,9 @@ jobs:
           exclude: |
             **/telhas.pedidoscorabras.com.br/**
             **/blocos.pedidoscorabras.com.br/**
-            **/dfTelhas/**
+            **/dftelhas.pedidoscorabras.com.br/**
+            **/docker/**
+            **docker-compose.yml**
             **/.git**
             **/.git/**
             **/.github/**
@@ -105,7 +141,7 @@ jobs:
             **/.vscode/**
             **/.settings/**
 
-      # 5 — Upload Portal (index.html) para /pedidos.corabras.com.br/
+      # 6 — Upload Portal (index.html) para /pedidos.corabras.com.br/
       - name: Deploy Portal Landing Page para /pedidos.corabras.com.br/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -120,7 +156,9 @@ jobs:
           exclude: |
             **/telhas.pedidoscorabras.com.br/**
             **/blocos.pedidoscorabras.com.br/**
-            **/dfTelhas/**
+            **/dftelhas.pedidoscorabras.com.br/**
+            **/docker/**
+            **docker-compose.yml**
             **/.git**
             **/.git/**
             **/.github/**

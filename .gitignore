@@ -43,5 +43,3 @@ package-lock.json
 *.buildpath
 *.project
 
-# Backup / legacy folders
-dfTelhas/

@@ -1,0 +1,827 @@
+<style type="text/css" media="print">
+
+    body{
+        font-size: 8px;
+        max-height:100%; 
+        max-width:100%;
+        margin-top: 1.2cm;
+        margin-bottom: 1.2cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+        size: landscape;
+    } 
+
+    table{
+
+        border: 1px !important;
+    }
+
+    .yesprint {
+      	visibility: visible;
+      	position: absolute;
+		top: 0;
+		left: 0;
+		border: 1px;
+    }
+
+    .yesprint2 {
+      	visibility: visible;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		border: 1px;
+    }
+
+    .tab_prod{
+        visibility: visible;
+        border: 1px !important;
+    }
+
+    .no_print{
+        visibility: hidden;
+    }
+</style>
+
+<div id="top" class="row no_print">
+
+	<div class="col-sm-3">
+		<h2>Listar Vendas</h2>
+	</div>
+
+	<div class="col-sm-6"></div>
+
+	<div class="col-sm-3">
+		<div>
+            <input type="button" class="btn btn-default" value="Exportar para Excel" id="anchorNewApi-xlsx" onclick="tableToExcel('lista_vendas', 'W3C Example Table')">
+            <input type="button" class="btn btn-default" value="Imprimir" onClick="self.print();" />
+ 		</div>
+	</div>
+
+</div>
+
+<!-- /#top -->
+
+<?php $comissaoTotal = 0;?>
+
+
+
+<hr class="no_print" />
+
+<form method="post" class="no_print" id="filtros">
+
+	<div class="row">
+
+		<div class="form-group col-md-4">
+			<label for="cliente">Cliente</label>
+			<select name="cliente" id="select_cliente" class="form-control">
+				<option value="">- Selecione -</option>
+				<?php foreach ($this->clientes as $c){ ?>
+					<option value="<?php echo $c->getId();?>" <?php if(isset($this->filtro['cliente']) && $this->filtro['cliente'] == $c->getId())echo 'selected';?>><?php echo $c->getNome()?></option>
+				<?php }?>
+			</select>
+		</div>
+
+		<div class="form-group col-md-2 has-feedback">
+			<label for="data">Período de</label> 
+			<input type="text" class="form-control calendario no_print" name="data_de" value="<?php if(isset($this->filtro['data_de']))echo $this->filtro['data_de'];?>"> 
+			<i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+		</div>
+
+		<div class="form-group col-md-2 has-feedback">
+			<label for="data">à</label> 
+			<input type="text" class="form-control calendario no_print" name="data_a" value="<?php if(isset($this->filtro['data_a']))echo $this->filtro['data_a'];?>"> 
+			<i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+		</div>		
+
+        <div class="form-group col-md-2 has-feedback">
+			<label for="limite">Exibir</label> 
+			<select name="limite" class="form-control">
+				<option value="10" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 10)echo 'selected';?>>10 Registros</option>
+				<option value="100" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 100)echo 'selected';?>>100 Registros</option>
+				<option value="1000" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 1000)echo 'selected';?>>1000 Registros</option>
+				<option value="0" <?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 0)echo 'selected';?>>Todos Os Registros</option>
+			</select>
+		</div>
+
+		<div class="form-group col-md-2">
+			<button type="submit" class="btn btn-primary">Filtrar</button>
+		</div>
+	</div>
+</form>
+
+
+
+<div id="list" class="row yesprint">
+	<div class="table-responsive col-md-12">
+		<table class="table table-striped" cellspacing="0" cellpadding="0" id="lista_vendas">
+			<thead>
+				<tr>
+					<th class="no_print"></th>
+					<th>Data</th>
+					<th>Cliente</th>
+                    <th>Código</th>
+					<th>Quantidade Total</th>
+					<th>Valor Total</th>
+					<th>Comissão Total</th>
+					<th></th>
+					<th class="actions no_print">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+			   <?php $valorComissaoGeral = 0;
+			   $valorGeral = 0;
+			   $qtdTotalGeral = 0;
+
+			   foreach ($this->vendas as $v){
+			       $valorTotalComissao = 0;?>
+			   <tr class="linha">
+			      	<td><i class="glyphicon glyphicon-plus venda no_print" id="<?php echo is_array($v)?$v['id']:$v->getId();?>"></i></td>
+			      	<td><?php 
+			      	if(!is_array($v)){
+					    echo $v->getData();
+					}else{
+					    echo  $v['data']->format('d/m/Y');
+					}?></td>
+					<td><?php  
+					if(!is_array($v)){
+					    echo $v->getCliente()->nome;
+					}else{
+					    foreach ($this->clientes as $c){
+					        if($c->getId() == $v['id_cliente']){
+					            echo $c->getNome();
+					            break;
+					        }
+					    }
+					}?></td>
+                    <td><?php echo (is_array($v) ? $v['forma_pagamento'] : $v->getForma_pagamento()) ==1?'1001':'1002';?></td>
+					<?php 
+			          $prod = array();
+			          $quantidadeTotal=0;
+			          $valorTotal=0;
+
+			          foreach ($this->produtos as $p){
+			              $id = is_array($v)?$v['id']:$v->getId();
+			              if($p->getVenda()->id == $id){
+			                  array_push($prod, $p);
+			                  $quantidadeTotal += $p->getQuantidade();
+			                  $valorTotal += floatval(str_replace(',', '.', $p->getValor())) * $p->getQuantidade();
+			              }
+			          }
+			          $valorGeral += $valorTotal;
+					  $qtdTotalGeral += $quantidadeTotal;
+			          ?>
+					<td><?php echo $quantidadeTotal;?></td>
+					<td>R$ <?php echo number_format($valorTotal, 2, ',', '.');?></td>
+					<td id="comissao-total-<?php echo is_array($v)?$v['id']:$v->getId();?>"></td>
+					<td>
+                        <?php if($v["envio"]){
+                            echo "<span title=\"Entregar\" class=\"label label-warning\"> E </span>";
+                        }else{
+                            echo "<span title=\"Retirar\" class=\"label label-success\"> R </span>";
+                        }?>
+                    </td>
+					<td class="actions no_print">
+						<a class="btn btn-warning btn-xs" href="<?php echo $this->url('cadastrar', array('action' => 'cadastrar', 'id' => is_array($v)?$v['id']:$v->getId())); ?>">Editar</a> 
+					</td>
+				</tr>
+				<tr>
+					<td colspan="9">
+					<?php if(count($prod)){?>
+						<table class="table tab-prod table-striped" id="tabela_prod_<?php echo is_array($v)?$v['id']:$v->getId();?>">
+							<thead>
+								<tr>
+									<th>Modelo</th>
+									<th>Cor</th>
+									<th>Quantidade</th>
+									<th>Valor</th>
+                                    <th><?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "Custo" : "Frete";?></th>
+									<th><?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "Comissão" : "Valor sem Frete";?></th>
+									
+                                    <?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "" : "<th>Valor Total</th>";?>
+                                    <th><?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "Custo Total" : "Frete Total";?></th>
+									<th><?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "Comissão Total" : "Valor Total Sem Frete";?></th>
+									<th><?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "Valor Total" : "Percentual";?></th>
+									<?php echo strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30') ? "" : "<th>Comissão</th>";?>
+											
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ($prod as $p){?>
+                				<tr>
+                					<td><?php echo $p->getModelo(); ?></td>
+                					<td><?php echo $p->getCor(); ?></td>
+                					<td><?php echo $p->getQuantidade(); ?></td>
+                					<td>R$ <?php echo $p->getValor(); ?></td>
+                					<td>R$ 
+                                    <?php 
+                						$frete = 0;
+                                        if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                						    $frete = 0;
+                						    if(($p->getModelo() == "Super Max" || $p->getModelo() == "Max") && $v['envio'] === false ){
+                						        $frete = 0.20;
+                						    }else if(($p->getModelo() == "Coppo Venetto" || $p->getModelo() == "Fit") && $v['envio'] === false ){
+                						        $frete = 0.15;
+                						    }
+                                            $custo = $p->custo - $frete;
+                    					    echo number_format($custo, 2, ',', '.');
+                                        }else{
+                                            if($p->getModelo() == "MAX"){
+                						        $frete = 0.19;
+                						    }else if($p->getModelo() == "COPPO VENETTO" || $p->getModelo() == "FIT"){
+                						        $frete = 0.14;
+                						    }
+
+                    					    echo $frete; 
+                                        }
+                					?>
+                					</td>
+                					<td>R$ <?php 
+                                    if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                                        $comissaoNovo = floatval(str_replace(',', '.', $p->getValor())) - $custo;
+                                        echo number_format($comissaoNovo, 2, ',', '.');
+                                    }else{
+                                        echo number_format(floatval(str_replace(',', '.', $p->getValor())) - $frete, 2, ',', '.');
+                                    }
+                                    ?></td>
+                					<td>R$ <?php
+                                    if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                                        echo number_format($custo * $p->getQuantidade(), 2, ',', '.');
+                                    }else{
+                                        echo number_format(floatval(str_replace(',', '.', $p->getValor())) * $p->getQuantidade(),2, ',', '.');
+                                    }?></td>
+                					<td>R$ <?php 
+                                    if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                                        $comissaoTotalNovo = $comissaoNovo * $p->getQuantidade();
+                                        echo number_format($comissaoTotalNovo, 2, ',', '.');
+                                    }else{
+                                        echo number_format(floatval(str_replace(',', '.', $frete)) * $p->getQuantidade(),2, ',', '.');
+                                    }
+                                    ?></td>
+                                    <td>R$ <?php 
+                                    if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                                        echo number_format((floatval(str_replace(',', '.', $p->getValor()))) * $p->getQuantidade(),2, ',', '.');
+                                    }else{
+                                        echo number_format((floatval(str_replace(',', '.', $p->getValor())) - $frete) * $p->getQuantidade(),2, ',', '.');
+                                    }
+                                    ?></td>
+                                    <?php 
+                                    if(strtotime($v['data']->format('Y-m-d')) <= strtotime('2021-03-30')){?>
+                					    <td>
+                					    <?php 
+                					    $comissao = 0;
+                					    $colorido = $p->getCor() != "Cinza Pérola"?true:false;
+
+                					    if($p->getModelo() == "FIT" || $p->getModelo() == "COPPO VENETTO" || $p->getModelo() == "MAX"){
+                					        $valorUnitario = number_format(floatval(str_replace(',', '.', $p->getValor())) - $frete, 2);
+                					    }else{
+                					        $valorUnitario = number_format(floatval(str_replace(',', '.', $p->getValor())), 2);
+                					    }
+
+                					    if((is_array($v)?$v['forma_pagamento']:$v->getForma_pagamento())==1){
+                					        if($colorido){
+                					            if($p->getModelo() == "FIT" || $p->getModelo() == "COPPO VENETTO"){
+                					                if($valorUnitario < 1.65){
+                					                    $comissao = 3;
+                					                }else if($valorUnitario >= 1.65 && $valorUnitario < 1.70){
+                					                    $comissao = 5;
+                					                }else if($valorUnitario >= 1.70 && $valorUnitario < 1.77){
+                					                    $comissao = 7;
+                					                }else if($valorUnitario >= 1.77 && $valorUnitario < 1.85){
+                					                    $comissao = 10;
+                					                }else if($valorUnitario >= 1.85 && $valorUnitario < 1.94){
+                					                    $comissao = 15;
+                					                }else if($valorUnitario >= 1.94){
+                					                    $comissao = 20;
+                					                }
+                					            }else  if($p->getModelo() == "MAX") {
+                					                if($valorUnitario < 2.37){
+                					                    $comissao = 3;
+                					                }else if($valorUnitario >= 2.37 && $valorUnitario < 2.46){
+                					                    $comissao = 5;
+                					                }else if($valorUnitario >= 2.46 && $valorUnitario < 2.56){
+                					                    $comissao = 7;
+                					                }else if($valorUnitario >= 2.56 && $valorUnitario < 2.70){
+                					                    $comissao = 10;
+                					                }else if($valorUnitario >= 2.70 && $valorUnitario < 2.84){
+                					                    $comissao = 15;
+                					                }else if($valorUnitario >= 2.84){
+                					                    $comissao = 20;
+                					                }
+                					            }else if($p->getModelo() == "CUMEEIRA ESPIGÃO"){
+                					                if($valorUnitario < 4.50){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 4.50 && $valorUnitario < 5.50){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 5.50){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else{
+
+                					                $comissao = 5;
+
+                					            }
+
+                					        }else{
+
+                					            if($p->getModelo() == "FIT" || $p->getModelo() == "COPPO VENETTO"){
+
+                					            
+
+                					                if($valorUnitario < 1.40){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 1.40 && $valorUnitario < 1.45){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 1.45 && $valorUnitario < 1.52){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 1.52 && $valorUnitario < 1.60){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 1.60 && $valorUnitario < 1.68){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 1.68){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else  if($p->getModelo() == "MAX") {
+
+                					                if($valorUnitario < 1.97){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 1.97 && $valorUnitario < 2.06){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 2.06 && $valorUnitario < 2.16){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 2.16 && $valorUnitario < 2.30){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 2.30 && $valorUnitario < 2.42){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 2.42){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else if($p->getModelo() == "CUMEEIRA ESPIGÃO"){
+
+                					                if($valorUnitario < 4.50){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 4.50 && $valorUnitario < 5.50){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 5.50){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else{
+
+                					                $comissao = 5;
+
+                					            }
+
+                					       }
+
+                					    }else{
+
+                					        if($colorido){
+
+                					            if($p->getModelo() == "FIT" || $p->getModelo() == "COPPO VENETTO"){
+
+                					            
+
+                					                if($valorUnitario < 1.69){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 1.69 && $valorUnitario < 1.77){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 1.77 && $valorUnitario < 1.84){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 1.84 && $valorUnitario < 1.91){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 1.91 && $valorUnitario < 2.01){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 2.01){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else  if($p->getModelo() == "MAX") {
+
+                					                if($valorUnitario < 2.49){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 2.49 && $valorUnitario < 2.59){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 2.59 && $valorUnitario < 2.68){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 2.68 && $valorUnitario < 2.97){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 2.97 && $valorUnitario < 3.12){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 3.12){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else if($p->getModelo() == "CUMEEIRA ESPIGÃO"){
+
+                					                if($valorUnitario < 4.50){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 4.50 && $valorUnitario < 5.50){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 5.50){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else{
+
+                					                $comissao = 5;
+
+                					            }
+
+                					        }else{
+
+                					            if($p->getModelo() == "FIT" || $p->getModelo() == "COPPO VENETTO"){
+
+                					            
+
+                					                if($valorUnitario < 1.45){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 1.45 && $valorUnitario < 1.52){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 1.52 && $valorUnitario < 1.59){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 1.59 && $valorUnitario < 1.66){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 1.66 && $valorUnitario < 1.74){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 1.74){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else  if($p->getModelo() == "MAX") {
+
+                					        
+
+                					                if($valorUnitario < 2.10){
+
+                					                    $comissao = 3;
+
+                					                }else if($valorUnitario >= 2.10 && $valorUnitario < 2.19){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 2.19 && $valorUnitario < 2.28){
+
+                					                    $comissao = 7;
+
+                					                }else if($valorUnitario >= 2.28 && $valorUnitario < 2.37){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 2.37 && $valorUnitario < 2.49){
+
+                					                    $comissao = 15;
+
+                					                }else if($valorUnitario >= 2.49){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else if($p->getModelo() == "CUMEEIRA ESPIGÃO"){
+
+                					                if($valorUnitario < 4.50){
+
+                					                    $comissao = 5;
+
+                					                }else if($valorUnitario >= 4.50 && $valorUnitario < 5.50){
+
+                					                    $comissao = 10;
+
+                					                }else if($valorUnitario >= 5.50){
+
+                					                    $comissao = 20;
+
+                					                }
+
+                					            }else{
+
+                					                $comissao = 5;
+
+                					            }
+
+                					        
+
+                					        }
+
+                					    }
+
+                					    echo $comissao . "%"
+                					    ?>
+									    </td>
+									    <td>R$ <?php 
+									    $valorTotalSemFrete = (floatval(str_replace(',', '.', $p->getValor())) - $frete) * $p->getQuantidade();  
+									    echo number_format(($valorTotalSemFrete / 100)*$comissao,2, ',', '.');
+									    $valorTotalComissao += ($valorTotalSemFrete / 100)*$comissao;
+									    ?></td>
+                                    <?php }
+                                    if(strtotime($v['data']->format('Y-m-d')) > strtotime('2021-03-30')){
+                                        $valorTotalComissao += $comissaoTotalNovo;
+                                    }
+                                    ?>
+								</tr>
+
+                			    <?php } 
+                                
+                			    $valorComissaoGeral += $valorTotalComissao;
+
+                			    ?>
+							</tbody>
+						</table>
+
+    					<script type="text/javascript">
+
+    						$('#comissao-total-<?php echo is_array($v)?$v['id']:$v->getId();?>').text('R$ <?php echo number_format($valorTotalComissao,2, ',', '.'); ?>');
+
+    					</script>
+
+<?php  }
+
+			         }?>
+
+
+
+			</tbody>
+
+		</table>
+
+	</div>
+
+
+
+</div>
+
+<!-- /#list -->
+
+ <hr />
+
+
+
+ <div id="actions" class="row yesprint2">
+
+     <div class="col-md-2">
+
+        <a onclick="anterior();" id="anterior" class="btn btn-info"><< Anterior </a>
+
+        <a onclick="proximo();" id="next" class="btn btn-info">Próximo >></a>
+
+     </div>  
+
+     <div class="col-md-4">
+
+   		<div class="pull-right">
+
+    		<p><strong>Qtd Total</strong></p>
+
+	 	 	<p><?php echo $qtdTotalGeral;?></p>
+
+	  	</div>
+
+     </div>
+
+    <div class="col-md-3">
+
+   		<div class="pull-right">
+
+    		<p><strong>Valor total das Vendas</strong></p>
+
+	 	 	<p>R$ <?php echo number_format($valorGeral, 2, ',', '.');?></p>
+
+	  	</div>
+
+   </div>
+
+   <div class="col-md-3">
+
+   		<div class="pull-right">
+
+    		<p><strong>Comissão total no perildo</strong></p>
+
+	 	 	<p>R$ <?php echo number_format($valorComissaoGeral, 2, ',', '.');?></p>
+
+	  	</div>
+
+   </div>
+
+ </div>
+
+
+
+ 
+
+
+
+<link href="/css/select2.min.css" rel="stylesheet" />
+
+<script src="/js/select2.min.js"></script>
+
+<script type="text/javascript">
+
+
+
+var tableToExcel = (function () {
+
+    var uri = 'data:application/vnd.ms-excel;base64,'
+
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+
+        , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+
+        , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+    return function (table, name) {
+
+        if (!table.nodeType) table = document.getElementById(table)
+
+        var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }
+
+        window.location.href = uri + base64(format(template, ctx))
+
+    }
+
+})()
+
+
+
+$('body').on('focus',".calendario", function(){
+    $(this).datepicker({
+        dateFormat: 'dd/mm/yy',
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+        nextText: 'Próximo',
+        prevText: 'Anterior'
+    });
+});
+
+function proximo(){
+    var url = "<?=$this->filtro['next'];?>";
+    $("#filtros").attr("action", "<?= $this->url('relatorio'); ?>" +"/"+ url);
+    $("#filtros").submit();
+}
+
+
+
+function anterior(){
+
+    var url = "<?=$this->filtro['preview'];?>";
+
+    $("#filtros").attr("action", "<?= $this->url('relatorio'); ?>" +"/"+ url);
+
+    $("#filtros").submit();
+
+}
+
+
+
+$(document).ready( function () {
+
+    
+
+    if(<?=$this->filtro['preview'];?> < 0){
+
+       $("#anterior").attr("disabled", "true");
+
+    }   
+
+    if("<?php if(isset($this->filtro['limite']) && $this->filtro['limite'] == 0)echo 'todos';?>" == "todos"){
+
+       $("#next").attr("disabled", "true");
+
+       $("#anterior").attr("disabled", "true");
+
+    }
+
+
+
+    $('#lista_vendas').DataTable({
+
+    		"language": {
+
+                "url": "https://cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json"
+
+    		},
+
+    		"bFilter": false,
+
+    });
+
+
+
+} );
+
+$('#select_cliente').select2();
+
+$('body').on('click',".venda", function(){
+
+	if($(this).hasClass('glyphicon-plus')){
+
+		$(this).removeClass('glyphicon-plus');
+
+		$(this).addClass('glyphicon-minus');
+
+    	var id = "#tabela_prod_"+$(this).attr("id");
+
+    	$(id).show();
+
+
+
+	}else{
+
+		$(this).removeClass('glyphicon-minus');
+
+		$(this).addClass('glyphicon-plus');
+
+		var id = "#tabela_prod_"+$(this).attr("id");
+
+		$(id).hide();
+
+	}
+
+});
+
+
+
+</script>

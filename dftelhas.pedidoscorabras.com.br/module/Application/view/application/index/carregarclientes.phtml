@@ -1,0 +1,129 @@
+<div id="top" class="row">
+
+	<div class="col-sm-3">
+
+		<h2>Lista de Clientes</h2>
+
+	</div>
+
+</div>
+
+<!-- /#top -->
+
+
+
+
+
+<hr />
+
+<div id="list" class="row">
+
+	<div class="table-responsive col-md-12">
+
+		<table class="table table-striped" cellspacing="0" cellpadding="0" id="lista_vendas">
+
+			<thead>
+
+				<tr>
+
+					<th>ID</th>
+
+					<th>Nome</th>
+
+					<th class="actions">Ações</th>
+
+				</tr>
+
+			</thead>
+
+			<tbody>
+
+			      <?php foreach ($this->lista as $f): ?>
+
+                  <tr>
+
+					<td><?php echo $f->getId(); ?></td>
+
+					<td><?php echo $f->getNome(); ?></td>
+
+					
+
+					<td class="actions">
+
+						<a class="btn btn-danger btn-xs" href="#" id="excluircliente" onclick="enviarIdcliente(<?php echo $f->getId();?>)">Excluir</a>
+
+					</td>
+
+				</tr>
+
+                <?php endforeach; ?>
+
+			</tbody>
+
+		</table>
+
+	</div>
+
+
+
+</div>
+
+<!-- /#list -->
+
+
+
+<script type="text/javascript">
+
+
+
+function enviarIdcliente(id){
+
+	if(confirm("Deseja realmente excluir este item?\nAo excluir será apagado todas as vendas vinculadas a esse cliente"))
+
+    {
+
+    	$.post( "<?php echo $this->url('excluircliente', array('action' => 'excluircliente')); ?>/"+id, function( data ) {
+
+
+
+        	$('#cliente-modal').modal('toggle');
+
+        	$('.modal-backdrop').remove();
+
+        	$('').append($('<option>', {
+
+        	    value: data.trim(),
+
+        	    text: $("#cliente_nome").val()
+
+        	}));
+
+        	$("#select_cliente option[value='"+id+"']").remove();
+
+   		  	$( "#msg" ).addClass("alert alert-success").text("Excluido com sucesso!");
+
+    	});
+
+    }
+
+}
+
+
+
+$(document).ready( function () {
+
+    $('#lista_vendas').DataTable({
+
+    		"language": {
+
+                "url": "https://cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json"
+
+    		}
+
+    });
+
+} );
+
+
+
+</script>
