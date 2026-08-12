@@ -24,8 +24,8 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 60000
-          local-dir: ./telhas.pedidoscorabras.com.br/
-          server-dir: /telhas.pedidoscorabras.com.br/
+          local-dir: ./telhas/
+          server-dir: /telhas/
           exclude: |
             **/.git**
             **/.git/**
@@ -57,8 +57,8 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 60000
-          local-dir: ./blocos.pedidoscorabras.com.br/
-          server-dir: /blocos.pedidoscorabras.com.br/
+          local-dir: ./blocos/
+          server-dir: /blocos/
           exclude: |
             **/.git**
             **/.git/**
@@ -90,8 +90,8 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 60000
-          local-dir: ./dftelhas.pedidoscorabras.com.br/
-          server-dir: /dftelhas.pedidoscorabras.com.br/
+          local-dir: ./dftelhas/
+          server-dir: /dftelhas/
           exclude: |
             **/.git**
             **/.git/**
@@ -127,9 +127,9 @@ jobs:
           local-dir: ./
           server-dir: /
           exclude: |
-            **/telhas.pedidoscorabras.com.br/**
-            **/blocos.pedidoscorabras.com.br/**
-            **/dftelhas.pedidoscorabras.com.br/**
+            **/telhas/**
+            **/blocos..com.br/**
+            **/dftelhas/**
             **/docker/**
             **docker-compose.yml**
             **/.git**
@@ -154,9 +154,9 @@ jobs:
           local-dir: ./
           server-dir: /pedidos.corabras.com.br/
           exclude: |
-            **/telhas.pedidoscorabras.com.br/**
-            **/blocos.pedidoscorabras.com.br/**
-            **/dftelhas.pedidoscorabras.com.br/**
+            **/telhas/**
+            **/blocos/**
+            **/dftelhas/**
             **/docker/**
             **docker-compose.yml**
             **/.git**
