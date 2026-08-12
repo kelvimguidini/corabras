@@ -14,7 +14,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2 — Upload de Telhas via FTP
+      # 2 — Instalação do PHP e Composer no Runner do GitHub
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, zip, pdo_mysql, gd
+          tools: composer:v2
+
+      # 3 — Instalação limpa de dependências (Composer) para Telhas
+      - name: Composer Install Telhas
+        run: |
+          cd telhas
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      # 4 — Instalação limpa de dependências (Composer) para Blocos
+      - name: Composer Install Blocos
+        run: |
+          cd blocos
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      # 5 — Instalação de dependências (Composer) para dfTelhas
+      - name: Composer Install dfTelhas
+        run: |
+          cd dftelhas
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs || true
+
+      # 6 — Upload de Telhas via FTP (com vendor limpo)
       - name: Deploy Telhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -45,9 +71,8 @@ jobs:
             **telhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
-            **/vendor/**
 
-      # 3 — Upload de Blocos via FTP
+      # 7 — Upload de Blocos via FTP (com vendor limpo)
       - name: Deploy Blocos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -78,9 +103,8 @@ jobs:
             **blocos.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
-            **/vendor/**
 
-      # 4 — Upload de dfTelhas via FTP
+      # 8 — Upload de dfTelhas via FTP (com vendor limpo)
       - name: Deploy dfTelhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -112,37 +136,9 @@ jobs:
             **dfTelhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
-            **/vendor/**
 
-      # 5 — Upload Portal (index.html) para Raiz /
-      - name: Deploy Portal Landing Page para Raiz /
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftp
-          timeout: 60000
-          local-dir: ./
-          server-dir: /
-          exclude: |
-            **/telhas/**
-            **/blocos..com.br/**
-            **/dftelhas/**
-            **/docker/**
-            **docker-compose.yml**
-            **/.git**
-            **/.git/**
-            **/.github/**
-            **/node_modules/**
-            **/vendor/**
-            **/*.code-workspace
-            **/.vscode/**
-            **/.settings/**
-
-      # 6 — Upload Portal (index.html) para /pedidoscorabras.com.br/
-      - name: Deploy Portal Landing Page para /pedidoscorabras.com.br/
+      # 9 — Upload Portal (index.html) para /public_html/
+      - name: Deploy Portal Landing Page para /public_html/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
