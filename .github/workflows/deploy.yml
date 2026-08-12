@@ -28,7 +28,7 @@ jobs:
           cd telhas
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
           cd vendor
-          zip -r -q ../public/vendor.zip .
+          zip -r -q ../public/packages.zip .
           cd ../..
 
       # 4 — Instalação e empacotamento das dependências para Blocos
@@ -37,7 +37,7 @@ jobs:
           cd blocos
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
           cd vendor
-          zip -r -q ../public/vendor.zip .
+          zip -r -q ../public/packages.zip .
           cd ../..
 
       # 5 — Upload de Telhas via FTP
@@ -171,6 +171,6 @@ jobs:
       - name: Auto-Extrair Vendor no Servidor
         run: |
           echo "Extraindo vendor em Telhas..."
-          curl -s -f "https://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || echo "Aviso: Nao foi possivel acionar extract_vendor para Telhas."
+          curl -k -sL "https://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026"
           echo "Extraindo vendor em Blocos..."
-          curl -s -f "https://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || echo "Aviso: Nao foi possivel acionar extract_vendor para Blocos."
+          curl -k -sL "https://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026"

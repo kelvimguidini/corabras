@@ -14,11 +14,16 @@ if ($token !== $expectedToken && $token !== 'corabras_deploy_secret_2026') {
 }
 
 $baseDir = dirname(__DIR__);
-$zipFile = __DIR__ . '/vendor.zip';
+$zipFile = __DIR__ . '/packages.zip';
 $vendorDir = $baseDir . '/vendor';
 
 if (!file_exists($zipFile)) {
-    die(json_encode(['status' => 'skip', 'message' => 'vendor.zip not found']));
+    // Tenta também procurar por vendor.zip se existir
+    if (file_exists(__DIR__ . '/vendor.zip')) {
+        $zipFile = __DIR__ . '/vendor.zip';
+    } else {
+        die(json_encode(['status' => 'skip', 'message' => 'packages.zip not found']));
+    }
 }
 
 $zip = new ZipArchive();
@@ -32,7 +37,7 @@ if ($zip->open($zipFile) === TRUE) {
     $zip->extractTo($vendorDir);
     $zip->close();
     
-    // Remove o vendor.zip após extrair
+    // Remove o zip após extrair
     @unlink($zipFile);
     
     // Remove este script de extração por segurança
@@ -41,5 +46,5 @@ if ($zip->open($zipFile) === TRUE) {
     echo json_encode(['status' => 'success', 'message' => 'Vendor extracted successfully']);
 } else {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Failed to extract vendor.zip']);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to extract packages.zip']);
 }
