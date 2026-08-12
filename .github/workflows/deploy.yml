@@ -12,21 +12,9 @@ jobs:
     steps:
       # 1 — Checkout do repositório
       - name: Checkout repository 
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2 — Setup PHP usado pelo Composer
-      - name: Setup PHP (8.2)
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql, curl, dom, xml, json
-
-      # 3 — Instalar dependências incluindo DOCTRINE DBAL 2
-      - name: Install Composer dependencies
-        run: |
-          composer install --no-dev --prefer-dist --optimize-autoloader
-
-      # 4 — Upload do Projeto via FTP
+      # 2 — Upload do Projeto via FTP
       - name: Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -57,3 +45,4 @@ jobs:
             **telhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
+            **/vendor/**

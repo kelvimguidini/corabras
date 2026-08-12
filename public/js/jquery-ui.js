@@ -1563,467 +1563,789 @@ color.fn = jQuery.extend( color.prototype, {
 
 		// More than 1 argument specified - assume ( red, green, blue, alpha )
 		if ( green !== undefined ) {
-			red = [ red, green, b﻿namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AddRemark
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
+			red = [ red, green, blue, alpha ];
+			type = "array";
+		}
 
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
+		if ( type === "string" ) {
+			return this.parse( stringParse( red ) || colors._default );
+		}
+
+		if ( type === "array" ) {
+			each( spaces.rgba.props, function( key, prop ) {
+				rgba[ prop.idx ] = clamp( red[ prop.idx ], prop );
+			} );
+			return this;
+		}
+
+		if ( type === "object" ) {
+			if ( red instanceof color ) {
+				each( spaces, function( spaceName, space ) {
+					if ( red[ space.cache ] ) {
+						inst[ space.cache ] = red[ space.cache ].slice();
+					}
+				} );
+			} else {
+				each( spaces, function( spaceName, space ) {
+					var cache = space.cache;
+					each( space.props, function( key, prop ) {
+
+						// If the cache doesn't exist, and we know how to convert
+						if ( !inst[ cache ] && space.to ) {
+
+							// If the value was null, we don't need to copy it
+							// if the key was alpha, we don't need to copy it either
+							if ( key === "alpha" || red[ key ] == null ) {
+								return;
+							}
+							inst[ cache ] = space.to( inst._rgba );
+						}
+
+						// This is the only case where we allow nulls for ALL properties.
+						// call clamp with alwaysAllowEmpty
+						inst[ cache ][ prop.idx ] = clamp( red[ key ], prop, true );
+					} );
+
+					// Everything defined but alpha?
+					if ( inst[ cache ] &&
+							jQuery.inArray( null, inst[ cache ].slice( 0, 3 ) ) < 0 ) {
+
+						// Use the default of 1
+						inst[ cache ][ 3 ] = 1;
+						if ( space.from ) {
+							inst._rgba = space.from( inst[ cache ] );
+						}
+					}
+				} );
+			}
+			return this;
+		}
+	},
+	is: function( compare ) {
+		var is = color( compare ),
+			same = true,
+			inst = this;
+
+		each( spaces, function( _, space ) {
+			var localCache,
+				isCache = is[ space.cache ];
+			if ( isCache ) {
+				localCache = inst[ space.cache ] || space.to && space.to( inst._rgba ) || [];
+				each( space.props, function( _, prop ) {
+					if ( isCache[ prop.idx ] != null ) {
+						same = ( isCache[ prop.idx ] === localCache[ prop.idx ] );
+						return same;
+					}
+				} );
+			}
+			return same;
+		} );
+		return same;
+	},
+	_space: function() {
+		var used = [],
+			inst = this;
+		each( spaces, function( spaceName, space ) {
+			if ( inst[ space.cache ] ) {
+				used.push( spaceName );
+			}
+		} );
+		return used.pop();
+	},
+	transition: function( other, distance ) {
+		var end = color( other ),
+			spaceName = end._space(),
+			space = spaces[ spaceName ],
+			startColor = this.alpha() === 0 ? color( "transparent" ) : this,
+			start = startColor[ space.cache ] || space.to( startColor._rgba ),
+			result = start.slice();
+
+		end = end[ space.cache ];
+		each( space.props, function( key, prop ) {
+			var index = prop.idx,
+				startValue = start[ index ],
+				endValue = end[ index ],
+				type = propTypes[ prop.type ] || {};
+
+			// If null, don't override start value
+			if ( endValue === null ) {
+				return;
+			}
+
+			// If null - use end
+			if ( startValue === null ) {
+				result[ index ] = endValue;
+			} else {
+				if ( type.mod ) {
+					if ( endValue - startValue > type.mod / 2 ) {
+						startValue += type.mod;
+					} else if ( startValue - endValue > type.mod / 2 ) {
+						startValue -= type.mod;
+					}
+				}
+				result[ index ] = clamp( ( endValue - startValue ) * distance + startValue, prop );
+			}
+		} );
+		return this[ spaceName ]( result );
+	},
+	blend: function( opaque ) {
+
+		// If we are already opaque - return ourself
+		if ( this._rgba[ 3 ] === 1 ) {
+			return this;
+		}
+
+		var rgb = this._rgba.slice(),
+			a = rgb.pop(),
+			blend = color( opaque )._rgba;
+
+		return color( jQuery.map( rgb, function( v, i ) {
+			return ( 1 - a ) * blend[ i ] + a * v;
+		} ) );
+	},
+	toRgbaString: function() {
+		var prefix = "rgba(",
+			rgba = jQuery.map( this._rgba, function( v, i ) {
+				return v == null ? ( i > 2 ? 1 : 0 ) : v;
+			} );
+
+		if ( rgba[ 3 ] === 1 ) {
+			rgba.pop();
+			prefix = "rgb(";
+		}
+
+		return prefix + rgba.join() + ")";
+	},
+	toHslaString: function() {
+		var prefix = "hsla(",
+			hsla = jQuery.map( this.hsla(), function( v, i ) {
+				if ( v == null ) {
+					v = i > 2 ? 1 : 0;
+				}
+
+				// Catch 1 and 2
+				if ( i && i < 3 ) {
+					v = Math.round( v * 100 ) + "%";
+				}
+				return v;
+			} );
+
+		if ( hsla[ 3 ] === 1 ) {
+			hsla.pop();
+			prefix = "hsl(";
+		}
+		return prefix + hsla.join() + ")";
+	},
+	toHexString: function( includeAlpha ) {
+		var rgba = this._rgba.slice(),
+			alpha = rgba.pop();
+
+		if ( includeAlpha ) {
+			rgba.push( ~~( alpha * 255 ) );
+		}
+
+		return "#" + jQuery.map( rgba, function( v ) {
+
+			// Default to 0 when nulls exist
+			v = ( v || 0 ).toString( 16 );
+			return v.length === 1 ? "0" + v : v;
+		} ).join( "" );
+	},
+	toString: function() {
+		return this._rgba[ 3 ] === 0 ? "transparent" : this.toRgbaString();
+	}
+} );
+color.fn.parse.prototype = color.fn;
+
+// Hsla conversions adapted from:
+// https://code.google.com/p/maashaack/source/browse/packages/graphics/trunk/src/graphics/colors/HUE2RGB.as?r=5021
+
+function hue2rgb( p, q, h ) {
+	h = ( h + 1 ) % 1;
+	if ( h * 6 < 1 ) {
+		return p + ( q - p ) * h * 6;
+	}
+	if ( h * 2 < 1 ) {
+		return q;
+	}
+	if ( h * 3 < 2 ) {
+		return p + ( q - p ) * ( ( 2 / 3 ) - h ) * 6;
+	}
+	return p;
 }
 
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AirFlightInfoLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
+spaces.hsla.to = function( rgba ) {
+	if ( rgba[ 0 ] == null || rgba[ 1 ] == null || rgba[ 2 ] == null ) {
+		return [ null, null, null, rgba[ 3 ] ];
+	}
+	var r = rgba[ 0 ] / 255,
+		g = rgba[ 1 ] / 255,
+		b = rgba[ 2 ] / 255,
+		a = rgba[ 3 ],
+		max = Math.max( r, g, b ),
+		min = Math.min( r, g, b ),
+		diff = max - min,
+		add = max + min,
+		l = add * 0.5,
+		h, s;
 
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
+	if ( min === max ) {
+		h = 0;
+	} else if ( r === max ) {
+		h = ( 60 * ( g - b ) / diff ) + 360;
+	} else if ( g === max ) {
+		h = ( 60 * ( b - r ) / diff ) + 120;
+	} else {
+		h = ( 60 * ( r - g ) / diff ) + 240;
+	}
+
+	// Chroma (diff) == 0 means greyscale which, by definition, saturation = 0%
+	// otherwise, saturation is based on the ratio of chroma (diff) to lightness (add)
+	if ( diff === 0 ) {
+		s = 0;
+	} else if ( l <= 0.5 ) {
+		s = diff / add;
+	} else {
+		s = diff / ( 2 - add );
+	}
+	return [ Math.round( h ) % 360, s, l, a == null ? 1 : a ];
+};
+
+spaces.hsla.from = function( hsla ) {
+	if ( hsla[ 0 ] == null || hsla[ 1 ] == null || hsla[ 2 ] == null ) {
+		return [ null, null, null, hsla[ 3 ] ];
+	}
+	var h = hsla[ 0 ] / 360,
+		s = hsla[ 1 ],
+		l = hsla[ 2 ],
+		a = hsla[ 3 ],
+		q = l <= 0.5 ? l * ( 1 + s ) : l + s - l * s,
+		p = 2 * l - q;
+
+	return [
+		Math.round( hue2rgb( p, q, h + ( 1 / 3 ) ) * 255 ),
+		Math.round( hue2rgb( p, q, h ) * 255 ),
+		Math.round( hue2rgb( p, q, h - ( 1 / 3 ) ) * 255 ),
+		a
+	];
+};
+
+each( spaces, function( spaceName, space ) {
+	var props = space.props,
+		cache = space.cache,
+		to = space.to,
+		from = space.from;
+
+	// Makes rgba() and hsla()
+	color.fn[ spaceName ] = function( value ) {
+
+		// Generate a cache for this space if it doesn't exist
+		if ( to && !this[ cache ] ) {
+			this[ cache ] = to( this._rgba );
+		}
+		if ( value === undefined ) {
+			return this[ cache ].slice();
+		}
+
+		var ret,
+			type = jQuery.type( value ),
+			arr = ( type === "array" || type === "object" ) ? value : arguments,
+			local = this[ cache ].slice();
+
+		each( props, function( key, prop ) {
+			var val = arr[ type === "object" ? key : prop.idx ];
+			if ( val == null ) {
+				val = local[ prop.idx ];
+			}
+			local[ prop.idx ] = clamp( val, prop );
+		} );
+
+		if ( from ) {
+			ret = color( from( local ) );
+			ret[ cache ] = local;
+			return ret;
+		} else {
+			return color( local );
+		}
+	};
+
+	// Makes red() green() blue() alpha() hue() saturation() lightness()
+	each( props, function( key, prop ) {
+
+		// Alpha is included in more than one space
+		if ( color.fn[ key ] ) {
+			return;
+		}
+		color.fn[ key ] = function( value ) {
+			var vtype = jQuery.type( value ),
+				fn = ( key === "alpha" ? ( this._hsla ? "hsla" : "rgba" ) : spaceName ),
+				local = this[ fn ](),
+				cur = local[ prop.idx ],
+				match;
+
+			if ( vtype === "undefined" ) {
+				return cur;
+			}
+
+			if ( vtype === "function" ) {
+				value = value.call( this, cur );
+				vtype = jQuery.type( value );
+			}
+			if ( value == null && prop.empty ) {
+				return this;
+			}
+			if ( vtype === "string" ) {
+				match = rplusequals.exec( value );
+				if ( match ) {
+					value = cur + parseFloat( match[ 2 ] ) * ( match[ 1 ] === "+" ? 1 : -1 );
+				}
+			}
+			local[ prop.idx ] = value;
+			return this[ fn ]( local );
+		};
+	} );
+} );
+
+// Add cssHook and .fx.step function for each named hook.
+// accept a space separated string of properties
+color.hook = function( hook ) {
+	var hooks = hook.split( " " );
+	each( hooks, function( i, hook ) {
+		jQuery.cssHooks[ hook ] = {
+			set: function( elem, value ) {
+				var parsed, curElem,
+					backgroundColor = "";
+
+				if ( value !== "transparent" && ( jQuery.type( value ) !== "string" ||
+						( parsed = stringParse( value ) ) ) ) {
+					value = color( parsed || value );
+					if ( !support.rgba && value._rgba[ 3 ] !== 1 ) {
+						curElem = hook === "backgroundColor" ? elem.parentNode : elem;
+						while (
+							( backgroundColor === "" || backgroundColor === "transparent" ) &&
+							curElem && curElem.style
+						) {
+							try {
+								backgroundColor = jQuery.css( curElem, "backgroundColor" );
+								curElem = curElem.parentNode;
+							} catch ( e ) {
+							}
+						}
+
+						value = value.blend( backgroundColor && backgroundColor !== "transparent" ?
+							backgroundColor :
+							"_default" );
+					}
+
+					value = value.toRgbaString();
+				}
+				try {
+					elem.style[ hook ] = value;
+				} catch ( e ) {
+
+					// Wrapped to prevent IE from throwing errors on "invalid" values like
+					// 'auto' or 'inherit'
+				}
+			}
+		};
+		jQuery.fx.step[ hook ] = function( fx ) {
+			if ( !fx.colorInit ) {
+				fx.start = color( fx.elem, hook );
+				fx.end = color( fx.end );
+				fx.colorInit = true;
+			}
+			jQuery.cssHooks[ hook ].set( fx.elem, fx.start.transition( fx.end, fx.pos ) );
+		};
+	} );
+
+};
+
+color.hook( stepHooks );
+
+jQuery.cssHooks.borderColor = {
+	expand: function( value ) {
+		var expanded = {};
+
+		each( [ "Top", "Right", "Bottom", "Left" ], function( i, part ) {
+			expanded[ "border" + part + "Color" ] = value;
+		} );
+		return expanded;
+	}
+};
+
+// Basic color names only.
+// Usage of any of the other color names requires adding yourself or including
+// jquery.color.svg-names.js.
+colors = jQuery.Color.names = {
+
+	// 4.1. Basic color keywords
+	aqua: "#00ffff",
+	black: "#000000",
+	blue: "#0000ff",
+	fuchsia: "#ff00ff",
+	gray: "#808080",
+	green: "#008000",
+	lime: "#00ff00",
+	maroon: "#800000",
+	navy: "#000080",
+	olive: "#808000",
+	purple: "#800080",
+	red: "#ff0000",
+	silver: "#c0c0c0",
+	teal: "#008080",
+	white: "#ffffff",
+	yellow: "#ffff00",
+
+	// 4.2.3. "transparent" color keyword
+	transparent: [ null, null, null, 0 ],
+
+	_default: "#ffffff"
+};
+
+} )( jQuery );
+
+/******************************************************************************/
+/****************************** CLASS ANIMATIONS ******************************/
+/******************************************************************************/
+( function() {
+
+var classAnimationActions = [ "add", "remove", "toggle" ],
+	shorthandStyles = {
+		border: 1,
+		borderBottom: 1,
+		borderColor: 1,
+		borderLeft: 1,
+		borderRight: 1,
+		borderTop: 1,
+		borderWidth: 1,
+		margin: 1,
+		padding: 1
+	};
+
+$.each(
+	[ "borderLeftStyle", "borderRightStyle", "borderBottomStyle", "borderTopStyle" ],
+	function( _, prop ) {
+		$.fx.step[ prop ] = function( fx ) {
+			if ( fx.end !== "none" && !fx.setAttr || fx.pos === 1 && !fx.setAttr ) {
+				jQuery.style( fx.elem, prop, fx.end );
+				fx.setAttr = true;
+			}
+		};
+	}
+);
+
+function getElementStyles( elem ) {
+	var key, len,
+		style = elem.ownerDocument.defaultView ?
+			elem.ownerDocument.defaultView.getComputedStyle( elem, null ) :
+			elem.currentStyle,
+		styles = {};
+
+	if ( style && style.length && style[ 0 ] && style[ style[ 0 ] ] ) {
+		len = style.length;
+		while ( len-- ) {
+			key = style[ len ];
+			if ( typeof style[ key ] === "string" ) {
+				styles[ $.camelCase( key ) ] = style[ key ];
+			}
+		}
+
+	// Support: Opera, IE <9
+	} else {
+		for ( key in style ) {
+			if ( typeof style[ key ] === "string" ) {
+				styles[ key ] = style[ key ];
+			}
+		}
+	}
+
+	return styles;
 }
 
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AirSeat
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
+function styleDifference( oldStyle, newStyle ) {
+	var diff = {},
+		name, value;
 
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
+	for ( name in newStyle ) {
+		value = newStyle[ name ];
+		if ( oldStyle[ name ] !== value ) {
+			if ( !shorthandStyles[ name ] ) {
+				if ( $.fx.step[ name ] || !isNaN( parseFloat( value ) ) ) {
+					diff[ name ] = value;
+				}
+			}
+		}
+	}
+
+	return diff;
 }
 
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AirSeatCancel
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
+// Support: jQuery <1.8
+if ( !$.fn.addBack ) {
+	$.fn.addBack = function( selector ) {
+		return this.add( selector == null ?
+			this.prevObject : this.prevObject.filter( selector )
+		);
+	};
 }
 
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AirTicketLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
+$.effects.animateClass = function( value, duration, easing, callback ) {
+	var o = $.speed( duration, easing, callback );
 
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
+	return this.queue( function() {
+		var animated = $( this ),
+			baseClass = animated.attr( "class" ) || "",
+			applyClassChange,
+			allAnimations = o.children ? animated.find( "*" ).addBack() : animated;
+
+		// Map the animated objects to store the original styles.
+		allAnimations = allAnimations.map( function() {
+			var el = $( this );
+			return {
+				el: el,
+				start: getElementStyles( this )
+			};
+		} );
+
+		// Apply class change
+		applyClassChange = function() {
+			$.each( classAnimationActions, function( i, action ) {
+				if ( value[ action ] ) {
+					animated[ action + "Class" ]( value[ action ] );
+				}
+			} );
+		};
+		applyClassChange();
+
+		// Map all animated objects again - calculate new styles and diff
+		allAnimations = allAnimations.map( function() {
+			this.end = getElementStyles( this.el[ 0 ] );
+			this.diff = styleDifference( this.start, this.end );
+			return this;
+		} );
+
+		// Apply original class
+		animated.attr( "class", baseClass );
+
+		// Map all animated objects again - this time collecting a promise
+		allAnimations = allAnimations.map( function() {
+			var styleInfo = this,
+				dfd = $.Deferred(),
+				opts = $.extend( {}, o, {
+					queue: false,
+					complete: function() {
+						dfd.resolve( styleInfo );
+					}
+				} );
+
+			this.el.animate( this.diff, opts );
+			return dfd.promise();
+		} );
+
+		// Once all animations have completed:
+		$.when.apply( $, allAnimations.get() ).done( function() {
+
+			// Set the final class
+			applyClassChange();
+
+			// For each animated element,
+			// clear all css properties that were animated
+			$.each( arguments, function() {
+				var el = this.el;
+				$.each( this.diff, function( key ) {
+					el.css( key, "" );
+				} );
+			} );
+
+			// This is guarnteed to be there if you use jQuery.speed()
+			// it also handles dequeuing the next anim...
+			o.complete.call( animated[ 0 ] );
+		} );
+	} );
+};
+
+$.fn.extend( {
+	addClass: ( function( orig ) {
+		return function( classNames, speed, easing, callback ) {
+			return speed ?
+				$.effects.animateClass.call( this,
+					{ add: classNames }, speed, easing, callback ) :
+				orig.apply( this, arguments );
+		};
+	} )( $.fn.addClass ),
+
+	removeClass: ( function( orig ) {
+		return function( classNames, speed, easing, callback ) {
+			return arguments.length > 1 ?
+				$.effects.animateClass.call( this,
+					{ remove: classNames }, speed, easing, callback ) :
+				orig.apply( this, arguments );
+		};
+	} )( $.fn.removeClass ),
+
+	toggleClass: ( function( orig ) {
+		return function( classNames, force, speed, easing, callback ) {
+			if ( typeof force === "boolean" || force === undefined ) {
+				if ( !speed ) {
+
+					// Without speed parameter
+					return orig.apply( this, arguments );
+				} else {
+					return $.effects.animateClass.call( this,
+						( force ? { add: classNames } : { remove: classNames } ),
+						speed, easing, callback );
+				}
+			} else {
+
+				// Without force parameter
+				return $.effects.animateClass.call( this,
+					{ toggle: classNames }, force, speed, easing );
+			}
+		};
+	} )( $.fn.toggleClass ),
+
+	switchClass: function( remove, add, speed, easing, callback ) {
+		return $.effects.animateClass.call( this, {
+			add: add,
+			remove: remove
+		}, speed, easing, callback );
+	}
+} );
+
+} )();
+
+/******************************************************************************/
+/*********************************** EFFECTS **********************************/
+/******************************************************************************/
+
+( function() {
+
+if ( $.expr && $.expr.filters && $.expr.filters.animated ) {
+	$.expr.filters.animated = ( function( orig ) {
+		return function( elem ) {
+			return !!$( elem ).data( dataSpaceAnimated ) || orig( elem );
+		};
+	} )( $.expr.filters.animated );
 }
 
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.AutomatedExchangesLLSRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.BargainFinderMax
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.BargainFinderPlusLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.CreditVerification
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DailyEMD_ReportLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DeletePriceQuote
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DeleteRemarks
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DeleteSpecialServiceLLS220
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DeleteSpecialServiceLLSRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DisplayPriceQuote
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DisplayPriceQuoteLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.DisplayPriceQuoteLLS2202
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.EMD_DisplayLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.EndTransaction
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.EnhancedAirBook
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.EnhancedSeatMap
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.eTicketCoupon
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.HotelPropertyDescriptionRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.HotelRateDescriptionRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.HotelResModifyRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.IgnoreTransaction
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.IMAP_AirSeatMap
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirAvail
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirBook
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirLowFareSearch
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirLowFareSearchOldVersion
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirPrice
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_AirRules
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_HotelAvailRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.OTA_HotelResRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.SabreCommandLLS
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.SessionClose
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.SessionCreate
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.SpecialServiceLLSRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.TravelItineraryRead
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.VendorCodesRQ
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Sabre.VoidTicket
-{
-    public partial class MessageHeader
-    {
-        private string customerAppId;
-
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://webservices.sabre.com/")]
-        public string CustomerAppId { get { return this.customerAppId; } set { this.customerAppId = value; } }
-    }
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   e ) ) {
+if ( $.uiBackCompat !== false ) {
+	$.extend( $.effects, {
+
+		// Saves a set of properties in a data storage
+		save: function( element, set ) {
+			var i = 0, length = set.length;
+			for ( ; i < length; i++ ) {
+				if ( set[ i ] !== null ) {
+					element.data( dataSpace + set[ i ], element[ 0 ].style[ set[ i ] ] );
+				}
+			}
+		},
+
+		// Restores a set of previously saved properties from a data storage
+		restore: function( element, set ) {
+			var val, i = 0, length = set.length;
+			for ( ; i < length; i++ ) {
+				if ( set[ i ] !== null ) {
+					val = element.data( dataSpace + set[ i ] );
+					element.css( set[ i ], val );
+				}
+			}
+		},
+
+		setMode: function( el, mode ) {
+			if ( mode === "toggle" ) {
+				mode = el.is( ":hidden" ) ? "show" : "hide";
+			}
+			return mode;
+		},
+
+		// Wraps the element around a wrapper that copies position properties
+		createWrapper: function( element ) {
+
+			// If the element is already wrapped, return it
+			if ( element.parent().is( ".ui-effects-wrapper" ) ) {
+				return element.parent();
+			}
+
+			// Wrap the element
+			var props = {
+					width: element.outerWidth( true ),
+					height: element.outerHeight( true ),
+					"float": element.css( "float" )
+				},
+				wrapper = $( "<div></div>" )
+					.addClass( "ui-effects-wrapper" )
+					.css( {
+						fontSize: "100%",
+						background: "transparent",
+						border: "none",
+						margin: 0,
+						padding: 0
+					} ),
+
+				// Store the size in case width/height are defined in % - Fixes #5245
+				size = {
+					width: element.width(),
+					height: element.height()
+				},
+				active = document.activeElement;
+
+			// Support: Firefox
+			// Firefox incorrectly exposes anonymous content
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=561664
+			try {
+				active.id;
+			} catch ( e ) {
+				active = document.body;
+			}
+
+			element.wrap( wrapper );
+
+			// Fixes #7595 - Elements lose focus when wrapped.
+			if ( element[ 0 ] === active || $.contains( element[ 0 ], active ) ) {
+				$( active ).trigger( "focus" );
+			}
+
+			// Hotfix for jQuery 1.4 since some change in wrap() seems to actually
+			// lose the reference to the wrapped element
+			wrapper = element.parent();
+
+			// Transfer positioning properties to the wrapper
+			if ( element.css( "position" ) === "static" ) {
+				wrapper.css( { position: "relative" } );
+				element.css( { position: "relative" } );
+			} else {
+				$.extend( props, {
+					position: element.css( "position" ),
+					zIndex: element.css( "z-index" )
+				} );
+				$.each( [ "top", "left", "bottom", "right" ], function( i, pos ) {
+					props[ pos ] = element.css( pos );
+					if ( isNaN( parseInt( props[ pos ], 10 ) ) ) {
+						props[ pos ] = "auto";
+					}
+				} );
+				element.css( {
+					position: "relative",
+					top: 0,
+					left: 0,
+					right: "auto",
+					bottom: "auto"
+				} );
+			}
+			element.css( size );
+
+			return wrapper.css( props ).show();
+		},
+
+		removeWrapper: function( element ) {
+			var active = document.activeElement;
+
+			if ( element.parent().is( ".ui-effects-wrapper" ) ) {
+				element.parent().replaceWith( element );
+
+				// Fixes #7595 - Elements lose focus when wrapped.
+				if ( element[ 0 ] === active || $.contains( element[ 0 ], active ) ) {
 					$( active ).trigger( "focus" );
 				}
 			}
@@ -9219,396 +9541,724 @@ var safeBlur = $.ui.safeBlur = function( element ) {
 //>>description: Enables dragging functionality for any element.
 //>>docs: http://api.jqueryui.com/draggable/
 //>>demos: http://jqueryui.com/draggable/
-//>>css.structure: ../../themes/base/dragga﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ExpenseOn.ConnectionEngine.Sources.GDS.Sabre;
-using ExpenseOn.ConnectionEngine.Sources.GDS.Sabre.PassengerDetails;
-using ExpenseOn.ConnectionEngine.Common;
-using ExpenseOn.ConnectionEngine.Common.Air.Booking;
-using ExpenseOn.Framework;
-
-namespace ExpenseOn.ConnectionEngine.Sources.Air.Sabre.Specialized.PassengerDetails
-{
-    public class SpecialServiceParser
-    {
-        public static PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ Create(SabrePnrBuilder builder)
-        {
-            var ssrs = CreateSSRs(builder);
-
-            var secureFlights = CreateSecureFlightsDOCS(builder);
-
-            PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ req = null;
-
-            var hasSSRs = ssrs.Count > 0;
-            var hasSecureFlights = secureFlights.Count > 0;
-
-            if (hasSSRs || hasSecureFlights)
-            {
-                req = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ();
-                req.SpecialServiceInfo = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfo();
-
-                if (hasSSRs)
-                    req.SpecialServiceInfo.Service = ssrs.ToArray();
-
-                if (hasSecureFlights)
-                    req.SpecialServiceInfo.SecureFlight = secureFlights.ToArray();
-            }
-
-            return req;
-        }
-
-        public static PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ CreateDOCO(SabrePnrBuilder builder)
-        {
-            var secureFlights = CreateSecureFlightsDOCO(builder);
-
-            PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ req = null;
-
-            if (secureFlights.Count > 0)
-            {
-                req = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQ();
-                req.SpecialServiceInfo = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfo();
-                req.SpecialServiceInfo.SecureFlight = secureFlights.ToArray();
-            }
-
-            return req;
-        }
-
-        private static void ConvertOSIsToSSRs(SabrePnrBuilder builder)
-        {
-            if (builder.OSIs != null)
-            {
-                foreach (var o in builder.OSIs)
-                    builder.SSRs.Add(new SSR()
-                    {
-                        Transaction = "OSI",
-                        FreeText = o.Text,
-                        Passenger = o.Passenger,
-                        CiaCode = String.IsNullOrEmpty(o.CiaCode) ? "YY" : o.CiaCode
-                    });
-            }
-        }
-
-        private static List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight> CreateSecureFlightsDOCS(SabrePnrBuilder builder)
-        {
-            var notInfantPassengers = builder.Passengers.Where(p => p.Type != Common.PassengerType.Baby).ToList();
-
-            var secureFlights = new List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight>();
-
-            if (builder.SecurityProgramInfos != null)
-            {
-                foreach (var secureInfo in builder.SecurityProgramInfos)
-                {
-                    if (!string.IsNullOrEmpty(secureInfo.FirstName) && !string.IsNullOrEmpty(secureInfo.LastSurName))
-                    {
-                        if (secureInfo.AdditionalProperties.HasCount())
-                        {
-                            Passenger passenger = null;
-
-                            if (secureInfo.AdditionalProperties.ContainsKey("NameNumber"))
-                                passenger = builder.Passengers.FirstOrDefault(p => p.AdditionalProperties["NameNumber"] == secureInfo.AdditionalProperties["NameNumber"]);
-                            else
-                                passenger = builder.Passengers.FirstOrDefault(p => p.Name == secureInfo.FirstName && p.LastName == secureInfo.LastSurName);
-
-                            if (passenger != null)
-                            {
-                                string nameNumber = passenger.AdditionalProperties["NameNumber"];
-
-                                //se for infant, relaciona com um não-infant e retira da lista
-                                if (passenger.Type == Common.PassengerType.Baby && notInfantPassengers.Count > 0)
-                                {
-                                    nameNumber = notInfantPassengers[0].AdditionalProperties["NameNumber"];
-                                    notInfantPassengers.RemoveAt(0);
-                                }
-
-                                if ((secureInfo.BirthDate != null && secureInfo.BirthDate > DateTime.MinValue) ||
-                                    (passenger.BirthDate != null && passenger.BirthDate > DateTime.MinValue))
-                                    secureFlights.Add(CreatePassengerSecureInfo(secureInfo, passenger, nameNumber, AssertHostedAirCompany(secureInfo)));
-                            }
-                        }
-                    }
-                }
-            }
-
-            return secureFlights;
-        }
-
-        private static bool AssertHostedAirCompany(SecurityProgramInfo secureInfo)
-        {
-            return secureInfo.AdditionalProperties.ContainsKey("HostedAirCompany") && Convert.ToBoolean(secureInfo.AdditionalProperties["HostedAirCompany"]);
-        }
-
-        private static List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight> CreateSecureFlightsDOCO(SabrePnrBuilder builder)
-        {
-            var notInfantPassengers = builder.Passengers.Where(p => p.Type != Common.PassengerType.Baby).ToList();
-
-            var secureFlights = new List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight>();
-
-            if (builder.SecurityProgramInfos != null)
-            {
-                foreach (var secureInfo in builder.SecurityProgramInfos)
-                {
-                    if (!string.IsNullOrEmpty(secureInfo.FirstName) && !string.IsNullOrEmpty(secureInfo.LastSurName))
-                    {
-                        Passenger passenger = null;
-
-                        if (secureInfo.AdditionalProperties.ContainsKey("NameNumber"))
-                            passenger = builder.Passengers.FirstOrDefault(p => p.AdditionalProperties["NameNumber"] == secureInfo.AdditionalProperties["NameNumber"]);
-                        else
-                            passenger = builder.Passengers.FirstOrDefault(p => p.Name == secureInfo.FirstName && p.LastName == secureInfo.LastSurName);
-
-                        if (passenger != null)
-                        {
-                            string nameNumber = passenger.AdditionalProperties["NameNumber"];
-
-                            //se for infant, relaciona com um não-infant e retira da lista
-                            if (passenger.Type == Common.PassengerType.Baby && notInfantPassengers.Count > 0)
-                            {
-                                nameNumber = notInfantPassengers[0].AdditionalProperties["NameNumber"];
-                                notInfantPassengers.RemoveAt(0);
-                            }
-
-                            if (!(secureInfo.AdditionalProperties.ContainsKey("AllFlightOfAA") ? Convert.ToBoolean(secureInfo.AdditionalProperties["AllFlightOfAA"]) : false))
-                            {
-                                secureFlights.Add(CreateRedressSecureInfo(secureInfo, passenger, nameNumber, false));
-                            }
-
-                            if (secureInfo.AdditionalProperties.ContainsKey("HostedAirCompany") ? Convert.ToBoolean(secureInfo.AdditionalProperties["HostedAirCompany"]) : false)
-                                secureFlights.Add(CreateRedressSecureInfo(secureInfo, passenger, nameNumber, true));
-                        }
-                    }
-                }
-            }
-            return secureFlights;
-        }
-
-        private static List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoService> CreateSSRs(SabrePnrBuilder builder)
-        {
-            if (builder.SSRs == null)
-                builder.SSRs = new List<SSR>();
-
-            ConvertOSIsToSSRs(builder);
-
-            GetPassengerContactInfoSSRs(builder);
-
-            return GetSabreSSRs(builder);
-        }
-
-        private static void GetPassengerContactInfoSSRs(SabrePnrBuilder builder)
-        {
-            if (builder.Passengers.HasCount())
-            {
-                if (builder.FlightGroups.HasCount())
-                {
-                    var cias = builder.FlightGroups.SelectMany(s => s.Flights.Select(g => g.CiaCode)).Distinct();
-                    foreach (var cia in cias)
-                    {
-                        foreach (var pax in builder.Passengers)
-                        {
-                            if (pax.ContactInformations.HasCount())
-                            {
-                                foreach (var contactInformation in pax.ContactInformations)
-                                {
-                                    var transaction = string.Empty;
-                                    var text = contactInformation.Description;
-                                    switch (contactInformation.ContactType)
-                                    {
-                                        case ContactType.BusinessPhone:
-                                        case ContactType.HomePhoneNumber:
-                                        case ContactType.MobilePhone:
-                                        case ContactType.TravelAgentPhoneNumber:
-                                            transaction = "CTCM";
-                                            text = text.Replace("-", "").Replace("(", "").Replace(")", "");
-                                            break;
-                                        case ContactType.EmailAddress:
-                                            transaction = "CTCE";
-                                            text = text.Replace("@", "//");
-                                            if (text.IndexOf("+") > 0)
-                                                text = text.Remove(text.IndexOf("+"), text.IndexOf("/") - text.IndexOf("+"));
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                                    if (transaction.HasLength())
-                                    {
-                                        builder.SSRs.Add(new SSR()
-                                        {
-                                            Transaction = transaction,
-                                            FreeText = text,
-                                            Passenger = pax,
-                                            CiaCode = cia
-                                        });
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                builder.SSRs.Add(new SSR()
-                                {
-                                    Transaction = "CTCE",
-                                    FreeText = "CUSTOMER//DECLINED",
-                                    Passenger = pax,
-                                    CiaCode = cia
-                                });
-                                builder.SSRs.Add(new SSR()
-                                {
-                                    Transaction = "CTCR",
-                                    FreeText = "REFUSED CONTACT",
-                                    Passenger = pax,
-                                    CiaCode = cia
-                                });
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        private static List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoService> GetSabreSSRs(SabrePnrBuilder builder)
-        {
-            var services = new List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoService>();
-
-            foreach (var ssr in builder.SSRs)
-            {
-                var service = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoService();
-
-                service.SSR_Code = ssr.Transaction;
-                service.Text = ssr.FreeText;
-
-                if (!String.IsNullOrEmpty(ssr.CiaCode))
-                {
-                    service.VendorPrefs = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoServiceVendorPrefs();
-                    service.VendorPrefs.Airline = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoServiceVendorPrefsAirline();
-
-                    if (ssr.Transaction == "OSI")
-                        service.VendorPrefs.Airline.Code = ssr.CiaCode;
-
-                    service.VendorPrefs.Airline.Hosted = ssr.CiaCode.ToUpper() == "AA";
-                    service.VendorPrefs.Airline.HostedSpecified = true;
-                }
-
-                if (ssr.AdditionalProperties != null && ssr.AdditionalProperties.ContainsKey("SegmentNumber"))
-                    service.SegmentNumber = ssr.AdditionalProperties["SegmentNumber"];
-                else if (ssr.Transaction != "OSI")
-                    service.SegmentNumber = "A";
-
-                if (ssr.Passenger != null &&
-                    ssr.Passenger.AdditionalProperties.ContainsKey("NameNumber"))
-                {
-                    service.PersonName = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoServicePersonName();
-                    service.PersonName.NameNumber = ssr.Passenger.AdditionalProperties["NameNumber"];
-                }
-
-                services.Add(service);
-            }
-            return services;
-        }
-
-        public static List<PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoService> AssociateBabiesToAdults(PassengerDetailsRS res, List<Passenger> passengers)
-        {
-            SabrePnrBuilder builder = new SabrePnrBuilder();
-            builder.SSRs = new List<SSR>();
-            // Para fazer uma reserva com infant no Sabre, é preciso adicionar um SSR que relaciona o baby ao Infant
-            var babies = passengers.Where(p => p.Type == Common.PassengerType.Baby).ToList();
-            var adults = passengers.Where(p => p.Type == Common.PassengerType.Adult || p.Type == Common.PassengerType.Child).ToList();
-
-            var segmentNumbers = new List<string>();
-            if ((res?.TravelItineraryReadRS?.TravelItinerary?.ItineraryInfo?.ReservationItems).HasCount())
-            {
-                foreach (var infoItem in res.TravelItineraryReadRS.TravelItinerary.ItineraryInfo.ReservationItems)
-                    if (infoItem.FlightSegment != null)
-                        foreach (var item in infoItem.FlightSegment)
-                            segmentNumbers.Add(item.SegmentNumber.ToInt32().ToString());
-            }
-            else
-                segmentNumbers.Add("A");
-
-            if (babies.Count > 0 && adults.HasCount())
-            {
-                for (var i = 0; i < babies.Count; i++)
-                {
-                    var baby = babies[i];
-                    string birthDate = (baby.BirthDate != DateTime.MinValue && baby.BirthDate != System.Data.SqlTypes.SqlDateTime.MinValue)
-                        ? baby.BirthDate.ToString("ddMMMyy", SabreTypeConverter.CultureInfo).ToUpper()
-                        : DateTime.Now.AddMonths(-3).ToString("ddMMMyy", SabreTypeConverter.CultureInfo).ToUpper();
-
-                    foreach (var number in segmentNumbers)
-                    {
-                        var ssr = new SSR()
-                        {
-                            Transaction = "INFT",
-                            FreeText = String.Format("{0}/{1} {3}/{2}", baby.LastName.Replace("-", "").Trim(), (baby.Name + " " + baby.MiddleName).Replace("-", "").Trim(), birthDate, baby.Title),
-                            Passenger = adults[i],
-                            CiaCode = builder.FlightGroups.Any(fg => fg.IssuerCia == "AA") ? "AA" : (builder.FlightGroups.Any(fg => fg.IssuerCia == "US") ? "US" : "")
-                        };
-                        ssr.AdditionalProperties["SegmentNumber"] = number;
-
-                        builder.SSRs.Add(ssr);
-                    }
-                }
-            }
-
-            return GetSabreSSRs(builder);
-        }
-
-        private static PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight CreateSecureInfo(SecurityProgramInfo secureInfo, Passenger passenger, String nameNumber, bool hosted)
-        {
-            var service = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight();
-
-            service.PersonName = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightPersonName();
-            service.PersonName.NameNumber = nameNumber.ToUpper();
-            if (passenger != null)
-            {
-                var name = string.IsNullOrWhiteSpace(secureInfo.FirstName) ? passenger.Name : secureInfo.FirstName;
-                var middleName = string.IsNullOrWhiteSpace(secureInfo.MiddleNames) ? (string.IsNullOrWhiteSpace(passenger.MiddleName) ? "" : "/" + passenger.MiddleName) : "/" + secureInfo.MiddleNames;
-                var lastName = string.IsNullOrWhiteSpace(secureInfo.LastSurName) ? passenger.LastName : secureInfo.LastSurName;
-                service.PersonName.GivenName = (name + middleName).ToUpper().Trim();
-                service.PersonName.Surname = lastName.ToUpper().Trim();
-            }
-            service.SegmentNumber = "A"; // "A" to assign to all segments
-            service.VendorPrefs = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightVendorPrefs();
-            service.VendorPrefs.Airline = new PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightVendorPrefsAirline();
-            service.VendorPrefs.Airline.Hosted = hosted;
-            service.VendorPrefs.Airline.HostedSpecified = true;
-
-            return service;
-        }
-
-        private static PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight CreatePassengerSecureInfo(SecurityProgramInfo secureInfo, Passenger passenger, String nameNumber, bool hosted)
-        {
-            var service = CreateSecureInfo(secureInfo, passenger, nameNumber, hosted);
-
-            if (passenger.Type != Common.PassengerType.Baby)
-                service.PersonName.Gender = secureInfo.Gender == Gender.Female ? PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightPersonNameGender.F : PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightPersonNameGender.M;
-            else
-                service.PersonName.Gender = secureInfo.Gender == Gender.Female ? PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightPersonNameGender.FI : PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlightPersonNameGender.MI;
-
-            service.PersonName.GenderSpecified = true;
-            service.PersonName.DateOfBirth = secureInfo.BirthDate != null ? secureInfo.BirthDate.GetDateTime().ToString("yyyy-MM-dd") : passenger.BirthDate.ToString("yyyy-MM-dd");
-            //service. SSR_Code = "DOCS";
-
-            return service;
-        }
-
-        private static PassengerDetailsRQSpecialReqDetailsSpecialServiceRQSpecialServiceInfoSecureFlight CreateRedressSecureInfo(SecurityProgramInfo secureInfo, Passenger passenger, String nameNumber, bool hosted)
-        {
-            var service = CreateSecureInfo(secureInfo, null, nameNumber, hosted);
-
-
-            if (!String.IsNullOrEmpty(secureInfo.RedressNumber))
-            {
-                service.RedressNumber = secureInfo.RedressNumber;
-            }
-
-            //service.SSR_Code = "DOCO";
-
-            return service;
-        }
-    }
-}
-                             ionAbs = this._convertPositionTo( "absolute" );
+//>>css.structure: ../../themes/base/draggable.css
+
+
+
+$.widget( "ui.draggable", $.ui.mouse, {
+	version: "1.12.1",
+	widgetEventPrefix: "drag",
+	options: {
+		addClasses: true,
+		appendTo: "parent",
+		axis: false,
+		connectToSortable: false,
+		containment: false,
+		cursor: "auto",
+		cursorAt: false,
+		grid: false,
+		handle: false,
+		helper: "original",
+		iframeFix: false,
+		opacity: false,
+		refreshPositions: false,
+		revert: false,
+		revertDuration: 500,
+		scope: "default",
+		scroll: true,
+		scrollSensitivity: 20,
+		scrollSpeed: 20,
+		snap: false,
+		snapMode: "both",
+		snapTolerance: 20,
+		stack: false,
+		zIndex: false,
+
+		// Callbacks
+		drag: null,
+		start: null,
+		stop: null
+	},
+	_create: function() {
+
+		if ( this.options.helper === "original" ) {
+			this._setPositionRelative();
+		}
+		if ( this.options.addClasses ) {
+			this._addClass( "ui-draggable" );
+		}
+		this._setHandleClassName();
+
+		this._mouseInit();
+	},
+
+	_setOption: function( key, value ) {
+		this._super( key, value );
+		if ( key === "handle" ) {
+			this._removeHandleClassName();
+			this._setHandleClassName();
+		}
+	},
+
+	_destroy: function() {
+		if ( ( this.helper || this.element ).is( ".ui-draggable-dragging" ) ) {
+			this.destroyOnClear = true;
+			return;
+		}
+		this._removeHandleClassName();
+		this._mouseDestroy();
+	},
+
+	_mouseCapture: function( event ) {
+		var o = this.options;
+
+		// Among others, prevent a drag on a resizable-handle
+		if ( this.helper || o.disabled ||
+				$( event.target ).closest( ".ui-resizable-handle" ).length > 0 ) {
+			return false;
+		}
+
+		//Quit if we're not on a valid handle
+		this.handle = this._getHandle( event );
+		if ( !this.handle ) {
+			return false;
+		}
+
+		this._blurActiveElement( event );
+
+		this._blockFrames( o.iframeFix === true ? "iframe" : o.iframeFix );
+
+		return true;
+
+	},
+
+	_blockFrames: function( selector ) {
+		this.iframeBlocks = this.document.find( selector ).map( function() {
+			var iframe = $( this );
+
+			return $( "<div>" )
+				.css( "position", "absolute" )
+				.appendTo( iframe.parent() )
+				.outerWidth( iframe.outerWidth() )
+				.outerHeight( iframe.outerHeight() )
+				.offset( iframe.offset() )[ 0 ];
+		} );
+	},
+
+	_unblockFrames: function() {
+		if ( this.iframeBlocks ) {
+			this.iframeBlocks.remove();
+			delete this.iframeBlocks;
+		}
+	},
+
+	_blurActiveElement: function( event ) {
+		var activeElement = $.ui.safeActiveElement( this.document[ 0 ] ),
+			target = $( event.target );
+
+		// Don't blur if the event occurred on an element that is within
+		// the currently focused element
+		// See #10527, #12472
+		if ( target.closest( activeElement ).length ) {
+			return;
+		}
+
+		// Blur any element that currently has focus, see #4261
+		$.ui.safeBlur( activeElement );
+	},
+
+	_mouseStart: function( event ) {
+
+		var o = this.options;
+
+		//Create and append the visible helper
+		this.helper = this._createHelper( event );
+
+		this._addClass( this.helper, "ui-draggable-dragging" );
+
+		//Cache the helper size
+		this._cacheHelperProportions();
+
+		//If ddmanager is used for droppables, set the global draggable
+		if ( $.ui.ddmanager ) {
+			$.ui.ddmanager.current = this;
+		}
+
+		/*
+		 * - Position generation -
+		 * This block generates everything position related - it's the core of draggables.
+		 */
+
+		//Cache the margins of the original element
+		this._cacheMargins();
+
+		//Store the helper's css position
+		this.cssPosition = this.helper.css( "position" );
+		this.scrollParent = this.helper.scrollParent( true );
+		this.offsetParent = this.helper.offsetParent();
+		this.hasFixedAncestor = this.helper.parents().filter( function() {
+				return $( this ).css( "position" ) === "fixed";
+			} ).length > 0;
+
+		//The element's absolute position on the page minus margins
+		this.positionAbs = this.element.offset();
+		this._refreshOffsets( event );
+
+		//Generate the original position
+		this.originalPosition = this.position = this._generatePosition( event, false );
+		this.originalPageX = event.pageX;
+		this.originalPageY = event.pageY;
+
+		//Adjust the mouse offset relative to the helper if "cursorAt" is supplied
+		( o.cursorAt && this._adjustOffsetFromHelper( o.cursorAt ) );
+
+		//Set a containment if given in the options
+		this._setContainment();
+
+		//Trigger event + callbacks
+		if ( this._trigger( "start", event ) === false ) {
+			this._clear();
+			return false;
+		}
+
+		//Recache the helper size
+		this._cacheHelperProportions();
+
+		//Prepare the droppable offsets
+		if ( $.ui.ddmanager && !o.dropBehaviour ) {
+			$.ui.ddmanager.prepareOffsets( this, event );
+		}
+
+		// Execute the drag once - this causes the helper not to be visible before getting its
+		// correct position
+		this._mouseDrag( event, true );
+
+		// If the ddmanager is used for droppables, inform the manager that dragging has started
+		// (see #5003)
+		if ( $.ui.ddmanager ) {
+			$.ui.ddmanager.dragStart( this, event );
+		}
+
+		return true;
+	},
+
+	_refreshOffsets: function( event ) {
+		this.offset = {
+			top: this.positionAbs.top - this.margins.top,
+			left: this.positionAbs.left - this.margins.left,
+			scroll: false,
+			parent: this._getParentOffset(),
+			relative: this._getRelativeOffset()
+		};
+
+		this.offset.click = {
+			left: event.pageX - this.offset.left,
+			top: event.pageY - this.offset.top
+		};
+	},
+
+	_mouseDrag: function( event, noPropagation ) {
+
+		// reset any necessary cached properties (see #5009)
+		if ( this.hasFixedAncestor ) {
+			this.offset.parent = this._getParentOffset();
+		}
+
+		//Compute the helpers position
+		this.position = this._generatePosition( event, true );
+		this.positionAbs = this._convertPositionTo( "absolute" );
+
+		//Call plugins and callbacks and use the resulting position if something is returned
+		if ( !noPropagation ) {
+			var ui = this._uiHash();
+			if ( this._trigger( "drag", event, ui ) === false ) {
+				this._mouseUp( new $.Event( "mouseup", event ) );
+				return false;
+			}
+			this.position = ui.position;
+		}
+
+		this.helper[ 0 ].style.left = this.position.left + "px";
+		this.helper[ 0 ].style.top = this.position.top + "px";
+
+		if ( $.ui.ddmanager ) {
+			$.ui.ddmanager.drag( this, event );
+		}
+
+		return false;
+	},
+
+	_mouseStop: function( event ) {
+
+		//If we are using droppables, inform the manager about the drop
+		var that = this,
+			dropped = false;
+		if ( $.ui.ddmanager && !this.options.dropBehaviour ) {
+			dropped = $.ui.ddmanager.drop( this, event );
+		}
+
+		//if a drop comes from outside (a sortable)
+		if ( this.dropped ) {
+			dropped = this.dropped;
+			this.dropped = false;
+		}
+
+		if ( ( this.options.revert === "invalid" && !dropped ) ||
+				( this.options.revert === "valid" && dropped ) ||
+				this.options.revert === true || ( $.isFunction( this.options.revert ) &&
+				this.options.revert.call( this.element, dropped ) )
+		) {
+			$( this.helper ).animate(
+				this.originalPosition,
+				parseInt( this.options.revertDuration, 10 ),
+				function() {
+					if ( that._trigger( "stop", event ) !== false ) {
+						that._clear();
+					}
+				}
+			);
+		} else {
+			if ( this._trigger( "stop", event ) !== false ) {
+				this._clear();
+			}
+		}
+
+		return false;
+	},
+
+	_mouseUp: function( event ) {
+		this._unblockFrames();
+
+		// If the ddmanager is used for droppables, inform the manager that dragging has stopped
+		// (see #5003)
+		if ( $.ui.ddmanager ) {
+			$.ui.ddmanager.dragStop( this, event );
+		}
+
+		// Only need to focus if the event occurred on the draggable itself, see #10527
+		if ( this.handleElement.is( event.target ) ) {
+
+			// The interaction is over; whether or not the click resulted in a drag,
+			// focus the element
+			this.element.trigger( "focus" );
+		}
+
+		return $.ui.mouse.prototype._mouseUp.call( this, event );
+	},
+
+	cancel: function() {
+
+		if ( this.helper.is( ".ui-draggable-dragging" ) ) {
+			this._mouseUp( new $.Event( "mouseup", { target: this.element[ 0 ] } ) );
+		} else {
+			this._clear();
+		}
+
+		return this;
+
+	},
+
+	_getHandle: function( event ) {
+		return this.options.handle ?
+			!!$( event.target ).closest( this.element.find( this.options.handle ) ).length :
+			true;
+	},
+
+	_setHandleClassName: function() {
+		this.handleElement = this.options.handle ?
+			this.element.find( this.options.handle ) : this.element;
+		this._addClass( this.handleElement, "ui-draggable-handle" );
+	},
+
+	_removeHandleClassName: function() {
+		this._removeClass( this.handleElement, "ui-draggable-handle" );
+	},
+
+	_createHelper: function( event ) {
+
+		var o = this.options,
+			helperIsFunction = $.isFunction( o.helper ),
+			helper = helperIsFunction ?
+				$( o.helper.apply( this.element[ 0 ], [ event ] ) ) :
+				( o.helper === "clone" ?
+					this.element.clone().removeAttr( "id" ) :
+					this.element );
+
+		if ( !helper.parents( "body" ).length ) {
+			helper.appendTo( ( o.appendTo === "parent" ?
+				this.element[ 0 ].parentNode :
+				o.appendTo ) );
+		}
+
+		// Http://bugs.jqueryui.com/ticket/9446
+		// a helper function can return the original element
+		// which wouldn't have been set to relative in _create
+		if ( helperIsFunction && helper[ 0 ] === this.element[ 0 ] ) {
+			this._setPositionRelative();
+		}
+
+		if ( helper[ 0 ] !== this.element[ 0 ] &&
+				!( /(fixed|absolute)/ ).test( helper.css( "position" ) ) ) {
+			helper.css( "position", "absolute" );
+		}
+
+		return helper;
+
+	},
+
+	_setPositionRelative: function() {
+		if ( !( /^(?:r|a|f)/ ).test( this.element.css( "position" ) ) ) {
+			this.element[ 0 ].style.position = "relative";
+		}
+	},
+
+	_adjustOffsetFromHelper: function( obj ) {
+		if ( typeof obj === "string" ) {
+			obj = obj.split( " " );
+		}
+		if ( $.isArray( obj ) ) {
+			obj = { left: +obj[ 0 ], top: +obj[ 1 ] || 0 };
+		}
+		if ( "left" in obj ) {
+			this.offset.click.left = obj.left + this.margins.left;
+		}
+		if ( "right" in obj ) {
+			this.offset.click.left = this.helperProportions.width - obj.right + this.margins.left;
+		}
+		if ( "top" in obj ) {
+			this.offset.click.top = obj.top + this.margins.top;
+		}
+		if ( "bottom" in obj ) {
+			this.offset.click.top = this.helperProportions.height - obj.bottom + this.margins.top;
+		}
+	},
+
+	_isRootNode: function( element ) {
+		return ( /(html|body)/i ).test( element.tagName ) || element === this.document[ 0 ];
+	},
+
+	_getParentOffset: function() {
+
+		//Get the offsetParent and cache its position
+		var po = this.offsetParent.offset(),
+			document = this.document[ 0 ];
+
+		// This is a special case where we need to modify a offset calculated on start, since the
+		// following happened:
+		// 1. The position of the helper is absolute, so it's position is calculated based on the
+		// next positioned parent
+		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't
+		// the document, which means that the scroll is included in the initial calculation of the
+		// offset of the parent, and never recalculated upon drag
+		if ( this.cssPosition === "absolute" && this.scrollParent[ 0 ] !== document &&
+				$.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) {
+			po.left += this.scrollParent.scrollLeft();
+			po.top += this.scrollParent.scrollTop();
+		}
+
+		if ( this._isRootNode( this.offsetParent[ 0 ] ) ) {
+			po = { top: 0, left: 0 };
+		}
+
+		return {
+			top: po.top + ( parseInt( this.offsetParent.css( "borderTopWidth" ), 10 ) || 0 ),
+			left: po.left + ( parseInt( this.offsetParent.css( "borderLeftWidth" ), 10 ) || 0 )
+		};
+
+	},
+
+	_getRelativeOffset: function() {
+		if ( this.cssPosition !== "relative" ) {
+			return { top: 0, left: 0 };
+		}
+
+		var p = this.element.position(),
+			scrollIsRootNode = this._isRootNode( this.scrollParent[ 0 ] );
+
+		return {
+			top: p.top - ( parseInt( this.helper.css( "top" ), 10 ) || 0 ) +
+				( !scrollIsRootNode ? this.scrollParent.scrollTop() : 0 ),
+			left: p.left - ( parseInt( this.helper.css( "left" ), 10 ) || 0 ) +
+				( !scrollIsRootNode ? this.scrollParent.scrollLeft() : 0 )
+		};
+
+	},
+
+	_cacheMargins: function() {
+		this.margins = {
+			left: ( parseInt( this.element.css( "marginLeft" ), 10 ) || 0 ),
+			top: ( parseInt( this.element.css( "marginTop" ), 10 ) || 0 ),
+			right: ( parseInt( this.element.css( "marginRight" ), 10 ) || 0 ),
+			bottom: ( parseInt( this.element.css( "marginBottom" ), 10 ) || 0 )
+		};
+	},
+
+	_cacheHelperProportions: function() {
+		this.helperProportions = {
+			width: this.helper.outerWidth(),
+			height: this.helper.outerHeight()
+		};
+	},
+
+	_setContainment: function() {
+
+		var isUserScrollable, c, ce,
+			o = this.options,
+			document = this.document[ 0 ];
+
+		this.relativeContainer = null;
+
+		if ( !o.containment ) {
+			this.containment = null;
+			return;
+		}
+
+		if ( o.containment === "window" ) {
+			this.containment = [
+				$( window ).scrollLeft() - this.offset.relative.left - this.offset.parent.left,
+				$( window ).scrollTop() - this.offset.relative.top - this.offset.parent.top,
+				$( window ).scrollLeft() + $( window ).width() -
+					this.helperProportions.width - this.margins.left,
+				$( window ).scrollTop() +
+					( $( window ).height() || document.body.parentNode.scrollHeight ) -
+					this.helperProportions.height - this.margins.top
+			];
+			return;
+		}
+
+		if ( o.containment === "document" ) {
+			this.containment = [
+				0,
+				0,
+				$( document ).width() - this.helperProportions.width - this.margins.left,
+				( $( document ).height() || document.body.parentNode.scrollHeight ) -
+					this.helperProportions.height - this.margins.top
+			];
+			return;
+		}
+
+		if ( o.containment.constructor === Array ) {
+			this.containment = o.containment;
+			return;
+		}
+
+		if ( o.containment === "parent" ) {
+			o.containment = this.helper[ 0 ].parentNode;
+		}
+
+		c = $( o.containment );
+		ce = c[ 0 ];
+
+		if ( !ce ) {
+			return;
+		}
+
+		isUserScrollable = /(scroll|auto)/.test( c.css( "overflow" ) );
+
+		this.containment = [
+			( parseInt( c.css( "borderLeftWidth" ), 10 ) || 0 ) +
+				( parseInt( c.css( "paddingLeft" ), 10 ) || 0 ),
+			( parseInt( c.css( "borderTopWidth" ), 10 ) || 0 ) +
+				( parseInt( c.css( "paddingTop" ), 10 ) || 0 ),
+			( isUserScrollable ? Math.max( ce.scrollWidth, ce.offsetWidth ) : ce.offsetWidth ) -
+				( parseInt( c.css( "borderRightWidth" ), 10 ) || 0 ) -
+				( parseInt( c.css( "paddingRight" ), 10 ) || 0 ) -
+				this.helperProportions.width -
+				this.margins.left -
+				this.margins.right,
+			( isUserScrollable ? Math.max( ce.scrollHeight, ce.offsetHeight ) : ce.offsetHeight ) -
+				( parseInt( c.css( "borderBottomWidth" ), 10 ) || 0 ) -
+				( parseInt( c.css( "paddingBottom" ), 10 ) || 0 ) -
+				this.helperProportions.height -
+				this.margins.top -
+				this.margins.bottom
+		];
+		this.relativeContainer = c;
+	},
+
+	_convertPositionTo: function( d, pos ) {
+
+		if ( !pos ) {
+			pos = this.position;
+		}
+
+		var mod = d === "absolute" ? 1 : -1,
+			scrollIsRootNode = this._isRootNode( this.scrollParent[ 0 ] );
+
+		return {
+			top: (
+
+				// The absolute mouse position
+				pos.top	+
+
+				// Only for relative positioned nodes: Relative offset from element to offset parent
+				this.offset.relative.top * mod +
+
+				// The offsetParent's offset without borders (offset + border)
+				this.offset.parent.top * mod -
+				( ( this.cssPosition === "fixed" ?
+					-this.offset.scroll.top :
+					( scrollIsRootNode ? 0 : this.offset.scroll.top ) ) * mod )
+			),
+			left: (
+
+				// The absolute mouse position
+				pos.left +
+
+				// Only for relative positioned nodes: Relative offset from element to offset parent
+				this.offset.relative.left * mod +
+
+				// The offsetParent's offset without borders (offset + border)
+				this.offset.parent.left * mod	-
+				( ( this.cssPosition === "fixed" ?
+					-this.offset.scroll.left :
+					( scrollIsRootNode ? 0 : this.offset.scroll.left ) ) * mod )
+			)
+		};
+
+	},
+
+	_generatePosition: function( event, constrainPosition ) {
+
+		var containment, co, top, left,
+			o = this.options,
+			scrollIsRootNode = this._isRootNode( this.scrollParent[ 0 ] ),
+			pageX = event.pageX,
+			pageY = event.pageY;
+
+		// Cache the scroll
+		if ( !scrollIsRootNode || !this.offset.scroll ) {
+			this.offset.scroll = {
+				top: this.scrollParent.scrollTop(),
+				left: this.scrollParent.scrollLeft()
+			};
+		}
+
+		/*
+		 * - Position constraining -
+		 * Constrain the position to a mix of grid, containment.
+		 */
+
+		// If we are not dragging yet, we won't check for options
+		if ( constrainPosition ) {
+			if ( this.containment ) {
+				if ( this.relativeContainer ) {
+					co = this.relativeContainer.offset();
+					containment = [
+						this.containment[ 0 ] + co.left,
+						this.containment[ 1 ] + co.top,
+						this.containment[ 2 ] + co.left,
+						this.containment[ 3 ] + co.top
+					];
+				} else {
+					containment = this.containment;
+				}
+
+				if ( event.pageX - this.offset.click.left < containment[ 0 ] ) {
+					pageX = containment[ 0 ] + this.offset.click.left;
+				}
+				if ( event.pageY - this.offset.click.top < containment[ 1 ] ) {
+					pageY = containment[ 1 ] + this.offset.click.top;
+				}
+				if ( event.pageX - this.offset.click.left > containment[ 2 ] ) {
+					pageX = containment[ 2 ] + this.offset.click.left;
+				}
+				if ( event.pageY - this.offset.click.top > containment[ 3 ] ) {
+					pageY = containment[ 3 ] + this.offset.click.top;
+				}
+			}
+
+			if ( o.grid ) {
+
+				//Check for grid elements set to 0 to prevent divide by 0 error causing invalid
+				// argument errors in IE (see ticket #6950)
+				top = o.grid[ 1 ] ? this.originalPageY + Math.round( ( pageY -
+					this.originalPageY ) / o.grid[ 1 ] ) * o.grid[ 1 ] : this.originalPageY;
+				pageY = containment ? ( ( top - this.offset.click.top >= containment[ 1 ] ||
+					top - this.offset.click.top > containment[ 3 ] ) ?
+						top :
+						( ( top - this.offset.click.top >= containment[ 1 ] ) ?
+							top - o.grid[ 1 ] : top + o.grid[ 1 ] ) ) : top;
+
+				left = o.grid[ 0 ] ? this.originalPageX +
+					Math.round( ( pageX - this.originalPageX ) / o.grid[ 0 ] ) * o.grid[ 0 ] :
+					this.originalPageX;
+				pageX = containment ? ( ( left - this.offset.click.left >= containment[ 0 ] ||
+					left - this.offset.click.left > containment[ 2 ] ) ?
+						left :
+						( ( left - this.offset.click.left >= containment[ 0 ] ) ?
+							left - o.grid[ 0 ] : left + o.grid[ 0 ] ) ) : left;
+			}
+
+			if ( o.axis === "y" ) {
+				pageX = this.originalPageX;
+			}
+
+			if ( o.axis === "x" ) {
+				pageY = this.originalPageY;
+			}
+		}
+
+		return {
+			top: (
+
+				// The absolute mouse position
+				pageY -
+
+				// Click offset (relative to the element)
+				this.offset.click.top -
+
+				// Only for relative positioned nodes: Relative offset from element to offset parent
+				this.offset.relative.top -
+
+				// The offsetParent's offset without borders (offset + border)
+				this.offset.parent.top +
+				( this.cssPosition === "fixed" ?
+					-this.offset.scroll.top :
+					( scrollIsRootNode ? 0 : this.offset.scroll.top ) )
+			),
+			left: (
+
+				// The absolute mouse position
+				pageX -
+
+				// Click offset (relative to the element)
+				this.offset.click.left -
+
+				// Only for relative positioned nodes: Relative offset from element to offset parent
+				this.offset.relative.left -
+
+				// The offsetParent's offset without borders (offset + border)
+				this.offset.parent.left +
+				( this.cssPosition === "fixed" ?
+					-this.offset.scroll.left :
+					( scrollIsRootNode ? 0 : this.offset.scroll.left ) )
+			)
+		};
+
+	},
+
+	_clear: function() {
+		this._removeClass( this.helper, "ui-draggable-dragging" );
+		if ( this.helper[ 0 ] !== this.element[ 0 ] && !this.cancelHelperRemoval ) {
+			this.helper.remove();
+		}
+		this.helper = null;
+		this.cancelHelperRemoval = false;
+		if ( this.destroyOnClear ) {
+			this.destroy();
+		}
+	},
+
+	// From now on bulk stuff - mainly helpers
+
+	_trigger: function( type, event, ui ) {
+		ui = ui || this._uiHash();
+		$.ui.plugin.call( this, type, [ event, ui, this ], true );
+
+		// Absolute position and offset (see #6884 ) have to be recalculated after plugins
+		if ( /^(drag|start|stop)/.test( type ) ) {
+			this.positionAbs = this._convertPositionTo( "absolute" );
 			ui.offset = this.positionAbs;
 		}
 		return $.Widget.prototype._trigger.call( this, type, event, ui );

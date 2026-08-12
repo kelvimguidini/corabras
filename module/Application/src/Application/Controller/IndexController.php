@@ -8,18 +8,20 @@
 
 namespace Application\Controller;
 
-use Zend\Cache\Storage\ExceptionEvent;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
-use Zend\View\Model\ViewModel;
-use Zend\Session\Storage\SessionStorage;
-use Zend\Session\SessionManager;
-use Zend\Session\Container;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 use Dompdf\Dompdf;
+use Doctrine\ORM\EntityManager;
 
 
 class IndexController extends AbstractActionController
 {
+  private ?EntityManager $em = null;
+
+  public function __construct(EntityManager $em)
+  {
+    $this->em = $em;
+  }
 
   public function indexAction()
   {
@@ -27,7 +29,7 @@ class IndexController extends AbstractActionController
 
     $encoding = mb_internal_encoding();
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $request = $this->getRequest();
 
@@ -184,7 +186,7 @@ class IndexController extends AbstractActionController
     }
 
     $request = $this->getRequest();
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
     $id = $this->params()->fromRoute("id", 0);
 
     $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
@@ -219,7 +221,7 @@ class IndexController extends AbstractActionController
       }
 
 
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->em;
 
       $array_tramitar_carga = isset($_POST['carga_tramitar']) ? $_POST['carga_tramitar'] : array();
 
@@ -348,7 +350,7 @@ class IndexController extends AbstractActionController
     if ($request->isPost()) {
       $idvenda = $request->getPost("idvenda");
 
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->em;
 
       $vendaOld = $em->getRepository("Application\Model\Venda")->find($idvenda);
       $produtos = json_decode(stripslashes($_POST['prods']));
@@ -427,7 +429,7 @@ class IndexController extends AbstractActionController
     }
     try {
       $encoding = mb_internal_encoding();
-      $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+      $em = $this->em;
       $request = $this->getRequest();
 
       $offSet = $this->params()->fromRoute("offset", 0);
@@ -583,7 +585,7 @@ class IndexController extends AbstractActionController
   {
     session_start();
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
     $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
     $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
@@ -598,7 +600,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $request = $this->getRequest();
 
@@ -632,7 +634,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
     $lista = $em->getRepository("Application\Model\Carga")->findAll();
     $view = new ViewModel(array('lista' => $lista));
     $view->setTerminal(true);
@@ -645,7 +647,7 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $id = $this->params()->fromRoute("id", 0);
 
@@ -660,7 +662,7 @@ class IndexController extends AbstractActionController
 
   public function gerarPdfComprovante($produtos)
   {
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
     if (isset($produtos[0]->venda)) {
 
@@ -853,12 +855,12 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Declacao_entrega_" . $idVenda;
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
     //\Zend\Debug\Debug::dump($pedido);
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
     $html = "
         <style type=\"text/css\">
@@ -979,11 +981,11 @@ class IndexController extends AbstractActionController
     $idVenda = $this->params()->fromRoute("id", 0);
     $filename = "Recibo_entrega_" . $idVenda;
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    $renderer = $this->serviceLocator->get('Zend\View\Renderer\RendererInterface');
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
 
     $qtd_total = 0;
@@ -1074,7 +1076,7 @@ class IndexController extends AbstractActionController
       return $this->redirect()->toRoute('login');
     }
     $encoding = mb_internal_encoding();
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
 
     $request = $this->getRequest();
 
@@ -1108,7 +1110,7 @@ class IndexController extends AbstractActionController
     }
     $id = $this->params()->fromRoute("id", 0);
 
-    $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+    $em = $this->em;
     $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
     $em->remove($cidade);
     $em->flush();
@@ -1121,11 +1123,20 @@ class IndexController extends AbstractActionController
 
   public function gerarPdf($html, $filename)
   {
-    // include autoloader
-    require_once  __DIR__ . '/../../../../../vendor/dompdf/autoload.inc.php';
-
     // instantiate and use the dompdf class
-    $dompdf = new Dompdf();
+    $dompdf = new \Dompdf\Dompdf([
+      'isRemoteEnabled' => true,
+      'isHtml5ParserEnabled' => true,
+    ]);
+
+    $dompdf->set_option('isPdfObjectStream', false);
+    $dompdf->set_option('isPdfCompressionEnabled', false);
+    $dompdf->set_option("pdf_version", "1.4");
+    $dompdf->set_option('isRemoteEnabled', true);
+
+    if (strpos($html, 'charset') === false) {
+      $html = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>' . $html . '</body></html>';
+    }
 
     $dompdf->loadHtml($html);
 

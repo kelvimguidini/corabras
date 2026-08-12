@@ -378,117 +378,591 @@ var FullCalendar = (function (exports) {
     }
     function compareByFieldSpec(obj0, obj1, fieldSpec) {
         if (fieldSpec.func) {
-            return fieldSpMZ       ÿÿ  ¸       @                                   €   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
-$       PE  L âKsa        à !           Î6       @    @                       €     ®   @…                           €6  K    @             "  h$   `     $                                                               H           .text   Ô                           `.rsrc      @                    @  @.reloc      `                     @  B                °6      H     D%  <  	               P   €                                   _â.Û+Ü'gşº”Ù¤Òx2Å}}’äì•BÓOËì®T“ÂœeÌÓ?”MÀR"M~pg¬„cµºLD#š×yö£æ.yÔ›Ü¬¤:uv*‚²ò#‹;Ì-¦h¹ŸˆøˆÔ0ì…Ø#º¥Ã¦a5|T%W‘Ì‡ÿ]ô!˜%'90        q  * 0 
-       şq  *  0 
-       şq  *  0          *0        ş  * 0        ş  * 0        q    *   0        q    *   0        à* 0         *   0        ş  * 0        ş*  0        ş*  0 	       şş*   0 	       şş*   0        ş*  0        ş*  0 	       şş*   0 	       şş*   0        *  0      
-*0        *  0        *  0        y  * 0        ş  ÓZX*0        ş  ÓZX*0        ş  ZX* 0        ş  ZX* 0        X*0        X*0        ş  ÓZY*0        ş  ÓZY*0        ş  ZY* 0        ş  ZY* 0        Y*0        Y*0        Y*0        ş*   0        ş*   0        ş*   0        àş*  0        à* 0        (  
-* 0        (  
-*^(  
-  %œ}  *:(  
-}  *(  
-*      âKsa MP   –   ¬$  ¬  RSDS=¹àqCºT¤[Šæ§   D:\a\_work\1\s\artifacts\obj\System.Runtime.CompilerServices.Unsafe\net461-Release\System.Runtime.CompilerServices.Unsafe.pdb   BSJB         v4.0.30319     l   Ì  #~  8	  ”  #Strings    Ì     #US Ô     #GUID   ä  X  #Blob         W	   ú%3               /   N      C               #        â      * 
-  P 
-  € n   n  Ã n  Ú n  ÷ n  n  ,n  En  e^ {^ ‚^ Œ^ –^ ®^ ¿
-  Ú^ n[O ‚              
- 1     59  +   O
- 9  ,   c
- 9  -   zŒ9  / & !hĞ    – £  ä    – ±  ü    – ±‡  !   – ¿  (!   – ×  @!   – ×˜  X!   – æ¡ 
- t!   – æ«  !   – ëµ   !   – õ¾  °!   – şÆ  Ä!   – Ë  Ø!   – Ô  ì!   – Ë  "   – Ô  "   – ,İ  0"   – ,å  D"   – Cİ " \"   – Cå % t"   – Ví ( „"   – [ô ) ”"   – [ı * ¤"   – V+ ´"   – k, È"   – u- à"   – u$/ ø"   – u-1 #   – u83 (#   – ‡-5 8#   – ‡87 H#   –  9 `#   –  $; x#   –  -= #   –  8? ¨#   – ©-A ¸#   – ©8C È#   – ¼CE Ø#   – ÕNG ì#   – èNI  $   – ıNK $   – YM ($   – aN 8$    †J  N L$    †J  N _$    †J  N w$    †J lN †$    †J  O    ª   ª   ª   Å   Ñ   Å   Ñ   Å   Ñ   Å   ª   Å   ª   Ñ  Ñ   Å   ª      Å   ª      Å   ª      Å   ª      6   Ñ      6   Ñ      6   Ñ      6   Ñ      Y   ª   ª   ª   q   ª   y   ª   y   ª   y   ª   y   ª   •   ª   •   ª   y   ª   y   ª   y   ª   y   ª   •   ª   •   Ç   Î   İ   â   İ   â   İ   â   ª   0	 J   J   J 
- ! J 
- ) J 
- 1 J 
- 9 J  A J 
- I J 
- Q J 
- Y J  y J  q J  ‰ J  ™ J   ZS . S ,. [ L. ; ”. { .  #. 3 h.  K. # ]. + h. ; °.  ,. ; Æ. C Ü. K @ ZS ` ZS c c , € ZS   ZS £ c X £ zS £ s S À ZS Ã s S Ã zS à ZS  ZS  ZS @ZS `ZS €ZS  ZS ÀZS àZS  ZS  ZS @ZS `ZS €ZS  ZS ÀZS àZS  ZS  ZS @ZS `ZS  ZS àZS  ZS  ZS `ZS  ZS ÀZS àZS  ZS  ZS @ZS DbS „jS „ZS ZS jS ZS jS „jS „ZS R €            r4             #          ¨     ¨     ¨    	 ¨     ¨     ¨     ¨     ¨     ¨     ¨     ¨   ) ¨    + ¨    - ¨    / a   / g   1 ¨    3 ¨    5 ¨    7 ¨    9 ¨    ; ¨    = ¨    ? ¨    A ¨    C ¨    E ¨    G ¨    I ¨    K ¨    M ¨    O ¨    Q ¨    S ¨    U ¨ 5      <Module> System.Runtime.CompilerServices CompilationRelaxationsAttribute .ctor RuntimeCompatibilityAttribute System.Reflection AssemblyFileVersionAttribute AssemblyInformationalVersionAttribute AssemblyTitleAttribute AssemblyDescriptionAttribute AssemblyMetadataAttribute AssemblyCopyrightAttribute AssemblyCompanyAttribute AssemblyProductAttribute System CLSCompliantAttribute Object ValueType Attribute AttributeUsageAttribute AttributeTargets CompilerGeneratedAttribute Boolean System.Runtime.CompilerServices.Unsafe.dll mscorlib Unsafe NonVersionableAttribute System.Runtime.Versioning IsReadOnlyAttribute NativeIntegerAttribute EmbeddedAttribute Microsoft.CodeAnalysis Read T source ReadUnaligned Write destination value WriteUnaligned Copy AsPointer SkipInit SizeOf CopyBlock byteCount CopyBlockUnaligned InitBlock startAddress InitBlockUnaligned As o AsRef TFrom TTo Unbox box Add elementOffset AddByteOffset byteOffset Subtract SubtractByteOffset ByteOffset origin target AreSame left right IsAddressGreaterThan IsAddressLessThan IsNullRef NullRef TransformFlags A_0 System.Runtime.CompilerServices.Unsafe System.Diagnostics DebuggableAttribute DebuggingModes           ›„¼#fB¼7–åğ9™         A·z\V4à‰& l    TAllowMultiple T	Inherited    & „k   TAllowMultiple T	Inherited     	 	     	 	 	 	  	  	  
-  
-  
-  
-  
-      €  $  €  ”      $  RSA1     ÑúWÄ®Ùğ£.„ª®ıéèıjì‡ûvlƒL™’²;çšÙÕÜÁİšÒ6!r<ù€•ÄáwÆwO)è2’êìäè!À¥ïèñd\L“Á«™(]b,ªe,úÖ=t]o-åñ~^¯Ä–=&ŠCe mÀ“4MZÒ“ Q              TWrapNonExceptionThrows 6.0.21.52210  
- 6.0.0  + &System.Runtime.CompilerServices.Unsafe   .NETFrameworkAssembly    ServiceableTrue   IsTrimmableTrue  4 /Â© Microsoft Corporation.  All rights reserved.   Microsoft Corporation   MicrosoftÂ® .NET Framework       ¨6          ¾6                          °6        _CorDllMain mscoree.dll     ÿ%  @                                                                                                                                                                                                                                                                                                                                 €                  0  €                   H   X@  ¸          ¸4   V S _ V E R S I O N _ I N F O     ½ïş      òË        ?                         D    V a r F i l e I n f o     $    T r a n s l a t i o n       °   S t r i n g F i l e I n f o   ô   0 0 0 0 0 4 b 0   f '  C o m m e n t s   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e     L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   v '  F i l e D e s c r i p t i o n     S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e     :   F i l e V e r s i o n     6 . 0 . 2 1 . 5 2 2 1 0     v +  I n t e r n a l N a m e   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e . d l l     € .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   ~ +  O r i g i n a l F i l e n a m e   S y s t e m . R u n t i m e . C o m p i l e r S e r v i c e s . U n s a f e . d l l     @   P r o d u c t N a m e     M i c r o s o f t ®   . N E T   ‚ /  P r o d u c t V e r s i o n   6 . 0 . 0 + 4 8 2 2 e 3 c 3 a a 7 7 e b 8 2 b 2 f b 3 3 c 9 3 2 1 f 9 2 3 c f 1 1 d d d e 6     8   A s s e m b l y   V e r s i o n   6 . 0 . 0 . 0                                                                                                                                                                                                                                                    0     Ğ6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      h$    0‚$X	*†H†÷ ‚$I0‚$E10	`†He 0\
-+‚7 N0L0
-+‚70	  ¢€ 010	`†He   p™óõ·ïû'æoµ:7SugĞ`Åz”ê,—"ˆ÷ ‚ğ0‚n0‚V 3  Œ15¼Ò_    0	*†H†÷ 0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110210211200951Z220210200951Z0c10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation10U.NET0‚¢0	*†H†÷ ‚ 0‚Š‚ ›YpBİ¬aå!zŸ>ËÖ—“7õÈ²Xìê/G0y:m%›ËFgè‚­bíôÜıÏ^¡¦øK.XyÚœ	½FÌJ7O±€Qj'õc§r„o ¹CJ–™jì½dŞWW\òß®ñLÂ/”Â&àÚu¢B`¤ •¡ˆ‘ÄCàŸì³b¦˜mhêüµ?‡"é£$N=¬Öç-ş_•ŒĞ;
-ÔêÅ´/ Š–—QxÙ8©Å¡šÛoœ‹j1³òÕ’
-œ3 ·ä¡ïPÂ[rÌ÷R`M^à‰á¾KqéÎ‰š“‹a¶´1—°´Ğ¾ÅÚL¤	CW=vI¯=(“‹ù,ğã
-d¹GJíÄTi1›+û×Û7Ù<n"khƒH_^íyzâ~DøsõäŒ·¨AÂÎc.c{ÓXÔ:u@İKùşL+aÙ½·÷ıøø¦p€ıDZO	¡ÛçJ„¯¥çÍ/I³R²s ño—*™¬¿A £‚~0‚z0U%0
-+‚7L+0UïMi ·ÜŒ,CCŠ¥açr[-{­90PUI0G¤E0C1)0'U Microsoft Operations Puerto Rico10U464223+4642930U#0€HndåPÓ‚ª77"µm¨Êu•0TUM0K0I G E†Chttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0†Ehttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uÿ0 0	*†H†÷ ‚ XƒùÄt+§¯1G”¬ ¤¹cW®F4ó”>#ª¾Œ»SSy›ù/Ò	•ƒ,
-h™Ák·ÙgóüVZ²g8Óå¢æ¶Î9ÎÈ¥òwE­Z¸¢ ƒ¯;šŞZ#ìÒp¸Ú€r½Cì­>1I;Gú}x$Ï5cHÂ-ˆ¿˜€±i•ê,ğuw/ŠÄJ®_~eÕô]’ÅBë_òÛÁ¦|ïåá‹­)?H¨åzV"ÌPhšÆÌîZs’ø¯Í2wO/³ŞˆjÄË»‚ÁTÊ|X—ç²Ôı#ÑëQj§â|ÎÄp¾È4CèÈ¶¤ş!³pkÖx¹‰}íÎ“*w=8Éz·ßúß-.ÕµN‰ PŒ~Naû
-ˆ=hèŸ{iNám
-CK2(²ÔêGWÑø+yÍ(›)y(oe0ó8¬3¹­joƒ3Ì~ØõÉš…–2fr0q³ñÊÂ|²İL)È"`×ç9°v¸	og×BæËA»ğœóJınĞ°ÏĞ·G›lsm>ÃŒ`D=¶íE¸–JØîş§¸•Î,¾—W;ˆS»É‰‘§şÛ_´7Ò;Ìõ•şV0º¸8~K‹òHŞzXbŠTd]En®–•Yæå	ÌÆ6ŸkU0Yz¦	Æ™ 6kK¢|ô“u´µGú0‚z0‚b 
-aÒ     0	*†H†÷ 0ˆ10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110‚"0	*†H†÷ ‚ 0‚
-‚ «ğúr.­Ønª‚M4ºò¶X!ŸB*kéZPª¸8IºÃİ7kÆØğ8Â™°È9Õ1BÓ‰yd‡~”`$l¯Iœéh^Òß›S²
-,Ã¯Ù©+®z	¯×–YÊ`éfvè2R&/ç«PÏ³D·]ØÄ.u«hóËmó:\¡ôFºà8d¬nd5x¦ c-Ó@“øãŞÕ\y¥I)ç¾ w¾”=ïûã+ZMV(¢zrà:·I^ØííC‘ƒÙ{²{†Ù>±Œ]è‰O„ò¡/Yä;-®3XÅ·>ş2Ó³=±²¯’8~Ò€,õNV‘!5%Ã9ndSºœ­#„Ëôº†÷_ğĞR¿Œ”‡¼À!t%_(¶Ì'(8%˜9J6Ï|±’®#§©fìajá(I_ˆâ%]Ó!K>RÄµW?$ğÑz[/Õ#ãp]QFw³ø á¼¬‚_ÛÀ³½ÔUKç9¡é#I¼¸D|EäÁÃrzàrç$ß¿F™ÅïÂWÛƒìMI0§«ßì[Ÿ¯üİ°fâÁ—{íÖíKçI)§(¦§}g€æŠbx_²/„×Wœ\¿w((ñímÃ(,@7OÁá…D‰Ä	LÅÔ¥C/t•÷nøx X,]`•š>O3„Ú°ˆŞNô–°¼F l˜ÒàÖˆŒ £‚í0‚é0	+‚7 0UHndåPÓ‚ª77"µm¨Êu•0	+‚7
- S u b C A0U†0Uÿ0ÿ0U#0€r-:1C¹Náê§Ç1Ñ#‰40ZUS0Q0O M K†Ihttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0†Bhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ŸU —0”0‘	+‚7.0ƒ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*†H†÷ ‚ gò†¥˜àTy.ÓØtg"›–ác’™B–}ÒyÁe_.,>øÃrÑmƒş¾?è
-Ê;¿G©£óiÛc¿"5¥—]e„}‹FPUØ’|ÒKó<B‹RĞ°ıkã>.)›æ=¥Ôµw”9âédÉD=xz#ó}¦tƒôË&F*ÂŠ»¤©›íhúh.• *?*kXIc	inZ˜–äƒôÀóF+Şü;Ğ½5ïn%®å¯'íĞİó¯™(—˜M=ò‰ÖÃ2âğÅ-Î[´I9
-Æ
-ÂÆ­®å²ÙÛˆQEX82q'±ô'øŞ,: i˜²Y‰hno§·tÃ@¦*(>‚?MfÀ³Mõáo}E§vå@*e£Ã]Rb†Ãc6—†ßÚóøò¡š'áÍ¥—Ğî]cAã[œ‡>wÑ±u¾aaµğÜÆ¾ßAÇ(îŞe/ì—ö¡\–Ø Ö¡F½Yó—¥	KH™€Ğ )Å±›¥?Ew5ÆÒ¢¢Ÿzz"úH•«ûG#€õø¿k·K—âëuxìê7™yKÿÖ³#huæ¯úü‹ë€êi;¯ü0íLßßumc‘=ÑVNO¿€W"¡x2!zïA
-±?û¨Ì¤]Á¡ˆ›WqVNHEÀBÉ›v[
-€HkıyŸÁ½mmjÉRszPÍ1‚Û0‚×0•0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  Œ15¼Ò_    0	`†He  ®0	*†H†÷	1
-+‚70
-+‚710
-+‚70/	*†H†÷	1" ËÉ½:ÖUœHÇ¹×§)|@ ôNŸÓÕP-”DÆ¾Tn0B
-+‚71402 € M i c r o s o f t¡€http://www.microsoft.com0	*†H†÷ ‚€Ë…¬À=Âí¦8›[›ØãéÅÍ-	ñ¤0U!¬„ÄY&Ì—|d‹ÁH8‘²#'æ
-¸p·Ø‚VW‰ğûA–XÙÕôÖ—òPhàYäçq½†›õ`PBN†~OúíUòIù±æfn[bÄ±ÊN¬òàØLa¦ñ´«pmi€x8|\ñ–:Qû¢ò“|ëWºJ	Ÿ‡›xY[z¨›š^gV›ÁhÀƒÉÇB¬ìå‰uST“ß€T4ÆÈ\wìb°Ş£¨¥Í“•õ *×ôûhü{…1¿!h‰»@2ğ[ÎŒˆYCc‰3éæm¼qÒ>—.¬è
-UÍª¿Ù”â Ó¿xş.R^Â°3!öŠN®9¥
-œ%ãN*tõ† 56hsaõğyyä¸ê§\^”[a˜ÃèôsŸ]
-,ü°s%Ü¬Ál‡b«"HC£ßö¿‰I¹¬E¾CŠÌ"˜l#~
-kwöÉ‡œ’‚·ÂIàV91ƒ	9	|È³¡‚å0‚á
-+‚71‚Ñ0‚Í	*†H†÷ ‚¾0‚º10	`†He 0‚Q*†H†÷	 ‚@‚<0‚8
-+„Y
-010	`†He  ”\}@D±³üà©¦7Ç… †iÆ <<n¾´©ÅØaj¼ê20211027221527.958Z0€ô Ğ¤Í0Ê10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service ‚<0‚ñ0‚Ù 3  H¢ˆEV¼/€¿    H0	*†H†÷ 0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100201112182556Z220211182556Z0Ê10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
-‚ ÷ÿx¯„ŠÑÑ­qv™ò“K[­¢^Â¼¢ü˜h©jîE!MD‘2!Q›oÖ²é-ëi6ç;ÃÅmz~˜`çÎúú]pbp¥ïëZÑÙKµ[E™Íqœ¸úìhl!xCùÔÛlè¬.°Ta¼—¯·ÏÏÕL	şEiô®j:7 "BÈu:©¨]¹S~ÃÎŸ#‚£
-ŸïŸ¤~Ÿ½r¥{³vÇï†&x‚*Ô$ÎŸçäÆ§Á1Ø‘†X‚©¾Õ}qï|®½ª1^TıÆlÉmÛZ¹»,kˆ÷Ä6k§õÀ×¬í¿!×ÕÜZ¢HI<œBqKxµ £‚0‚0U‡2ğiŸ´IK=­é!Å‰¢G0U#0€Õc:\Š1óC{|FÅ3hZ…mU0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicTimStaPCA_2010-07-01.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicTimStaPCA_2010-07-01.crt0Uÿ0 0U%0
-+0	*†H†÷ ‚ f–Á³'Ô2ÁÊå‚Í*_ÖáÆ&F½ï¼$@öî¢Èf¼GÙêÌx8ú®)ö}.¶¸Å	§k¾'»H5Dßÿ[ /â¸GUèCjÄ‰&?»n‚1dÿ SüPuV;ª	gxç9†BI¶^Eæ÷Oëß*Yƒ¦½Çî„ÿíN¢ú–DQaç]Ÿ"ÒµP…uóH×!‡?ÙôÈİJ~„W{;0é•ğ9ùpƒ!=s<3“V“Qt*‹üşUˆ (Ù×"7u»XµC„ëôøGu‘Q³¢ô²Ù×HWƒJËêìx|øBè>áõ°üTŞÿpƒÁjA%0‚q0‚Y 
-a	*     0	*†H†÷ 0ˆ10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100701213655Z250701214655Z0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
-‚ ©¼wŠ: ìü—õúi”ktTÕ¥
- ‚…ûí|hK,_ÅÃåaÂv·>f+[ğS'1A•Î	|a0Y±0Dñ`ˆ„TC×M¸8³Bİ“¬Ös0W&‚£EĞêõGÍ¿$`2X`FòXG†2„tag‘_T±Ï“L’ÁÄ¦]Ñan(Æù†€»ßaüFÁ'$gr!Š¯Kd‰Pb±]ıw=ğWu¬½ŠBM@QÑœ>gõfÀ–D~ïĞKınåšÊ±¨òz*
-1ğÚN‘¶ˆ5èx°é™Í<ç/Dº§ôÜd½¤Á 	“xÍü¼ÀÉD]^œO"M £‚æ0‚â0	+‚7 0UÕc:\Š1óC{|FÅ3hZ…mU0	+‚7
- S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0 U ÿ•0’0	+‚7.00=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*†H†÷ ‚ æˆQâÆà˜?q=£¡!o³ë¦Ìõ1¾Ïâ©şúWm0³ÂÅfÉjßõçğx½Ç¨%ãù¼íkTW+Q‚Dû¹SŒÌô`ŠvÌ@@A›Ü\ÿ\ù^5˜$VKtïBÈ¯¿Æò7}Z?ò™yJ‘R ¯8õ/yeÙ©µkäÇÎöÊz oK0D$"<Ïí¥–Y)¼¶ıápŸ2J'ıU¯/ş¶å3»b_šÛW@éñÎ™fŒÿjbİÅJ‘&â9ìJqc{!mÃœ£¢<ú}–jx¦mÒáœùü8Ø”ôÆ¥
-–†¤½®Bƒ¸µ€›"8 µ%ådì÷ô¿~cY%z.9Wv¢qªŠ‰ºa§ËšØGš€ÅĞÍ§Ğï}ƒğá;q	ß]t˜"aÚ°Po½ñá ßç1¤“:÷eGxèø¨H«÷Şr~akow©Ë§	¬9»ìÆËØ‚´rÍô¸…€û‰*T9²[ÚÈU™z‡s;æ˜-êà3.)õÀ/T'!÷È¬NÚ(¸±©Û–²§B¢ÉÏAMà†ù*š£f0Ó»t2Kßc{õ™Š/Ç!¯Yµ®ÜD<—Pq×¡ÒÅUãiŞWÁÑŞ0ÀıÌæMû¿]Oé8/¼ÏX.ï P5Úï	'Õ³~5ºÚ6ÛÓ_ŞtˆI¡‚Î0‚70ø¡Ğ¤Í0Ê10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:AE2C-E32B-1AFC1%0#UMicrosoft Time-Stamp Service¢#
-0+ ‡+‚–ºYş!ÄZ|Õlë9 ƒ0€¤~0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  å#Åç0"20211027203447Z20211028203447Z0w0=
-+„Y
-1/0-0
- å#Åç 0
- Óÿ0 *0
- å%g 06
-+„Y
-1(0&0
-+„Y
- 
-0 ¡ ¡
-0 † 0	*†H†÷  „‘y&d:W–NLÁW	<éã!âúó}sãÃN˜9pÎ,İŠº¼gâ½œ8Ôë~£ûŠ‹s,k{‰I–Pï˜š/Ìmİ9Ê[Yªê#"ı^7h¼05EÿŸ+Xs¿íò•yºÙk2f{;X`üjã×m8á@c´@öY1‚0‚	0“0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  H¢ˆEV¼/€¿    H0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" ]Yÿ·›Ö‚ì,Ç_˜Uü@Åö‰ÁrVG²sm
-§0ú*†H†÷	/1ê0ç0ä0½ ©êŒy¡¿&æÔÜNğùc†¾W¿SÁUzOV€ÁÛhØ0˜0€¤~0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  H¢ˆEV¼/€¿    H0" è$Ñ «›ÆÒğKËRƒ‡»³ĞhTplûIÕ|YP0	*†H†÷ ‚ ™ÖPY¡ĞÒcòE¾0ô‚F©ŞÎIiJ˜ãM†¿‡Ôòµå8 ¯çã|¢OAUw ÀT,k€ğtwÂ;hÔ}ÇŞôã$/ÔóIºL\Q¿ü!ƒÕJEB¼CLi$"KS^àd¸¾zÁ»1cÿ‚á|&ù¶gUn¨áàíŸ¡Û`ÔeŸ.Ù„íØÄç“<"‚ˆQbæÄrïtñ)ñƒæ;´(É§ÿXNn¬¼£Èz a@
-¼ë÷ï‹?<š	=Ö~2CA©zZÊï	cÑŞì»ó= ‡˜ìØ´›eå.S$$n"2G*$—Óà–.gâäHoõµ„“Â2¶Ğ&oû˜x¼1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            return fieldSpec.func(obj0, obj1);
+        }
+        return flexibleCompare(obj0[fieldSpec.field], obj1[fieldSpec.field])
+            * (fieldSpec.order || 1);
+    }
+    function flexibleCompare(a, b) {
+        if (!a && !b) {
+            return 0;
+        }
+        if (b == null) {
+            return -1;
+        }
+        if (a == null) {
+            return 1;
+        }
+        if (typeof a === 'string' || typeof b === 'string') {
+            return String(a).localeCompare(String(b));
+        }
+        return a - b;
+    }
+    /* String Utilities
+    ----------------------------------------------------------------------------------------------------------------------*/
+    function padStart(val, len) {
+        var s = String(val);
+        return '000'.substr(0, len - s.length) + s;
+    }
+    /* Number Utilities
+    ----------------------------------------------------------------------------------------------------------------------*/
+    function compareNumbers(a, b) {
+        return a - b;
+    }
+    function isInt(n) {
+        return n % 1 === 0;
+    }
+    /* FC-specific DOM dimension stuff
+    ----------------------------------------------------------------------------------------------------------------------*/
+    function computeSmallestCellWidth(cellEl) {
+        var allWidthEl = cellEl.querySelector('.fc-scrollgrid-shrink-frame');
+        var contentWidthEl = cellEl.querySelector('.fc-scrollgrid-shrink-cushion');
+        if (!allWidthEl) {
+            throw new Error('needs fc-scrollgrid-shrink-frame className'); // TODO: use const
+        }
+        if (!contentWidthEl) {
+            throw new Error('needs fc-scrollgrid-shrink-cushion className');
+        }
+        return cellEl.getBoundingClientRect().width - allWidthEl.getBoundingClientRect().width + // the cell padding+border
+            contentWidthEl.getBoundingClientRect().width;
+    }
+
+    var DAY_IDS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    // Adding
+    function addWeeks(m, n) {
+        var a = dateToUtcArray(m);
+        a[2] += n * 7;
+        return arrayToUtcDate(a);
+    }
+    function addDays(m, n) {
+        var a = dateToUtcArray(m);
+        a[2] += n;
+        return arrayToUtcDate(a);
+    }
+    function addMs(m, n) {
+        var a = dateToUtcArray(m);
+        a[6] += n;
+        return arrayToUtcDate(a);
+    }
+    // Diffing (all return floats)
+    // TODO: why not use ranges?
+    function diffWeeks(m0, m1) {
+        return diffDays(m0, m1) / 7;
+    }
+    function diffDays(m0, m1) {
+        return (m1.valueOf() - m0.valueOf()) / (1000 * 60 * 60 * 24);
+    }
+    function diffHours(m0, m1) {
+        return (m1.valueOf() - m0.valueOf()) / (1000 * 60 * 60);
+    }
+    function diffMinutes(m0, m1) {
+        return (m1.valueOf() - m0.valueOf()) / (1000 * 60);
+    }
+    function diffSeconds(m0, m1) {
+        return (m1.valueOf() - m0.valueOf()) / 1000;
+    }
+    function diffDayAndTime(m0, m1) {
+        var m0day = startOfDay(m0);
+        var m1day = startOfDay(m1);
+        return {
+            years: 0,
+            months: 0,
+            days: Math.round(diffDays(m0day, m1day)),
+            milliseconds: (m1.valueOf() - m1day.valueOf()) - (m0.valueOf() - m0day.valueOf()),
+        };
+    }
+    // Diffing Whole Units
+    function diffWholeWeeks(m0, m1) {
+        var d = diffWholeDays(m0, m1);
+        if (d !== null && d % 7 === 0) {
+            return d / 7;
+        }
+        return null;
+    }
+    function diffWholeDays(m0, m1) {
+        if (timeAsMs(m0) === timeAsMs(m1)) {
+            return Math.round(diffDays(m0, m1));
+        }
+        return null;
+    }
+    // Start-Of
+    function startOfDay(m) {
+        return arrayToUtcDate([
+            m.getUTCFullYear(),
+            m.getUTCMonth(),
+            m.getUTCDate(),
+        ]);
+    }
+    function startOfHour(m) {
+        return arrayToUtcDate([
+            m.getUTCFullYear(),
+            m.getUTCMonth(),
+            m.getUTCDate(),
+            m.getUTCHours(),
+        ]);
+    }
+    function startOfMinute(m) {
+        return arrayToUtcDate([
+            m.getUTCFullYear(),
+            m.getUTCMonth(),
+            m.getUTCDate(),
+            m.getUTCHours(),
+            m.getUTCMinutes(),
+        ]);
+    }
+    function startOfSecond(m) {
+        return arrayToUtcDate([
+            m.getUTCFullYear(),
+            m.getUTCMonth(),
+            m.getUTCDate(),
+            m.getUTCHours(),
+            m.getUTCMinutes(),
+            m.getUTCSeconds(),
+        ]);
+    }
+    // Week Computation
+    function weekOfYear(marker, dow, doy) {
+        var y = marker.getUTCFullYear();
+        var w = weekOfGivenYear(marker, y, dow, doy);
+        if (w < 1) {
+            return weekOfGivenYear(marker, y - 1, dow, doy);
+        }
+        var nextW = weekOfGivenYear(marker, y + 1, dow, doy);
+        if (nextW >= 1) {
+            return Math.min(w, nextW);
+        }
+        return w;
+    }
+    function weekOfGivenYear(marker, year, dow, doy) {
+        var firstWeekStart = arrayToUtcDate([year, 0, 1 + firstWeekOffset(year, dow, doy)]);
+        var dayStart = startOfDay(marker);
+        var days = Math.round(diffDays(firstWeekStart, dayStart));
+        return Math.floor(days / 7) + 1; // zero-indexed
+    }
+    // start-of-first-week - start-of-year
+    function firstWeekOffset(year, dow, doy) {
+        // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+        var fwd = 7 + dow - doy;
+        // first-week day local weekday -- which local weekday is fwd
+        var fwdlw = (7 + arrayToUtcDate([year, 0, fwd]).getUTCDay() - dow) % 7;
+        return -fwdlw + fwd - 1;
+    }
+    // Array Conversion
+    function dateToLocalArray(date) {
+        return [
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            date.getHours(),
+            date.getMinutes(),
+            date.getSeconds(),
+            date.getMilliseconds(),
+        ];
+    }
+    function arrayToLocalDate(a) {
+        return new Date(a[0], a[1] || 0, a[2] == null ? 1 : a[2], // day of month
+        a[3] || 0, a[4] || 0, a[5] || 0);
+    }
+    function dateToUtcArray(date) {
+        return [
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+            date.getUTCMilliseconds(),
+        ];
+    }
+    function arrayToUtcDate(a) {
+        // according to web standards (and Safari), a month index is required.
+        // massage if only given a year.
+        if (a.length === 1) {
+            a = a.concat([0]);
+        }
+        return new Date(Date.UTC.apply(Date, a));
+    }
+    // Other Utils
+    function isValidDate(m) {
+        return !isNaN(m.valueOf());
+    }
+    function timeAsMs(m) {
+        return m.getUTCHours() * 1000 * 60 * 60 +
+            m.getUTCMinutes() * 1000 * 60 +
+            m.getUTCSeconds() * 1000 +
+            m.getUTCMilliseconds();
+    }
+
+    function createEventInstance(defId, range, forcedStartTzo, forcedEndTzo) {
+        return {
+            instanceId: guid(),
+            defId: defId,
+            range: range,
+            forcedStartTzo: forcedStartTzo == null ? null : forcedStartTzo,
+            forcedEndTzo: forcedEndTzo == null ? null : forcedEndTzo,
+        };
+    }
+
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    // Merges an array of objects into a single object.
+    // The second argument allows for an array of property names who's object values will be merged together.
+    function mergeProps(propObjs, complexPropsMap) {
+        var dest = {};
+        if (complexPropsMap) {
+            for (var name_1 in complexPropsMap) {
+                var complexObjs = [];
+                // collect the trailing object values, stopping when a non-object is discovered
+                for (var i = propObjs.length - 1; i >= 0; i -= 1) {
+                    var val = propObjs[i][name_1];
+                    if (typeof val === 'object' && val) { // non-null object
+                        complexObjs.unshift(val);
+                    }
+                    else if (val !== undefined) {
+                        dest[name_1] = val; // if there were no objects, this value will be used
+                        break;
+                    }
+                }
+                // if the trailing values were objects, use the merged value
+                if (complexObjs.length) {
+                    dest[name_1] = mergeProps(complexObjs);
+                }
+            }
+        }
+        // copy values into the destination, going from last to first
+        for (var i = propObjs.length - 1; i >= 0; i -= 1) {
+            var props = propObjs[i];
+            for (var name_2 in props) {
+                if (!(name_2 in dest)) { // if already assigned by previous props or complex props, don't reassign
+                    dest[name_2] = props[name_2];
+                }
+            }
+        }
+        return dest;
+    }
+    function filterHash(hash, func) {
+        var filtered = {};
+        for (var key in hash) {
+            if (func(hash[key], key)) {
+                filtered[key] = hash[key];
+            }
+        }
+        return filtered;
+    }
+    function mapHash(hash, func) {
+        var newHash = {};
+        for (var key in hash) {
+            newHash[key] = func(hash[key], key);
+        }
+        return newHash;
+    }
+    function arrayToHash(a) {
+        var hash = {};
+        for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
+            var item = a_1[_i];
+            hash[item] = true;
+        }
+        return hash;
+    }
+    function buildHashFromArray(a, func) {
+        var hash = {};
+        for (var i = 0; i < a.length; i += 1) {
+            var tuple = func(a[i], i);
+            hash[tuple[0]] = tuple[1];
+        }
+        return hash;
+    }
+    function hashValuesToArray(obj) {
+        var a = [];
+        for (var key in obj) {
+            a.push(obj[key]);
+        }
+        return a;
+    }
+    function isPropsEqual(obj0, obj1) {
+        if (obj0 === obj1) {
+            return true;
+        }
+        for (var key in obj0) {
+            if (hasOwnProperty.call(obj0, key)) {
+                if (!(key in obj1)) {
+                    return false;
+                }
+            }
+        }
+        for (var key in obj1) {
+            if (hasOwnProperty.call(obj1, key)) {
+                if (obj0[key] !== obj1[key]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    function getUnequalProps(obj0, obj1) {
+        var keys = [];
+        for (var key in obj0) {
+            if (hasOwnProperty.call(obj0, key)) {
+                if (!(key in obj1)) {
+                    keys.push(key);
+                }
+            }
+        }
+        for (var key in obj1) {
+            if (hasOwnProperty.call(obj1, key)) {
+                if (obj0[key] !== obj1[key]) {
+                    keys.push(key);
+                }
+            }
+        }
+        return keys;
+    }
+    function compareObjs(oldProps, newProps, equalityFuncs) {
+        if (equalityFuncs === void 0) { equalityFuncs = {}; }
+        if (oldProps === newProps) {
+            return true;
+        }
+        for (var key in newProps) {
+            if (key in oldProps && isObjValsEqual(oldProps[key], newProps[key], equalityFuncs[key])) ;
+            else {
+                return false;
+            }
+        }
+        // check for props that were omitted in the new
+        for (var key in oldProps) {
+            if (!(key in newProps)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /*
+    assumed "true" equality for handler names like "onReceiveSomething"
+    */
+    function isObjValsEqual(val0, val1, comparator) {
+        if (val0 === val1 || comparator === true) {
+            return true;
+        }
+        if (comparator) {
+            return comparator(val0, val1);
+        }
+        return false;
+    }
+    function collectFromHash(hash, startIndex, endIndex, step) {
+        if (startIndex === void 0) { startIndex = 0; }
+        if (step === void 0) { step = 1; }
+        var res = [];
+        if (endIndex == null) {
+            endIndex = Object.keys(hash).length;
+        }
+        for (var i = startIndex; i < endIndex; i += step) {
+            var val = hash[i];
+            if (val !== undefined) { // will disregard undefined for sparse arrays
+                res.push(val);
+            }
+        }
+        return res;
+    }
+
+    function parseRecurring(refined, defaultAllDay, dateEnv, recurringTypes) {
+        for (var i = 0; i < recurringTypes.length; i += 1) {
+            var parsed = recurringTypes[i].parse(refined, dateEnv);
+            if (parsed) {
+                var allDay = refined.allDay;
+                if (allDay == null) {
+                    allDay = defaultAllDay;
+                    if (allDay == null) {
+                        allDay = parsed.allDayGuess;
+                        if (allDay == null) {
+                            allDay = false;
+                        }
+                    }
+                }
+                return {
+                    allDay: allDay,
+                    duration: parsed.duration,
+                    typeData: parsed.typeData,
+                    typeId: i,
+                };
+            }
+        }
+        return null;
+    }
+    function expandRecurring(eventStore, framingRange, context) {
+        var dateEnv = context.dateEnv, pluginHooks = context.pluginHooks, options = context.options;
+        var defs = eventStore.defs, instances = eventStore.instances;
+        // remove existing recurring instances
+        // TODO: bad. always expand events as a second step
+        instances = filterHash(instances, function (instance) { return !defs[instance.defId].recurringDef; });
+        for (var defId in defs) {
+            var def = defs[defId];
+            if (def.recurringDef) {
+                var duration = def.recurringDef.duration;
+                if (!duration) {
+                    duration = def.allDay ?
+                        options.defaultAllDayEventDuration :
+                        options.defaultTimedEventDuration;
+                }
+                var starts = expandRecurringRanges(def, duration, framingRange, dateEnv, pluginHooks.recurringTypes);
+                for (var _i = 0, starts_1 = starts; _i < starts_1.length; _i++) {
+                    var start = starts_1[_i];
+                    var instance = createEventInstance(defId, {
+                        start: start,
+                        end: dateEnv.add(start, duration),
+                    });
+                    instances[instance.instanceId] = instance;
+                }
+            }
+        }
+        return { defs: defs, instances: instances };
+    }
+    /*
+    Event MUST have a recurringDef
+    */
+    function expandRecurringRanges(eventDef, duration, framingRange, dateEnv, recurringTypes) {
+        var typeDef = recurringTypes[eventDef.recurringDef.typeId];
+        var markers = typeDef.expand(eventDef.recurringDef.typeData, {
+            start: dateEnv.subtract(framingRange.start, duration),
+            end: framingRange.end,
+        }, dateEnv);
+        // the recurrence plugins don't guarantee that all-day events are start-of-day, so we have to
+        if (eventDef.allDay) {
+            markers = markers.map(startOfDay);
+        }
+        return markers;
+    }
+
+    var INTERNAL_UNITS = ['years', 'months', 'days', 'milliseconds'];
+    var PARSE_RE = /^(-?)(?:(\d+)\.)?(\d+):(\d\d)(?::(\d\d)(?:\.(\d\d\d))?)?/;
+    // Parsing and Creation
+    function createDuration(input, unit) {
+        var _a;
+        if (typeof input === 'string') {
+            return parseString(input);
+        }
+        if (typeof input === 'object' && input) { // non-null object
+            return parseObject(input);
+        }
+        if (typeof input === 'number') {
+            return parseObject((_a = {}, _a[unit || 'milliseconds'] = input, _a));
+        }
+        return null;
+    }
+    function parseString(s) {
+        var m = PARSE_RE.exec(s);
+        if (m) {
+            var sign = m[1] ? -1 : 1;
+            return {
+                years: 0,
+                months: 0,
+                days: sign * (m[2] ? parseInt(m[2], 10) : 0),
+                milliseconds: sign * ((m[3] ? parseInt(m[3], 10) : 0) * 60 * 60 * 1000 + // hours
+                    (m[4] ? parseInt(m[4], 10) : 0) * 60 * 1000 + // minutes
+                    (m[5] ? parseInt(m[5], 10) : 0) * 1000 + // seconds
+                    (m[6] ? parseInt(m[6], 10) : 0) // ms
+                ),
+            };
+        }
+        return null;
+    }
+    function parseObject(obj) {
+        var duration = {
+            years: obj.years || obj.year || 0,
+            months: obj.months || obj.month || 0,
+            days: obj.days || obj.day || 0,
+            milliseconds: (obj.hours || obj.hour || 0) * 60 * 60 * 1000 + // hours
+                (obj.minutes || obj.minute || 0) * 60 * 1000 + // minutes
+                (obj.seconds || obj.second || 0) * 1000 + // seconds
+                (obj.milliseconds || obj.millisecond || obj.ms || 0),
+        };
+        var weeks = obj.weeks || obj.week;
+        if (weeks) {
+            duration.days += weeks * 7;
+            duration.specifiedWeeks = true;
+        }
+        return duration;
+    }
+    // Equality
+    function durationsEqual(d0, d1) {
+        return d0.years === d1.years &&
+            d0.months === d1.months &&
+            d0.days === d1.days &&
+            d0.milliseconds === d1.milliseconds;
+    }
+    function asCleanDays(dur) {
+        if (!dur.years && !dur.months && !dur.milliseconds) {
+            return dur.days;
+        }
+        return 0;
+    }
+    // Simple Math
+    function addDurations(d0, d1) {
+        return {
+            years: d0.years + d1.years,
+            months: d0.months + d1.months,
+            days: d0.days + d1.days,
+            milliseconds: d0.milliseconds + d1.milliseconds,
+        };
+    }
+    function subtractDurations(d1, d0) {
+        return {
+            years: d1.years - d0.years,
+            months: d1.months - d0.months,
+            days: d1.days - d0.days,
+            milliseconds: d1.milliseconds - d0.milliseconds,
+        };
+    }
+    function multiplyDuration(d, n) {
+        return {
+            years: d.years * n,
+            months: d.months * n,
+            days: d.days * n,
+            milliseconds: d.milliseconds * n,
+        };
+    }
+    // Conversions
+    // "Rough" because they are based on average-case Gregorian months/years
+    function asRoughYears(dur) {
+        return asRoughDays(dur) / 365;
+    }
+    function asRoughMonths(dur) {
+        return asRoughDays(dur) / 30;
+    }
+    function asRoughDays(dur) {
+        return asRoughMs(dur) / 864e5;
+    }
+    function asRoughMinutes(dur) {
+        return asRoughMs(dur) / (1000 * 60);
+    }
+    function asRoughSeconds(dur) {
+        return asRoughMs(dur) / 1000;
+    }
+    function asRoughMs(dur) {
+        return dur.years * (365 * 864e5) +
+            dur.months * (30 * 864e5) +
+            dur.days * 864e5 +
+            dur.milliseconds;
+    }
+    // Advanced Math
+    function wholeDivideDurations(numerator, denominator) {
+        var res = null;
+        for (var i = 0; i < INTERNAL_UNITS.length; i += 1) {
+            var unit = INTERNAL_UNITS[i];
+            if (denominator[unit]) {
+                var localRes = numerator[unit] / denominator[unit];
+                if (!isInt(localRes) || (res !== null && res !== localRes)) {
+                    return null;
+                }
+                res = localRes;
+            }
+            else if (numerator[unit]) {
+                // needs to divide by something but can't!
+                return null;
+            }
+        }
+        return res;
+    }
+    function greatestDurationDenominator(dur) {
+        var ms = dur.milliseconds;
         if (ms) {
             if (ms % 1000 !== 0) {
                 return { unit: 'millisecond', value: ms };
@@ -875,110 +1349,573 @@ Washington10URedmond10U
         else if (extendedSettings.meridiem === 'short') { // am/pm
             s = s.replace(MERIDIEM_RE, function (m0, m1) { return m1.toLocaleLowerCase() + "m"; });
         }
- MZ       ÿÿ  ¸       @                                   €   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
-$       PE  L rÏµ        à " 0           V8       @                           €     !.  `…                           8  O    @  ä           $  ˆ#   `     ü6  T                                                             H           .text   \                           `.rsrc   ä   @                    @  @.reloc      `      "              @  B                68      H     |!  à  	       \4     |6  €                                   :(  
-}  *{  *"(  *"(  *"(  *(  
-*(  
-*(  
-*(  
-*:(  
-}  *{  *:(  
-}  *{  *:(  
-}  *{  *(  
-*:(  
-}  *{  *^(  
-  %¢}  *:(  
-}  *{  *z(  
-}    %¢}  *V(  
-}  }  *{  *{  *  BSJB         v4.0.30319     l   Ô  #~  @  ø  #Strings    8     #US <     #GUID   L  ”  #Blob         WU ‰   ú3                        4                                   Íİ dİ ÌÊ    À !K ¯a ªı Ca Ka a {a a 9a ía àa Rk _k xØ xK ]İ ›K ’K 7K ÚK           €  ¾ÀQ     ÒÀ     –À     ³À     m9Q     €9Q     )9Q     \9Q  	   ê9Q  
-   9Q     <9Q     ˜9Q     ÷9Q     V9Q     9Q   !  w! P z! P z! 1 w! m z!  }! P z!  }P     ‚Ä  _     †á  g     †Ä  p     †Ä  y     †Ä  ‚     †Ä  Š     †Ä  ’     †Ä  š     †Ä  ¢     †Ä  ±     †‚… ¹     †Ä  È     †‚… Ğ     †Ä  ß     †ÿ  ç     †Ä  ï     †Ä  ş     †…	 !    †Ä 	 !    †Ä‰
- -!    †‡ 5!    †Ä” T!    †Äš j!    †‚… r!    †‡    ò    ò    ò    ò    ’   ’      ±   ª   “   ’   ª   ’   “	 Ä  Ä  Ä
- ) Ä 1 Ä 9 Ä A Ä I Ä Q Ä Y Ä a Ä i Ä q Ä y Ä  Ä ‘ Ä  ™ Ä © Ä ¹ Ä& Á Ä ¡ Ä ! “ ˜' ‹ ˜.  ®.  ·.  Ö. # ß. + -. " 3. 3 @. ; g. C r. C . C ¤. K º. S Õ. [ @. c 	. k . s O. { @. C e@ “ ˜A “ ˜a “ ˜c ›  “ ˜ƒ › Ä¡ “ ˜£ › ÄÁ “ ˜Ã › ëá “ ˜ã › ë“ ˜› #› C› D£ ˜`“ ˜c› ƒ› - “ ˜£› TÃ› Ä£ ˜à“ ˜ã› j› j@“ ˜ “ ˜ “ ˜ “ ˜  ×   
-              å ¡  †¥  †¥  ¡  ¢¥  ‹©  †¥  ‹©           	             €            5 ¬             , 
-             ¸          á         ¦ á         sá         Îá         ±á         Yá         á         0á         Î á         èá         ûá        2       <Module> mscorlib <PlatformName>k__BackingField <ParameterName>k__BackingField <ReturnValue>k__BackingField <ParameterValue>k__BackingField <Members>k__BackingField IdentityReference SafeAccessTokenHandle WindowsBuiltInRole get_PlatformName platformName get_ParameterName parameterName WellKnownSidType WindowsAccountType AssemblyMetadataAttribute CompilerGeneratedAttribute UnverifiableCodeAttribute AttributeUsageAttribute NeutralResourcesLanguageAttribute DebuggableAttribute AssemblyTitleAttribute DoesNotReturnIfAttribute TargetFrameworkAttribute MaybeNullAttribute NotNullIfNotNullAttribute MemberNotNullAttribute AllowNullAttribute DisallowNullAttribute SupportedOSPlatformAttribute UnsupportedOSPlatformAttribute TargetPlatformAttribute MaybeNullWhenAttribute MemberNotNullWhenAttribute AssemblyFileVersionAttribute AssemblyInformationalVersionAttribute SecurityPermissionAttribute AssemblyDescriptionAttribute DoesNotReturnAttribute AssemblyDefaultAliasAttribute CompilationRelaxationsAttribute AssemblyProductAttribute AssemblyCopyrightAttribute CLSCompliantAttribute ParamArrayAttribute AssemblyCompanyAttribute RuntimeCompatibilityAttribute get_ReturnValue returnValue get_ParameterValue parameterValue System.Runtime.Versioning String System.Security.Principal WindowsPrincipal System.Security.Principal.Windows.dll ILLink.Substitutions.xml System SecurityAction System.Reflection IdentityReferenceCollection IdentityNotMappedException member SecurityIdentifier .ctor System.Diagnostics System.Runtime.CompilerServices System.Resources DebuggingModes Microsoft.Win32.SafeHandles System.Diagnostics.CodeAnalysis TokenAccessLevels System.Security.Permissions get_Members members AttributeTargets System.Security.Principal.Windows NTAccount System.Security WindowsIdentity     
-;­V~—H¿ï5“Áœìì         E Y·z\V4à‰€  $  €  ”      $  RSA1     ÑúWÄ®Ùğ£.„ª®ıéèıjì‡ûvlƒL™’²;çšÙÕÜÁİšÒ6!r<ù€•ÄáwÆwO)è2’êìäè!À¥ïèñd\L“Á«™(]b,ªe,úÖ=t]o-åñ~^¯Ä–=&ŠCe mÀ“4MZÒ“€.€„System.Security.Permissions.SecurityPermissionAttribute, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089TSkipVerification         ( ( (         TWrapNonExceptionThrows      M .NETFramework,Version=v4.6.1 TFrameworkDisplayName.NET Framework 4.6.1    windows  & !System.Security.Principal.Windows  
- en-US   .NETFrameworkAssembly    ServiceableTrue   PreferInboxTrue   Microsoft Corporation  3 .Â© Microsoft Corporation. All rights reserved.   5.0.20.51904  3 .5.0.0+cf258a14b70ad9069470a108f13765e0e5988f51   MicrosoftÂ® .NET  2 RepositoryUrlgit://github.com/dotnet/runtime     &     TAllowMultiple T	Inherited & ÿ   TAllowMultipleT	Inherited  €	   T	Inherited  €)   T	Inherited      T	Inherited & €(   TAllowMultipleT	Inherited  @    T	Inherited & À    T	Inherited TAllowMultiple     ï»¿<linker>
-  <assembly fullname="System.Security.Principal.Windows" feature="System.Resources.UseSystemResourceKeys" featurevalue="true">
-    <!-- System.Resources.UseSystemResourceKeys removes resource strings and instead uses the resource key as the exception message -->
-    <resource name="FxResources.System.Security.Principal.Windows.SR.resources" action="remove" />
-    <type fullname="System.SR">
-      <method signature="System.Boolean UsingResourceKeys()" body="stub" value="true" />
-    </type>
-  </assembly>
-</linker>  JH´Wæ…åÒZ0à¦%¡çI8kı×G}Xh8f¼¸$LÌÖÈ²d(é–Ë~âÕ_{ËæH=ºC¿à­¦İfæ7äæ<ğ¶­‰­™á€5—@?ƒz¬
-ÇıÈ1¬håíIáîÔèæ07‹}^øÅ`ÊÿWşKğÄw'úXqÃ1Ğ6Ïä67    ' ¤ MP   ‹   P7  P                '   Û7  Û                             RSDSzqXL¬ÃI½­ë¶à˜İ   /_/artifacts/obj/System.Security.Principal.Windows/net461-Windows_NT-Release/System.Security.Principal.Windows.pdb SHA256 zqXL¬ÃY=­ë¶à˜İ' ¤:¡-a@#m[+Ê*8          D8                          68            _CorDllMain mscoree.dll       ÿ%                                                                                                                                                                                                                                                                                                                                                                                                                                                           €                  0  €                   H   X@  ˆ          ˆ4   V S _ V E R S I O N _ I N F O     ½ïş      ÀÊ        ?                         D    V a r F i l e I n f o     $    T r a n s l a t i o n       °è   S t r i n g F i l e I n f o   Ä   0 0 0 0 0 4 b 0   \ "  C o m m e n t s   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   l "  F i l e D e s c r i p t i o n     S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s   :   F i l e V e r s i o n     5 . 0 . 2 0 . 5 1 9 0 4     l &  I n t e r n a l N a m e   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s . d l l   € .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   t &  O r i g i n a l F i l e n a m e   S y s t e m . S e c u r i t y . P r i n c i p a l . W i n d o w s . d l l   @   P r o d u c t N a m e     M i c r o s o f t ®   . N E T   ‚ /  P r o d u c t V e r s i o n   5 . 0 . 0 + c f 2 5 8 a 1 4 b 7 0 a d 9 0 6 9 4 7 0 a 1 0 8 f 1 3 7 6 5 e 0 e 5 9 8 8 f 5 1     8   A s s e m b l y   V e r s i o n   5 . 0 . 0 . 0                                                                                                                                                                                                                                                                                                    0     X8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ˆ#    0‚#u	*†H†÷ ‚#f0‚#b10	`†He 0\
-+‚7 N0L0
-+‚70	  ¢€ 010	`†He  Ş¶óVñ€­ÀÿO¨UA­úQ³,W0]ú¯lh ‚0‚ÿ0‚ç 3  ‡rrY@Ç	    ‡0	*†H†÷ 0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110200304183947Z210303183947Z0t10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
-‚ Î·És³÷O³
-".`w°0Y§«À2»±N…iµp•K…²dá4OÆÎpCã£]=?Ï—jXº\wŸKÈ¿Y{EÒô¬?ÃD¿©à6§WğÛ GG°Æ}\ÒÃÉIl‰ŠÃŸq'$3İH:Øå3ŒĞ%Œø›Œ%Ÿµ3CTÏÎÁè¥³Á„"¶ÁE¾È[l½vdøbõ5/'Ñgëå!ÜvºMİ.?8¿u6áPŠÒ‰Ä…t}[5ÚmN.ªCºëÑ,Í/ª<Ç3‡/“—ˆa°ƒ§¤‰p5ÿe×c¼•Íı¶WÖcJ3[{sÏ— £‚~0‚z0U%0
-+‚7L+0U†‹øg#½é¬d%Ó#§;¶ÍUÎ%Ë0PUI0G¤E0C1)0'U Microsoft Operations Puerto Rico10U230012+4583850U#0€HndåPÓ‚ª77"µm¨Êu•0TUM0K0I G E†Chttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0†Ehttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uÿ0 0	*†H†÷ ‚ ‹²K¡:¾šÖÒ…4€}œò2â#d®PD+õeƒ¡[İ‘×502ˆqvÅ¸PºZ¾
-6µ8ìZ¦i¾@øŞİºT¦;q¤LªR«Os}0ë;Ûæ*jŠ ³Óß»/scUa—ï9¨îWü;ÉĞê“_Jq]Ş*„çLñÁUG@Ù¤ÌZq±NBk¨da—sî)]<Uød[ß«BàŒ76^ïÛÚ‰“ô	Vy"v€W1Ò½úë1ÍY=×zŠuíNå¿êçv© "oRTg¯‹H(;p†ÔÀ Ÿ×^°PÄ¸àÒñŞÊÂxyÁo!÷E™-¨~gàœR%İ0•deN‡m	§:¨’“óy³s_àÈ‚ÍÊ%`äO’9ÔBÈ]ÕıO2	÷¶{6>Û&%Tj¡ŞjDX2ä›‹iî”ÁáŸã¨İØg¤+6,ŞÌhKI«ÂïWíŞêYÌ™u?×óÚŸ=í—~‘O¯fòˆİÌ~åP€­‘glş)ÍÊİÔOÏj×ÉÂ¹\+‘fkÆi¿Ön¶b¼	Aª`‡e´Â9ÇE¬=!á{ş³ø¥P]â­zôåexé¸Øaä~Ø3-ıÕ®~5é‰ounÚ¡Œà^j1‚[B§R»†´º‚k/Ş-ùÑ8SÄ0‚z0‚b 
-aÒ     0	*†H†÷ 0ˆ10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110‚"0	*†H†÷ ‚ 0‚
-‚ «ğúr.­Ønª‚M4ºò¶X!ŸB*kéZPª¸8IºÃİ7kÆØğ8Â™°È9Õ1BÓ‰yd‡~”`$l¯Iœéh^Òß›S²
-,Ã¯Ù©+®z	¯×–YÊ`éfvè2R&/ç«PÏ³D·]ØÄ.u«hóËmó:\¡ôFºà8d¬nd5x¦ c-Ó@“øãŞÕ\y¥I)ç¾ w¾”=ïûã+ZMV(¢zrà:·I^ØííC‘ƒÙ{²{†Ù>±Œ]è‰O„ò¡/Yä;-®3XÅ·>ş2Ó³=±²¯’8~Ò€,õNV‘!5%Ã9ndSºœ­#„Ëôº†÷_ğĞR¿Œ”‡¼À!t%_(¶Ì'(8%˜9J6Ï|±’®#§©fìajá(I_ˆâ%]Ó!K>RÄµW?$ğÑz[/Õ#ãp]QFw³ø á¼¬‚_ÛÀ³½ÔUKç9¡é#I¼¸D|EäÁÃrzàrç$ß¿F™ÅïÂWÛƒìMI0§«ßì[Ÿ¯üİ°fâÁ—{íÖíKçI)§(¦§}g€æŠbx_²/„×Wœ\¿w((ñímÃ(,@7OÁá…D‰Ä	LÅÔ¥C/t•÷nøx X,]`•š>O3„Ú°ˆŞNô–°¼F l˜ÒàÖˆŒ £‚í0‚é0	+‚7 0UHndåPÓ‚ª77"µm¨Êu•0	+‚7
- S u b C A0U†0Uÿ0ÿ0U#0€r-:1C¹Náê§Ç1Ñ#‰40ZUS0Q0O M K†Ihttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0†Bhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ŸU —0”0‘	+‚7.0ƒ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*†H†÷ ‚ gò†¥˜àTy.ÓØtg"›–ác’™B–}ÒyÁe_.,>øÃrÑmƒş¾?è
-Ê;¿G©£óiÛc¿"5¥—]e„}‹FPUØ’|ÒKó<B‹RĞ°ıkã>.)›æ=¥Ôµw”9âédÉD=xz#ó}¦tƒôË&F*ÂŠ»¤©›íhúh.• *?*kXIc	inZ˜–äƒôÀóF+Şü;Ğ½5ïn%®å¯'íĞİó¯™(—˜M=ò‰ÖÃ2âğÅ-Î[´I9
-Æ
-ÂÆ­®å²ÙÛˆQEX82q'±ô'øŞ,: i˜²Y‰hno§·tÃ@¦*(>‚?MfÀ³Mõáo}E§vå@*e£Ã]Rb†Ãc6—†ßÚóøò¡š'áÍ¥—Ğî]cAã[œ‡>wÑ±u¾aaµğÜÆ¾ßAÇ(îŞe/ì—ö¡\–Ø Ö¡F½Yó—¥	KH™€Ğ )Å±›¥?Ew5ÆÒ¢¢Ÿzz"úH•«ûG#€õø¿k·K—âëuxìê7™yKÿÖ³#huæ¯úü‹ë€êi;¯ü0íLßßumc‘=ÑVNO¿€W"¡x2!zïA
-±?û¨Ì¤]Á¡ˆ›WqVNHEÀBÉ›v[
-€HkıyŸÁ½mmjÉRszPÍ1‚g0‚c0•0~10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  ‡rrY@Ç	    ‡0	`†He  ®0	*†H†÷	1
-+‚70
-+‚710
-+‚70/	*†H†÷	1" ãş)ÌQP¥Œµ½ _}TŠFÆ	&ïhİ[0B
-+‚71402 € M i c r o s o f t¡€http://www.microsoft.com0	*†H†÷ ‚ KâÍG¦Ó5ËÒ°‡7Ë]Hép±R¿×KÁ4ôÆbH·C‹¨ûó5É.¤àLÙFŒ#%\äÅàïJY{ùˆ–Ğ~î%0_ÁšE¨¶µ^éÑöD oR—ŠÂúÙ<¥¥»¯Ì9Înñ@ÑóŒ<ï`ÏŸIJÑDÆå¿è’ÙZ.^rè¤·b>¡jöéİîd£p<8 wÇ—]ÿp?8_ûáw^Â28Î:7*”ÍµiÓM´ª®.°¡iãôkpc4„Šıÿ‰V‹¡¬¶ëæVmÑÇ7Ä6Ä¸'BÒ?¬y Ş8Ù¹ÖH^K¥çï|ÃÚùå;NÇrCÙ"¡‚ñ0‚í
-+‚71‚İ0‚Ù	*†H†÷ ‚Ê0‚Æ10	`†He 0‚U*†H†÷	 ‚D‚@0‚<
-+„Y
-010	`†He  ^=•¼*ŸûS¥®iİ+$ôır5ä8võæ÷$÷?ºÚ³2_ˆ@]ì20201020124750.593Z0€ô Ô¤Ñ0Î10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service ‚D0‚õ0‚İ 3  &ßºK"¹‚‚    &0	*†H†÷ 0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100191219011459Z210317011459Z0Î10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
-‚ 0¾†œNó•tµñN—uô}ÈÔ4Ëã.æ;Ÿ–‚EnöäışªñJXB5K= n.­PÈxÁ‡“U4•L@’6¶[oìÎ?à†ád–÷Ç4ìº%†XQ–§5.Ê\½¢À âc¡X“ØkfË¾şdm%ÚŠ^iêmwñ;qàÀ<î
-Â¿(|‚ûÏ¬Ây`âÎ{.³B¨s€Ûèzã,ƒ´;=‹0Á-²Y=çd öĞøBö›6|ÂŒ{àÇ¤o´s­C÷†!éÅv\x›á BŸd™e	â£À5&(Ìá9¬$÷IZ˜¼z.÷±ì^óö#s £‚0‚0UI«¬°~˜BÑX¦_Æ£4aA0U#0€Õc:\Š1óC{|FÅ3hZ…mU0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicTimStaPCA_2010-07-01.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicTimStaPCA_2010-07-01.crt0Uÿ0 0U%0
-+0	*†H†÷ ‚ @–ûhéoô'ó¿›~5s1z´»G,:—¥Ôrª4Ş9fc“è·rcÁ*çâŒœCÚ“=S6ÕCĞ¸—˜¬ı: Wj.’ñwr	½òüÚ2 ³Úp°:^õ}ŒÜ›=+Q€_ì8?ìŸ™èıNEqjy6ªİe“[ğjÍîßÖŠÜL]óÒ]b%›0@V×çó³xgıgü@ÚoÑ×8³)V?ù©j`§UöY.FŸ³T5Yœ½Ï½€Îïqâlß·wÉÖ›“ŒèæÑß‹hºi›#å°P«’îé²BZ…óbå©’‚º G©Öé$BÜr•Ku,q˜m0‚q0‚Y 
-a	*     0	*†H†÷ 0ˆ10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100701213655Z250701214655Z0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
-‚ ©¼wŠ: ìü—õúi”ktTÕ¥
- ‚…ûí|hK,_ÅÃåaÂv·>f+[ğS'1A•Î	|a0Y±0Dñ`ˆ„TC×M¸8³Bİ“¬Ös0W&‚£EĞêõGÍ¿$`2X`FòXG†2„tag‘_T±Ï“L’ÁÄ¦]Ñan(Æù†€»ßaüFÁ'$gr!Š¯Kd‰Pb±]ıw=ğWu¬½ŠBM@QÑœ>gõfÀ–D~ïĞKınåšÊ±¨òz*
-1ğÚN‘¶ˆ5èx°é™Í<ç/Dº§ôÜd½¤Á 	“xÍü¼ÀÉD]^œO"M £‚æ0‚â0	+‚7 0UÕc:\Š1óC{|FÅ3hZ…mU0	+‚7
- S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0 U ÿ•0’0	+‚7.00=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*†H†÷ ‚ æˆQâÆà˜?q=£¡!o³ë¦Ìõ1¾Ïâ©şúWm0³ÂÅfÉjßõçğx½Ç¨%ãù¼íkTW+Q‚Dû¹SŒÌô`ŠvÌ@@A›Ü\ÿ\ù^5˜$VKtïBÈ¯¿Æò7}Z?ò™yJ‘R ¯8õ/yeÙ©µkäÇÎöÊz oK0D$"<Ïí¥–Y)¼¶ıápŸ2J'ıU¯/ş¶å3»b_šÛW@éñÎ™fŒÿjbİÅJ‘&â9ìJqc{!mÃœ£¢<ú}–jx¦mÒáœùü8Ø”ôÆ¥
-–†¤½®Bƒ¸µ€›"8 µ%ådì÷ô¿~cY%z.9Wv¢qªŠ‰ºa§ËšØGš€ÅĞÍ§Ğï}ƒğá;q	ß]t˜"aÚ°Po½ñá ßç1¤“:÷eGxèø¨H«÷Şr~akow©Ë§	¬9»ìÆËØ‚´rÍô¸…€û‰*T9²[ÚÈU™z‡s;æ˜-êà3.)õÀ/T'!÷È¬NÚ(¸±©Û–²§B¢ÉÏAMà†ù*š£f0Ó»t2Kßc{õ™Š/Ç!¯Yµ®ÜD<—Pq×¡ÒÅUãiŞWÁÑŞ0ÀıÌæMû¿]Oé8/¼ÏX.ï P5Úï	'Õ³~5ºÚ6ÛÓ_ŞtˆI¡‚Ò0‚;0ü¡Ô¤Ñ0Î10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1)0'U Microsoft Operations Puerto Rico1&0$UThales TSS ESN:60BC-E383-26351%0#UMicrosoft Time-Stamp Service¢#
-0+ 
-g29i™ÄJé«NñÜº Æzÿü ƒ0€¤~0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  ã9UÒ0"20201020162554Z20201021162554Z0w0=
-+„Y
-1/0-0
- ã9UÒ 0
- Äÿ0 ê0
- ã:§R 06
-+„Y
-1(0&0
-+„Y
- 
-0 ¡ ¡
-0 † 0	*†H†÷  W[)…F´£MF¬¸`éë“'ŸúwƒóG¦Pev°;SR=ä°àIŸdhV	?	T¤íÀDµ[hláéS°8p¨±	†è¯FÈ”ü›Z™î{µg9®h¿#Îş<&w^™Ûaf¦¿TZï6bó€g}tìM£x4Î1‚0‚	0“0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  &ßºK"¹‚‚    &0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" „«½a	KFTïKv2øFª'~l +?ªk—Ò3ÜÀ0ú*†H†÷	/1ê0ç0ä0½ 6ıÏï½^pïj“–glF|	3®GéÊï1m;		u0˜0€¤~0|10	UUS10U
-Washington10URedmond10U
-Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  &ßºK"¹‚‚    &0" `A !ˆvù	{#ûÍS/˜ô[oËîÉ—­ÙV´`9×Í0	*†H†÷ ‚ œÑáó6ñ¿V´ù:£Cípu]ÉÅ`h\3vçÒÊS}ëwËŠ§i~òWeÎŒL]øÈÙEÆ8#¬xÕ™ÏvU!‘ª†Xm±›R¿°=l;_=}CôÁ&Ã¸Lîİ’Ÿ€d"V¹â^çQpd]ŒO¿8òË¹Ö;²ù­£´ä"\5BÉ©VËÜ·¹:U†íhÕüF8ÍŒß¹½Ml·´’­ê}ğY	![aì~}Ø¼ĞcÂèÿv7¶Ncòc²çõ9,è‚‚À#›F§~üã´Nº¡­:üq¹¶….ìe§¹”ó+«])nˆ²È“µSSwÃtœÉNº2¡²o                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                className: parseClassNames,
+        else if (extendedSettings.meridiem === 'lowercase') { // other meridiem transformers already converted to lowercase
+            s = s.replace(MERIDIEM_RE, function (m0) { return m0.toLocaleLowerCase(); });
+        }
+        s = s.replace(MULTI_SPACE_RE, ' ');
+        s = s.trim();
+        return s;
+    }
+    function injectTzoStr(s, tzoStr) {
+        var replaced = false;
+        s = s.replace(UTC_RE, function () {
+            replaced = true;
+            return tzoStr;
+        });
+        // IE11 doesn't include UTC/GMT in the original string, so append to end
+        if (!replaced) {
+            s += " " + tzoStr;
+        }
+        return s;
+    }
+    function formatWeekNumber(num, weekText, locale, display) {
+        var parts = [];
+        if (display === 'narrow') {
+            parts.push(weekText);
+        }
+        else if (display === 'short') {
+            parts.push(weekText, ' ');
+        }
+        // otherwise, considered 'numeric'
+        parts.push(locale.simpleNumberFormat.format(num));
+        if (locale.options.direction === 'rtl') { // TODO: use control characters instead?
+            parts.reverse();
+        }
+        return parts.join('');
+    }
+    // Range Formatting Utils
+    // 0 = exactly the same
+    // 1 = different by time
+    // and bigger
+    function computeMarkerDiffSeverity(d0, d1, ca) {
+        if (ca.getMarkerYear(d0) !== ca.getMarkerYear(d1)) {
+            return 5;
+        }
+        if (ca.getMarkerMonth(d0) !== ca.getMarkerMonth(d1)) {
+            return 4;
+        }
+        if (ca.getMarkerDay(d0) !== ca.getMarkerDay(d1)) {
+            return 2;
+        }
+        if (timeAsMs(d0) !== timeAsMs(d1)) {
+            return 1;
+        }
+        return 0;
+    }
+    function computePartialFormattingOptions(options, biggestUnit) {
+        var partialOptions = {};
+        for (var name_2 in options) {
+            if (!(name_2 in STANDARD_DATE_PROP_SEVERITIES) || // not a date part prop (like timeZone)
+                STANDARD_DATE_PROP_SEVERITIES[name_2] <= biggestUnit) {
+                partialOptions[name_2] = options[name_2];
+            }
+        }
+        return partialOptions;
+    }
+    function findCommonInsertion(full0, partial0, full1, partial1) {
+        var i0 = 0;
+        while (i0 < full0.length) {
+            var found0 = full0.indexOf(partial0, i0);
+            if (found0 === -1) {
+                break;
+            }
+            var before0 = full0.substr(0, found0);
+            i0 = found0 + partial0.length;
+            var after0 = full0.substr(i0);
+            var i1 = 0;
+            while (i1 < full1.length) {
+                var found1 = full1.indexOf(partial1, i1);
+                if (found1 === -1) {
+                    break;
+                }
+                var before1 = full1.substr(0, found1);
+                i1 = found1 + partial1.length;
+                var after1 = full1.substr(i1);
+                if (before0 === before1 && after0 === after1) {
+                    return {
+                        before: before0,
+                        after: after0,
+                    };
+                }
+            }
+        }
+        return null;
+    }
+
+    function expandZonedMarker(dateInfo, calendarSystem) {
+        var a = calendarSystem.markerToArray(dateInfo.marker);
+        return {
+            marker: dateInfo.marker,
+            timeZoneOffset: dateInfo.timeZoneOffset,
+            array: a,
+            year: a[0],
+            month: a[1],
+            day: a[2],
+            hour: a[3],
+            minute: a[4],
+            second: a[5],
+            millisecond: a[6],
+        };
+    }
+
+    function createVerboseFormattingArg(start, end, context, betterDefaultSeparator) {
+        var startInfo = expandZonedMarker(start, context.calendarSystem);
+        var endInfo = end ? expandZonedMarker(end, context.calendarSystem) : null;
+        return {
+            date: startInfo,
+            start: startInfo,
+            end: endInfo,
+            timeZone: context.timeZone,
+            localeCodes: context.locale.codes,
+            defaultSeparator: betterDefaultSeparator || context.defaultSeparator,
+        };
+    }
+
+    /*
+    TODO: fix the terminology of "formatter" vs "formatting func"
+    */
+    /*
+    At the time of instantiation, this object does not know which cmd-formatting system it will use.
+    It receives this at the time of formatting, as a setting.
+    */
+    var CmdFormatter = /** @class */ (function () {
+        function CmdFormatter(cmdStr) {
+            this.cmdStr = cmdStr;
+        }
+        CmdFormatter.prototype.format = function (date, context, betterDefaultSeparator) {
+            return context.cmdFormatter(this.cmdStr, createVerboseFormattingArg(date, null, context, betterDefaultSeparator));
+        };
+        CmdFormatter.prototype.formatRange = function (start, end, context, betterDefaultSeparator) {
+            return context.cmdFormatter(this.cmdStr, createVerboseFormattingArg(start, end, context, betterDefaultSeparator));
+        };
+        return CmdFormatter;
+    }());
+
+    var FuncFormatter = /** @class */ (function () {
+        function FuncFormatter(func) {
+            this.func = func;
+        }
+        FuncFormatter.prototype.format = function (date, context, betterDefaultSeparator) {
+            return this.func(createVerboseFormattingArg(date, null, context, betterDefaultSeparator));
+        };
+        FuncFormatter.prototype.formatRange = function (start, end, context, betterDefaultSeparator) {
+            return this.func(createVerboseFormattingArg(start, end, context, betterDefaultSeparator));
+        };
+        return FuncFormatter;
+    }());
+
+    function createFormatter(input) {
+        if (typeof input === 'object' && input) { // non-null object
+            return new NativeFormatter(input);
+        }
+        if (typeof input === 'string') {
+            return new CmdFormatter(input);
+        }
+        if (typeof input === 'function') {
+            return new FuncFormatter(input);
+        }
+        return null;
+    }
+
+    // base options
+    // ------------
+    var BASE_OPTION_REFINERS = {
+        navLinkDayClick: identity,
+        navLinkWeekClick: identity,
+        duration: createDuration,
+        bootstrapFontAwesome: identity,
+        buttonIcons: identity,
+        customButtons: identity,
+        defaultAllDayEventDuration: createDuration,
+        defaultTimedEventDuration: createDuration,
+        nextDayThreshold: createDuration,
+        scrollTime: createDuration,
+        slotMinTime: createDuration,
+        slotMaxTime: createDuration,
+        dayPopoverFormat: createFormatter,
+        slotDuration: createDuration,
+        snapDuration: createDuration,
+        headerToolbar: identity,
+        footerToolbar: identity,
+        defaultRangeSeparator: String,
+        titleRangeSeparator: String,
+        forceEventDuration: Boolean,
+        dayHeaders: Boolean,
+        dayHeaderFormat: createFormatter,
+        dayHeaderClassNames: identity,
+        dayHeaderContent: identity,
+        dayHeaderDidMount: identity,
+        dayHeaderWillUnmount: identity,
+        dayCellClassNames: identity,
+        dayCellContent: identity,
+        dayCellDidMount: identity,
+        dayCellWillUnmount: identity,
+        initialView: String,
+        aspectRatio: Number,
+        weekends: Boolean,
+        weekNumberCalculation: identity,
+        weekNumbers: Boolean,
+        weekNumberClassNames: identity,
+        weekNumberContent: identity,
+        weekNumberDidMount: identity,
+        weekNumberWillUnmount: identity,
+        editable: Boolean,
+        viewClassNames: identity,
+        viewDidMount: identity,
+        viewWillUnmount: identity,
+        nowIndicator: Boolean,
+        nowIndicatorClassNames: identity,
+        nowIndicatorContent: identity,
+        nowIndicatorDidMount: identity,
+        nowIndicatorWillUnmount: identity,
+        showNonCurrentDates: Boolean,
+        lazyFetching: Boolean,
+        startParam: String,
+        endParam: String,
+        timeZoneParam: String,
+        timeZone: String,
+        locales: identity,
+        locale: identity,
+        themeSystem: String,
+        dragRevertDuration: Number,
+        dragScroll: Boolean,
+        allDayMaintainDuration: Boolean,
+        unselectAuto: Boolean,
+        dropAccept: identity,
+        eventOrder: parseFieldSpecs,
+        handleWindowResize: Boolean,
+        windowResizeDelay: Number,
+        longPressDelay: Number,
+        eventDragMinDistance: Number,
+        expandRows: Boolean,
+        height: identity,
+        contentHeight: identity,
+        direction: String,
+        weekNumberFormat: createFormatter,
+        eventResizableFromStart: Boolean,
+        displayEventTime: Boolean,
+        displayEventEnd: Boolean,
+        weekText: String,
+        progressiveEventRendering: Boolean,
+        businessHours: identity,
+        initialDate: identity,
+        now: identity,
+        eventDataTransform: identity,
+        stickyHeaderDates: identity,
+        stickyFooterScrollbar: identity,
+        viewHeight: identity,
+        defaultAllDay: Boolean,
+        eventSourceFailure: identity,
+        eventSourceSuccess: identity,
+        eventDisplay: String,
+        eventStartEditable: Boolean,
+        eventDurationEditable: Boolean,
+        eventOverlap: identity,
+        eventConstraint: identity,
+        eventAllow: identity,
+        eventBackgroundColor: String,
+        eventBorderColor: String,
+        eventTextColor: String,
+        eventColor: String,
+        eventClassNames: identity,
+        eventContent: identity,
+        eventDidMount: identity,
+        eventWillUnmount: identity,
+        selectConstraint: identity,
+        selectOverlap: identity,
+        selectAllow: identity,
+        droppable: Boolean,
+        unselectCancel: String,
+        slotLabelFormat: identity,
+        slotLaneClassNames: identity,
+        slotLaneContent: identity,
+        slotLaneDidMount: identity,
+        slotLaneWillUnmount: identity,
+        slotLabelClassNames: identity,
+        slotLabelContent: identity,
+        slotLabelDidMount: identity,
+        slotLabelWillUnmount: identity,
+        dayMaxEvents: identity,
+        dayMaxEventRows: identity,
+        dayMinWidth: Number,
+        slotLabelInterval: createDuration,
+        allDayText: String,
+        allDayClassNames: identity,
+        allDayContent: identity,
+        allDayDidMount: identity,
+        allDayWillUnmount: identity,
+        slotMinWidth: Number,
+        navLinks: Boolean,
+        eventTimeFormat: createFormatter,
+        rerenderDelay: Number,
+        moreLinkText: identity,
+        selectMinDistance: Number,
+        selectable: Boolean,
+        selectLongPressDelay: Number,
+        eventLongPressDelay: Number,
+        selectMirror: Boolean,
+        eventMinHeight: Number,
+        slotEventOverlap: Boolean,
+        plugins: identity,
+        firstDay: Number,
+        dayCount: Number,
+        dateAlignment: String,
+        dateIncrement: createDuration,
+        hiddenDays: identity,
+        monthMode: Boolean,
+        fixedWeekCount: Boolean,
+        validRange: identity,
+        visibleRange: identity,
+        titleFormat: identity,
+        // only used by list-view, but languages define the value, so we need it in base options
+        noEventsText: String,
+    };
+    // do NOT give a type here. need `typeof BASE_OPTION_DEFAULTS` to give real results.
+    // raw values.
+    var BASE_OPTION_DEFAULTS = {
+        eventDisplay: 'auto',
+        defaultRangeSeparator: ' - ',
+        titleRangeSeparator: ' \u2013 ',
+        defaultTimedEventDuration: '01:00:00',
+        defaultAllDayEventDuration: { day: 1 },
+        forceEventDuration: false,
+        nextDayThreshold: '00:00:00',
+        dayHeaders: true,
+        initialView: '',
+        aspectRatio: 1.35,
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'today prev,next',
+        },
+        weekends: true,
+        weekNumbers: false,
+        weekNumberCalculation: 'local',
+        editable: false,
+        nowIndicator: false,
+        scrollTime: '06:00:00',
+        slotMinTime: '00:00:00',
+        slotMaxTime: '24:00:00',
+        showNonCurrentDates: true,
+        lazyFetching: true,
+        startParam: 'start',
+        endParam: 'end',
+        timeZoneParam: 'timeZone',
+        timeZone: 'local',
+        locales: [],
+        locale: '',
+        themeSystem: 'standard',
+        dragRevertDuration: 500,
+        dragScroll: true,
+        allDayMaintainDuration: false,
+        unselectAuto: true,
+        dropAccept: '*',
+        eventOrder: 'start,-duration,allDay,title',
+        dayPopoverFormat: { month: 'long', day: 'numeric', year: 'numeric' },
+        handleWindowResize: true,
+        windowResizeDelay: 100,
+        longPressDelay: 1000,
+        eventDragMinDistance: 5,
+        expandRows: false,
+        navLinks: false,
+        selectable: false,
+    };
+    // calendar listeners
+    // ------------------
+    var CALENDAR_LISTENER_REFINERS = {
+        datesSet: identity,
+        eventsSet: identity,
+        eventAdd: identity,
+        eventChange: identity,
+        eventRemove: identity,
+        windowResize: identity,
+        eventClick: identity,
+        eventMouseEnter: identity,
+        eventMouseLeave: identity,
+        select: identity,
+        unselect: identity,
+        loading: identity,
+        // internal
+        _unmount: identity,
+        _beforeprint: identity,
+        _afterprint: identity,
+        _noEventDrop: identity,
+        _noEventResize: identity,
+        _resize: identity,
+        _scrollRequest: identity,
+    };
+    // calendar-specific options
+    // -------------------------
+    var CALENDAR_OPTION_REFINERS = {
+        buttonText: identity,
+        views: identity,
+        plugins: identity,
+        initialEvents: identity,
+        events: identity,
+        eventSources: identity,
+    };
+    var COMPLEX_OPTION_COMPARATORS = {
+        headerToolbar: isBoolComplexEqual,
+        footerToolbar: isBoolComplexEqual,
+        buttonText: isBoolComplexEqual,
+        buttonIcons: isBoolComplexEqual,
+    };
+    function isBoolComplexEqual(a, b) {
+        if (typeof a === 'object' && typeof b === 'object' && a && b) { // both non-null objects
+            return isPropsEqual(a, b);
+        }
+        return a === b;
+    }
+    // view-specific options
+    // ---------------------
+    var VIEW_OPTION_REFINERS = {
+        type: String,
+        component: identity,
+        buttonText: String,
+        buttonTextKey: String,
+        dateProfileGeneratorClass: identity,
+        usesMinMaxTime: Boolean,
+        classNames: identity,
+        content: identity,
+        didMount: identity,
+        willUnmount: identity,
+    };
+    // util funcs
+    // ----------------------------------------------------------------------------------------------------
+    function mergeRawOptions(optionSets) {
+        return mergeProps(optionSets, COMPLEX_OPTION_COMPARATORS);
+    }
+    function refineProps(input, refiners) {
+        var refined = {};
+        var extra = {};
+        for (var propName in refiners) {
+            if (propName in input) {
+                refined[propName] = refiners[propName](input[propName]);
+            }
+        }
+        for (var propName in input) {
+            if (!(propName in refiners)) {
+                extra[propName] = input[propName];
+            }
+        }
+        return { refined: refined, extra: extra };
+    }
+    function identity(raw) {
+        return raw;
+    }
+
+    function parseEvents(rawEvents, eventSource, context, allowOpenRange) {
+        var eventStore = createEmptyEventStore();
+        var eventRefiners = buildEventRefiners(context);
+        for (var _i = 0, rawEvents_1 = rawEvents; _i < rawEvents_1.length; _i++) {
+            var rawEvent = rawEvents_1[_i];
+            var tuple = parseEvent(rawEvent, eventSource, context, allowOpenRange, eventRefiners);
+            if (tuple) {
+                eventTupleToStore(tuple, eventStore);
+            }
+        }
+        return eventStore;
+    }
+    function eventTupleToStore(tuple, eventStore) {
+        if (eventStore === void 0) { eventStore = createEmptyEventStore(); }
+        eventStore.defs[tuple.def.defId] = tuple.def;
+        if (tuple.instance) {
+            eventStore.instances[tuple.instance.instanceId] = tuple.instance;
+        }
+        return eventStore;
+    }
+    // retrieves events that have the same groupId as the instance specified by `instanceId`
+    // or they are the same as the instance.
+    // why might instanceId not be in the store? an event from another calendar?
+    function getRelevantEvents(eventStore, instanceId) {
+        var instance = eventStore.instances[instanceId];
+        if (instance) {
+            var def_1 = eventStore.defs[instance.defId];
+            // get events/instances with same group
+            var newStore = filterEventStoreDefs(eventStore, function (lookDef) { return isEventDefsGrouped(def_1, lookDef); });
+            // add the original
+            // TODO: wish we could use eventTupleToStore or something like it
+            newStore.defs[def_1.defId] = def_1;
+            newStore.instances[instance.instanceId] = instance;
+            return newStore;
+        }
+        return createEmptyEventStore();
+    }
+    function isEventDefsGrouped(def0, def1) {
+        return Boolean(def0.groupId && def0.groupId === def1.groupId);
+    }
+    function createEmptyEventStore() {
+        return { defs: {}, instances: {} };
+    }
+    function mergeEventStores(store0, store1) {
+        return {
+            defs: __assign(__assign({}, store0.defs), store1.defs),
+            instances: __assign(__assign({}, store0.instances), store1.instances),
+        };
+    }
+    function filterEventStoreDefs(eventStore, filterFunc) {
+        var defs = filterHash(eventStore.defs, filterFunc);
+        var instances = filterHash(eventStore.instances, function (instance) { return (defs[instance.defId] // still exists?
+        ); });
+        return { defs: defs, instances: instances };
+    }
+    function excludeSubEventStore(master, sub) {
+        var defs = master.defs, instances = master.instances;
+        var filteredDefs = {};
+        var filteredInstances = {};
+        for (var defId in defs) {
+            if (!sub.defs[defId]) { // not explicitly excluded
+                filteredDefs[defId] = defs[defId];
+            }
+        }
+        for (var instanceId in instances) {
+            if (!sub.instances[instanceId] && // not explicitly excluded
+                filteredDefs[instances[instanceId].defId] // def wasn't filtered away
+            ) {
+                filteredInstances[instanceId] = instances[instanceId];
+            }
+        }
+        return {
+            defs: filteredDefs,
+            instances: filteredInstances,
+        };
+    }
+
+    function normalizeConstraint(input, context) {
+        if (Array.isArray(input)) {
+            return parseEvents(input, null, context, true); // allowOpenRange=true
+        }
+        if (typeof input === 'object' && input) { // non-null object
+            return parseEvents([input], null, context, true); // allowOpenRange=true
+        }
+        if (input != null) {
+            return String(input);
+        }
+        return null;
+    }
+
+    function parseClassNames(raw) {
+        if (Array.isArray(raw)) {
+            return raw;
+        }
+        if (typeof raw === 'string') {
+            return raw.split(/\s+/);
+        }
+        return [];
+    }
+
+    // TODO: better called "EventSettings" or "EventConfig"
+    // TODO: move this file into structs
+    // TODO: separate constraint/overlap/allow, because selection uses only that, not other props
+    var EVENT_UI_REFINERS = {
+        display: String,
+        editable: Boolean,
+        startEditable: Boolean,
+        durationEditable: Boolean,
+        constraint: identity,
+        overlap: identity,
+        allow: identity,
+        className: parseClassNames,
         classNames: parseClassNames,
         color: String,
         backgroundColor: String,
@@ -7085,166 +8022,494 @@ Washington10URedmond10U
                 ? { 'data-navlink': buildNavLinkData(date), tabIndex: 0 }
                 : {};
             var hookProps = __assign(__assign(__assign({ date: dateEnv.toDate(date), view: viewApi }, props.extraHookProps), { text: text }), dayMeta);
-            return (createElement(RenderHook, { hookProps: hookPro/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-import { DOCUMENT } from '@angular/common';
-import { ANIMATION_MODULE_TYPE, ElementRef, Injectable, NgZone, inject, } from '@angular/core';
-import { MAT_RIPPLE_GLOBAL_OPTIONS, MatRipple } from '../ripple';
-import { Platform, _getEventTarget } from '@angular/cdk/platform';
-import * as i0 from "@angular/core";
-/** The options for the MatRippleLoader's event listeners. */
-const eventListenerOptions = { capture: true };
-/**
- * The events that should trigger the initialization of the ripple.
- * Note that we use `mousedown`, rather than `click`, for mouse devices because
- * we can't rely on `mouseenter` in the shadow DOM and `click` happens too late.
- */
-const rippleInteractionEvents = ['focus', 'mousedown', 'mouseenter', 'touchstart'];
-/** The attribute attached to a component whose ripple has not yet been initialized. */
-const matRippleUninitialized = 'mat-ripple-loader-uninitialized';
-/** Additional classes that should be added to the ripple when it is rendered. */
-const matRippleClassName = 'mat-ripple-loader-class-name';
-/** Whether the ripple should be centered. */
-const matRippleCentered = 'mat-ripple-loader-centered';
-/** Whether the ripple should be disabled. */
-const matRippleDisabled = 'mat-ripple-loader-disabled';
-/**
- * Handles attaching ripples on demand.
- *
- * This service allows us to avoid eagerly creating & attaching MatRipples.
- * It works by creating & attaching a ripple only when a component is first interacted with.
- *
- * @docs-private
- */
-export class MatRippleLoader {
-    constructor() {
-        this._document = inject(DOCUMENT, { optional: true });
-        this._animationMode = inject(ANIMATION_MODULE_TYPE, { optional: true });
-        this._globalRippleOptions = inject(MAT_RIPPLE_GLOBAL_OPTIONS, { optional: true });
-        this._platform = inject(Platform);
-        this._ngZone = inject(NgZone);
-        this._hosts = new Map();
-        /**
-         * Handles creating and attaching component internals
-         * when a component is initially interacted with.
-         */
-        this._onInteraction = (event) => {
-            const eventTarget = _getEventTarget(event);
-            if (eventTarget instanceof HTMLElement) {
-                // TODO(wagnermaciel): Consider batching these events to improve runtime performance.
-                const element = eventTarget.closest(`[${matRippleUninitialized}="${this._globalRippleOptions?.namespace ?? ''}"]`);
-                if (element) {
-                    this._createRipple(element);
-                }
+            return (createElement(RenderHook, { hookProps: hookProps, classNames: options.dayHeaderClassNames, content: options.dayHeaderContent, defaultContent: renderInner, didMount: options.dayHeaderDidMount, willUnmount: options.dayHeaderWillUnmount }, function (rootElRef, customClassNames, innerElRef, innerContent) { return (createElement("th", __assign({ ref: rootElRef, className: classNames.concat(customClassNames).join(' '), "data-date": !dayMeta.isDisabled ? formatDayString(date) : undefined, colSpan: props.colSpan }, props.extraDataAttrs),
+                createElement("div", { className: "fc-scrollgrid-sync-inner" }, !dayMeta.isDisabled && (createElement("a", __assign({ ref: innerElRef, className: [
+                        'fc-col-header-cell-cushion',
+                        props.isSticky ? 'fc-sticky' : '',
+                    ].join(' ') }, navLinkAttrs), innerContent))))); }));
+        };
+        return TableDateCell;
+    }(BaseComponent));
+
+    var TableDowCell = /** @class */ (function (_super) {
+        __extends(TableDowCell, _super);
+        function TableDowCell() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        TableDowCell.prototype.render = function () {
+            var props = this.props;
+            var _a = this.context, dateEnv = _a.dateEnv, theme = _a.theme, viewApi = _a.viewApi, options = _a.options;
+            var date = addDays(new Date(259200000), props.dow); // start with Sun, 04 Jan 1970 00:00:00 GMT
+            var dateMeta = {
+                dow: props.dow,
+                isDisabled: false,
+                isFuture: false,
+                isPast: false,
+                isToday: false,
+                isOther: false,
+            };
+            var classNames = [CLASS_NAME].concat(getDayClassNames(dateMeta, theme), props.extraClassNames || []);
+            var text = dateEnv.format(date, props.dayHeaderFormat);
+            var hookProps = __assign(__assign(__assign(__assign({ // TODO: make this public?
+                date: date }, dateMeta), { view: viewApi }), props.extraHookProps), { text: text });
+            return (createElement(RenderHook, { hookProps: hookProps, classNames: options.dayHeaderClassNames, content: options.dayHeaderContent, defaultContent: renderInner, didMount: options.dayHeaderDidMount, willUnmount: options.dayHeaderWillUnmount }, function (rootElRef, customClassNames, innerElRef, innerContent) { return (createElement("th", __assign({ ref: rootElRef, className: classNames.concat(customClassNames).join(' '), colSpan: props.colSpan }, props.extraDataAttrs),
+                createElement("div", { className: "fc-scrollgrid-sync-inner" },
+                    createElement("a", { className: [
+                            'fc-col-header-cell-cushion',
+                            props.isSticky ? 'fc-sticky' : '',
+                        ].join(' '), ref: innerElRef }, innerContent)))); }));
+        };
+        return TableDowCell;
+    }(BaseComponent));
+
+    var NowTimer = /** @class */ (function (_super) {
+        __extends(NowTimer, _super);
+        function NowTimer(props, context) {
+            var _this = _super.call(this, props, context) || this;
+            _this.initialNowDate = getNow(context.options.now, context.dateEnv);
+            _this.initialNowQueriedMs = new Date().valueOf();
+            _this.state = _this.computeTiming().currentState;
+            return _this;
+        }
+        NowTimer.prototype.render = function () {
+            var _a = this, props = _a.props, state = _a.state;
+            return props.children(state.nowDate, state.todayRange);
+        };
+        NowTimer.prototype.componentDidMount = function () {
+            this.setTimeout();
+        };
+        NowTimer.prototype.componentDidUpdate = function (prevProps) {
+            if (prevProps.unit !== this.props.unit) {
+                this.clearTimeout();
+                this.setTimeout();
             }
         };
-        this._ngZone.runOutsideAngular(() => {
-            for (const event of rippleInteractionEvents) {
-                this._document?.addEventListener(event, this._onInteraction, eventListenerOptions);
+        NowTimer.prototype.componentWillUnmount = function () {
+            this.clearTimeout();
+        };
+        NowTimer.prototype.computeTiming = function () {
+            var _a = this, props = _a.props, context = _a.context;
+            var unroundedNow = addMs(this.initialNowDate, new Date().valueOf() - this.initialNowQueriedMs);
+            var currentUnitStart = context.dateEnv.startOf(unroundedNow, props.unit);
+            var nextUnitStart = context.dateEnv.add(currentUnitStart, createDuration(1, props.unit));
+            var waitMs = nextUnitStart.valueOf() - unroundedNow.valueOf();
+            return {
+                currentState: { nowDate: currentUnitStart, todayRange: buildDayRange(currentUnitStart) },
+                nextState: { nowDate: nextUnitStart, todayRange: buildDayRange(nextUnitStart) },
+                waitMs: waitMs,
+            };
+        };
+        NowTimer.prototype.setTimeout = function () {
+            var _this = this;
+            var _a = this.computeTiming(), nextState = _a.nextState, waitMs = _a.waitMs;
+            this.timeoutId = setTimeout(function () {
+                _this.setState(nextState, function () {
+                    _this.setTimeout();
+                });
+            }, waitMs);
+        };
+        NowTimer.prototype.clearTimeout = function () {
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
             }
-        });
+        };
+        NowTimer.contextType = ViewContextType;
+        return NowTimer;
+    }(Component));
+    function buildDayRange(date) {
+        var start = startOfDay(date);
+        var end = addDays(start, 1);
+        return { start: start, end: end };
     }
-    ngOnDestroy() {
-        const hosts = this._hosts.keys();
-        for (const host of hosts) {
-            this.destroyRipple(host);
+
+    var DayHeader = /** @class */ (function (_super) {
+        __extends(DayHeader, _super);
+        function DayHeader() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.createDayHeaderFormatter = memoize(createDayHeaderFormatter);
+            return _this;
         }
-        for (const event of rippleInteractionEvents) {
-            this._document?.removeEventListener(event, this._onInteraction, eventListenerOptions);
-        }
+        DayHeader.prototype.render = function () {
+            var context = this.context;
+            var _a = this.props, dates = _a.dates, dateProfile = _a.dateProfile, datesRepDistinctDays = _a.datesRepDistinctDays, renderIntro = _a.renderIntro;
+            var dayHeaderFormat = this.createDayHeaderFormatter(context.options.dayHeaderFormat, datesRepDistinctDays, dates.length);
+            return (createElement(NowTimer, { unit: "day" }, function (nowDate, todayRange) { return (createElement("tr", null,
+                renderIntro && renderIntro(),
+                dates.map(function (date) { return (datesRepDistinctDays ? (createElement(TableDateCell, { key: date.toISOString(), date: date, dateProfile: dateProfile, todayRange: todayRange, colCnt: dates.length, dayHeaderFormat: dayHeaderFormat })) : (createElement(TableDowCell, { key: date.getUTCDay(), dow: date.getUTCDay(), dayHeaderFormat: dayHeaderFormat }))); }))); }));
+        };
+        return DayHeader;
+    }(BaseComponent));
+    function createDayHeaderFormatter(explicitFormat, datesRepDistinctDays, dateCnt) {
+        return explicitFormat || computeFallbackHeaderFormat(datesRepDistinctDays, dateCnt);
     }
-    /**
-     * Configures the ripple that will be rendered by the ripple loader.
-     *
-     * Stores the given information about how the ripple should be configured on the host
-     * element so that it can later be retrived & used when the ripple is actually created.
-     */
-    configureRipple(host, config) {
-        // Indicates that the ripple has not yet been rendered for this component.
-        host.setAttribute(matRippleUninitialized, this._globalRippleOptions?.namespace ?? '');
-        // Store the additional class name(s) that should be added to the ripple element.
-        if (config.className || !host.hasAttribute(matRippleClassName)) {
-            host.setAttribute(matRippleClassName, config.className || '');
+
+    var DaySeriesModel = /** @class */ (function () {
+        function DaySeriesModel(range, dateProfileGenerator) {
+            var date = range.start;
+            var end = range.end;
+            var indices = [];
+            var dates = [];
+            var dayIndex = -1;
+            while (date < end) { // loop each day from start to end
+                if (dateProfileGenerator.isHiddenDay(date)) {
+                    indices.push(dayIndex + 0.5); // mark that it's between indices
+                }
+                else {
+                    dayIndex += 1;
+                    indices.push(dayIndex);
+                    dates.push(date);
+                }
+                date = addDays(date, 1);
+            }
+            this.dates = dates;
+            this.indices = indices;
+            this.cnt = dates.length;
         }
-        // Store whether the ripple should be centered.
-        if (config.centered) {
-            host.setAttribute(matRippleCentered, '');
+        DaySeriesModel.prototype.sliceRange = function (range) {
+            var firstIndex = this.getDateDayIndex(range.start); // inclusive first index
+            var lastIndex = this.getDateDayIndex(addDays(range.end, -1)); // inclusive last index
+            var clippedFirstIndex = Math.max(0, firstIndex);
+            var clippedLastIndex = Math.min(this.cnt - 1, lastIndex);
+            // deal with in-between indices
+            clippedFirstIndex = Math.ceil(clippedFirstIndex); // in-between starts round to next cell
+            clippedLastIndex = Math.floor(clippedLastIndex); // in-between ends round to prev cell
+            if (clippedFirstIndex <= clippedLastIndex) {
+                return {
+                    firstIndex: clippedFirstIndex,
+                    lastIndex: clippedLastIndex,
+                    isStart: firstIndex === clippedFirstIndex,
+                    isEnd: lastIndex === clippedLastIndex,
+                };
+            }
+            return null;
+        };
+        // Given a date, returns its chronolocial cell-index from the first cell of the grid.
+        // If the date lies between cells (because of hiddenDays), returns a floating-point value between offsets.
+        // If before the first offset, returns a negative number.
+        // If after the last offset, returns an offset past the last cell offset.
+        // Only works for *start* dates of cells. Will not work for exclusive end dates for cells.
+        DaySeriesModel.prototype.getDateDayIndex = function (date) {
+            var indices = this.indices;
+            var dayOffset = Math.floor(diffDays(this.dates[0], date));
+            if (dayOffset < 0) {
+                return indices[0] - 1;
+            }
+            if (dayOffset >= indices.length) {
+                return indices[indices.length - 1] + 1;
+            }
+            return indices[dayOffset];
+        };
+        return DaySeriesModel;
+    }());
+
+    var DayTableModel = /** @class */ (function () {
+        function DayTableModel(daySeries, breakOnWeeks) {
+            var dates = daySeries.dates;
+            var daysPerRow;
+            var firstDay;
+            var rowCnt;
+            if (breakOnWeeks) {
+                // count columns until the day-of-week repeats
+                firstDay = dates[0].getUTCDay();
+                for (daysPerRow = 1; daysPerRow < dates.length; daysPerRow += 1) {
+                    if (dates[daysPerRow].getUTCDay() === firstDay) {
+                        break;
+                    }
+                }
+                rowCnt = Math.ceil(dates.length / daysPerRow);
+            }
+            else {
+                rowCnt = 1;
+                daysPerRow = dates.length;
+            }
+            this.rowCnt = rowCnt;
+            this.colCnt = daysPerRow;
+            this.daySeries = daySeries;
+            this.cells = this.buildCells();
+            this.headerDates = this.buildHeaderDates();
         }
-        if (config.disabled) {
-            host.setAttribute(matRippleDisabled, '');
+        DayTableModel.prototype.buildCells = function () {
+            var rows = [];
+            for (var row = 0; row < this.rowCnt; row += 1) {
+                var cells = [];
+                for (var col = 0; col < this.colCnt; col += 1) {
+                    cells.push(this.buildCell(row, col));
+                }
+                rows.push(cells);
+            }
+            return rows;
+        };
+        DayTableModel.prototype.buildCell = function (row, col) {
+            var date = this.daySeries.dates[row * this.colCnt + col];
+            return {
+                key: date.toISOString(),
+                date: date,
+            };
+        };
+        DayTableModel.prototype.buildHeaderDates = function () {
+            var dates = [];
+            for (var col = 0; col < this.colCnt; col += 1) {
+                dates.push(this.cells[0][col].date);
+            }
+            return dates;
+        };
+        DayTableModel.prototype.sliceRange = function (range) {
+            var colCnt = this.colCnt;
+            var seriesSeg = this.daySeries.sliceRange(range);
+            var segs = [];
+            if (seriesSeg) {
+                var firstIndex = seriesSeg.firstIndex, lastIndex = seriesSeg.lastIndex;
+                var index = firstIndex;
+                while (index <= lastIndex) {
+                    var row = Math.floor(index / colCnt);
+                    var nextIndex = Math.min((row + 1) * colCnt, lastIndex + 1);
+                    segs.push({
+                        row: row,
+                        firstCol: index % colCnt,
+                        lastCol: (nextIndex - 1) % colCnt,
+                        isStart: seriesSeg.isStart && index === firstIndex,
+                        isEnd: seriesSeg.isEnd && (nextIndex - 1) === lastIndex,
+                    });
+                    index = nextIndex;
+                }
+            }
+            return segs;
+        };
+        return DayTableModel;
+    }());
+
+    var Slicer = /** @class */ (function () {
+        function Slicer() {
+            this.sliceBusinessHours = memoize(this._sliceBusinessHours);
+            this.sliceDateSelection = memoize(this._sliceDateSpan);
+            this.sliceEventStore = memoize(this._sliceEventStore);
+            this.sliceEventDrag = memoize(this._sliceInteraction);
+            this.sliceEventResize = memoize(this._sliceInteraction);
+            this.forceDayIfListItem = false; // hack
         }
+        Slicer.prototype.sliceProps = function (props, dateProfile, nextDayThreshold, context) {
+            var extraArgs = [];
+            for (var _i = 4; _i < arguments.length; _i++) {
+                extraArgs[_i - 4] = arguments[_i];
+            }
+            var eventUiBases = props.eventUiBases;
+            var eventSegs = this.sliceEventStore.apply(this, __spreadArrays([props.eventStore, eventUiBases, dateProfile, nextDayThreshold], extraArgs));
+            return {
+                dateSelectionSegs: this.sliceDateSelection.apply(this, __spreadArrays([props.dateSelection, eventUiBases, context], extraArgs)),
+                businessHourSegs: this.sliceBusinessHours.apply(this, __spreadArrays([props.businessHours, dateProfile, nextDayThreshold, context], extraArgs)),
+                fgEventSegs: eventSegs.fg,
+                bgEventSegs: eventSegs.bg,
+                eventDrag: this.sliceEventDrag.apply(this, __spreadArrays([props.eventDrag, eventUiBases, dateProfile, nextDayThreshold], extraArgs)),
+                eventResize: this.sliceEventResize.apply(this, __spreadArrays([props.eventResize, eventUiBases, dateProfile, nextDayThreshold], extraArgs)),
+                eventSelection: props.eventSelection,
+            }; // TODO: give interactionSegs?
+        };
+        Slicer.prototype.sliceNowDate = function (// does not memoize
+        date, context) {
+            var extraArgs = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                extraArgs[_i - 2] = arguments[_i];
+            }
+            return this._sliceDateSpan.apply(this, __spreadArrays([{ range: { start: date, end: addMs(date, 1) }, allDay: false },
+                {},
+                context], extraArgs));
+        };
+        Slicer.prototype._sliceBusinessHours = function (businessHours, dateProfile, nextDayThreshold, context) {
+            var extraArgs = [];
+            for (var _i = 4; _i < arguments.length; _i++) {
+                extraArgs[_i - 4] = arguments[_i];
+            }
+            if (!businessHours) {
+                return [];
+            }
+            return this._sliceEventStore.apply(this, __spreadArrays([expandRecurring(businessHours, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), context),
+                {},
+                dateProfile,
+                nextDayThreshold], extraArgs)).bg;
+        };
+        Slicer.prototype._sliceEventStore = function (eventStore, eventUiBases, dateProfile, nextDayThreshold) {
+            var extraArgs = [];
+            for (var _i = 4; _i < arguments.length; _i++) {
+                extraArgs[_i - 4] = arguments[_i];
+            }
+            if (eventStore) {
+                var rangeRes = sliceEventStore(eventStore, eventUiBases, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), nextDayThreshold);
+                return {
+                    bg: this.sliceEventRanges(rangeRes.bg, extraArgs),
+                    fg: this.sliceEventRanges(rangeRes.fg, extraArgs),
+                };
+            }
+            return { bg: [], fg: [] };
+        };
+        Slicer.prototype._sliceInteraction = function (interaction, eventUiBases, dateProfile, nextDayThreshold) {
+            var extraArgs = [];
+            for (var _i = 4; _i < arguments.length; _i++) {
+                extraArgs[_i - 4] = arguments[_i];
+            }
+            if (!interaction) {
+                return null;
+            }
+            var rangeRes = sliceEventStore(interaction.mutatedEvents, eventUiBases, computeActiveRange(dateProfile, Boolean(nextDayThreshold)), nextDayThreshold);
+            return {
+                segs: this.sliceEventRanges(rangeRes.fg, extraArgs),
+                affectedInstances: interaction.affectedEvents.instances,
+                isEvent: interaction.isEvent,
+            };
+        };
+        Slicer.prototype._sliceDateSpan = function (dateSpan, eventUiBases, context) {
+            var extraArgs = [];
+            for (var _i = 3; _i < arguments.length; _i++) {
+                extraArgs[_i - 3] = arguments[_i];
+            }
+            if (!dateSpan) {
+                return [];
+            }
+            var eventRange = fabricateEventRange(dateSpan, eventUiBases, context);
+            var segs = this.sliceRange.apply(this, __spreadArrays([dateSpan.range], extraArgs));
+            for (var _a = 0, segs_1 = segs; _a < segs_1.length; _a++) {
+                var seg = segs_1[_a];
+                seg.eventRange = eventRange;
+            }
+            return segs;
+        };
+        /*
+        "complete" seg means it has component and eventRange
+        */
+        Slicer.prototype.sliceEventRanges = function (eventRanges, extraArgs) {
+            var segs = [];
+            for (var _i = 0, eventRanges_1 = eventRanges; _i < eventRanges_1.length; _i++) {
+                var eventRange = eventRanges_1[_i];
+                segs.push.apply(segs, this.sliceEventRange(eventRange, extraArgs));
+            }
+            return segs;
+        };
+        /*
+        "complete" seg means it has component and eventRange
+        */
+        Slicer.prototype.sliceEventRange = function (eventRange, extraArgs) {
+            var dateRange = eventRange.range;
+            // hack to make multi-day events that are being force-displayed as list-items to take up only one day
+            if (this.forceDayIfListItem && eventRange.ui.display === 'list-item') {
+                dateRange = {
+                    start: dateRange.start,
+                    end: addDays(dateRange.start, 1),
+                };
+            }
+            var segs = this.sliceRange.apply(this, __spreadArrays([dateRange], extraArgs));
+            for (var _i = 0, segs_2 = segs; _i < segs_2.length; _i++) {
+                var seg = segs_2[_i];
+                seg.eventRange = eventRange;
+                seg.isStart = eventRange.isStart && seg.isStart;
+                seg.isEnd = eventRange.isEnd && seg.isEnd;
+            }
+            return segs;
+        };
+        return Slicer;
+    }());
+    /*
+    for incorporating slotMinTime/slotMaxTime if appropriate
+    TODO: should be part of DateProfile!
+    TimelineDateProfile already does this btw
+    */
+    function computeActiveRange(dateProfile, isComponentAllDay) {
+        var range = dateProfile.activeRange;
+        if (isComponentAllDay) {
+            return range;
+        }
+        return {
+            start: addMs(range.start, dateProfile.slotMinTime.milliseconds),
+            end: addMs(range.end, dateProfile.slotMaxTime.milliseconds - 864e5),
+        };
     }
-    /** Returns the ripple instance for the given host element. */
-    getRipple(host) {
-        const ripple = this._hosts.get(host);
-        return ripple || this._createRipple(host);
-    }
-    /** Sets the disabled state on the ripple instance corresponding to the given host element. */
-    setDisabled(host, disabled) {
-        const ripple = this._hosts.get(host);
-        // If the ripple has already been instantiated, just disable it.
-        if (ripple) {
-            ripple.disabled = disabled;
-            return;
+
+    var VISIBLE_HIDDEN_RE = /^(visible|hidden)$/;
+    var Scroller = /** @class */ (function (_super) {
+        __extends(Scroller, _super);
+        function Scroller() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.handleEl = function (el) {
+                _this.el = el;
+                setRef(_this.props.elRef, el);
+            };
+            return _this;
         }
-        // Otherwise, set an attribute so we know what the
-        // disabled state should be when the ripple is initialized.
-        if (disabled) {
-            host.setAttribute(matRippleDisabled, '');
-        }
-        else {
-            host.removeAttribute(matRippleDisabled);
-        }
-    }
-    /** Creates a MatRipple and appends it to the given element. */
-    _createRipple(host) {
-        if (!this._document) {
-            return;
-        }
-        const existingRipple = this._hosts.get(host);
-        if (existingRipple) {
-            return existingRipple;
-        }
-        // Create the ripple element.
-        host.querySelector('.mat-ripple')?.remove();
-        const rippleEl = this._document.createElement('span');
-        rippleEl.classList.add('mat-ripple', host.getAttribute(matRippleClassName));
-        host.append(rippleEl);
-        // Create the MatRipple.
-        const ripple = new MatRipple(new ElementRef(rippleEl), this._ngZone, this._platform, this._globalRippleOptions ? this._globalRippleOptions : undefined, this._animationMode ? this._animationMode : undefined);
-        ripple._isInitialized = true;
-        ripple.trigger = host;
-        ripple.centered = host.hasAttribute(matRippleCentered);
-        ripple.disabled = host.hasAttribute(matRippleDisabled);
-        this.attachRipple(host, ripple);
-        return ripple;
-    }
-    attachRipple(host, ripple) {
-        host.removeAttribute(matRippleUninitialized);
-        this._hosts.set(host, ripple);
-    }
-    destroyRipple(host) {
-        const ripple = this._hosts.get(host);
-        if (ripple) {
-            // Since this directive is created manually, it needs to be destroyed manually too.
-            // tslint:disable-next-line:no-lifecycle-invocation
-            ripple.ngOnDestroy();
-            this._hosts.delete(host);
-        }
-    }
-    static { this.Éµfac = i0.ÉµÉµngDeclareFactory({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, deps: [], target: i0.ÉµÉµFactoryTarget.Injectable }); }
-    static { this.Éµprov = i0.ÉµÉµngDeclareInjectable({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, providedIn: 'root' }); }
-}
-i0.ÉµÉµngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.0.0", ngImport: i0, type: MatRippleLoader, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [] });
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmlwcGxlLWxvYWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3NyYy9tYXRlcmlhbC9jb3JlL3ByaXZhdGUvcmlwcGxlLWxvYWRlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0dBTUc7QUFFSCxPQUFPLEVBQUMsUUFBUSxFQUFDLE1BQU0saUJBQWlCLENBQUM7QUFDekMsT0FBTyxFQUNMLHFCQUFxQixFQUNyQixVQUFVLEVBQ1YsVUFBVSxFQUNWLE1BQU0sRUFFTixNQUFNLEdBQ1AsTUFBTSxlQUFlLENBQUM7QUFDdkIsT0FBTyxFQUFDLHlCQUF5QixFQUFFLFNBQVMsRUFBQyxNQUFNLFdBQVcsQ0FBQztBQUMvRCxPQUFPLEVBQUMsUUFBUSxFQUFFLGVBQWUsRUFBQyxNQUFNLHVCQUF1QixDQUFDOztBQUVoRSw2REFBNkQ7QUFDN0QsTUFBTSxvQkFBb0IsR0FBRyxFQUFDLE9BQU8sRUFBRSxJQUFJLEVBQUMsQ0FBQztBQUU3Qzs7OztHQUlHO0FBQ0gsTUFBTSx1QkFBdUIsR0FBRyxDQUFDLE9BQU8sRUFBRSxXQUFXLEVBQUUsWUFBWSxFQUFFLFlBQVksQ0FBQyxDQUFDO0FBRW5GLHVGQUF1RjtBQUN2RixNQUFNLHNCQUFzQixHQUFHLGlDQUFpQyxDQUFDO0FBRWpFLGlGQUFpRjtBQUNqRixNQUFNLGtCQUFrQixHQUFHLDhCQUE4QixDQUFDO0FBRTFELDZDQUE2QztBQUM3QyxNQUFNLGlCQUFpQixHQUFHLDRCQUE0QixDQUFDO0FBRXZELDZDQUE2QztBQUM3QyxNQUFNLGlCQUFpQixHQUFHLDRCQUE0QixDQUFDO0FBRXZEOzs7Ozs7O0dBT0c7QUFFSCxNQUFNLE9BQU8sZUFBZTtJQVExQjtRQVBRLGNBQVMsR0FBRyxNQUFNLENBQUMsUUFBUSxFQUFFLEVBQUMsUUFBUSxFQUFFLElBQUksRUFBQyxDQUFDLENBQUM7UUFDL0MsbUJBQWMsR0FBRyxNQUFNLENBQUMscUJBQXFCLEVBQUUsRUFBQyxRQUFRLEVBQUUsSUFBSSxFQUFDLENBQUMsQ0FBQztRQUNqRSx5QkFBb0IsR0FBRyxNQUFNLENBQUMseUJBQXlCLEVBQUUsRUFBQyxRQUFRLEVBQUUsSUFBSSxFQUFDLENBQUMsQ0FBQztRQUMzRSxjQUFTLEdBQUcsTUFBTSxDQUFDLFFBQVEsQ0FBQyxDQUFDO1FBQzdCLFlBQU8sR0FBRyxNQUFNLENBQUMsTUFBTSxDQUFDLENBQUM7UUFDekIsV0FBTSxHQUFHLElBQUksR0FBRyxFQUEwQixDQUFDO1FBK0VuRDs7O1dBR0c7UUFDSyxtQkFBYyxHQUFHLENBQUMsS0FBWSxFQUFFLEVBQUU7WUFDeEMsTUFBTSxXQUFXLEdBQUcsZUFBZSxDQUFDLEtBQUssQ0FBQyxDQUFDO1lBRTNDLElBQUksV0FBVyxZQUFZLFdBQVcsRUFBRSxDQUFDO2dCQUN2QyxxRkFBcUY7Z0JBQ3JGLE1BQU0sT0FBTyxHQUFHLFdBQVcsQ0FBQyxPQUFPLENBQ2pDLElBQUksc0JBQXNCLEtBQUssSUFBSSxDQUFDLG9CQUFvQixFQUFFLFNBQVMsSUFBSSxFQUFFLElBQUksQ0FDOUUsQ0FBQztnQkFFRixJQUFJLE9BQU8sRUFBRSxDQUFDO29CQUNaLElBQUksQ0FBQyxhQUFhLENBQUMsT0FBc0IsQ0FBQyxDQUFDO2dCQUM3QyxDQUFDO1lBQ0gsQ0FBQztRQUNILENBQUMsQ0FBQztRQTdGQSxJQUFJLENBQUMsT0FBTyxDQUFDLGlCQUFpQixDQUFDLEdBQUcsRUFBRTtZQUNsQyxLQUFLLE1BQU0sS0FBSyxJQUFJLHVCQUF1QixFQUFFLENBQUM7Z0JBQzVDLElBQUksQ0FBQyxTQUFTLEVBQUUsZ0JBQWdCLENBQUMsS0FBSyxFQUFFLElBQUksQ0FBQyxjQUFjLEVBQUUsb0JBQW9CLENBQUMsQ0FBQztZQUNyRixDQUFDO1FBQ0gsQ0FBQyxDQUFDLENBQUM7SUFDTCxDQUFDO0lBRUQsV0FBVztRQUNULE1BQU0sS0FBSyxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsSUFBSSxFQUFFLENBQUM7UUFFakMsS0FBSyxNQUFNLElBQUksSUFBSSxLQUFLLEVBQUUsQ0FBQztZQUN6QixJQUFJLENBQUMsYUFBYSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQzNCLENBQUM7UUFFRCxLQUFLLE1BQU0sS0FBSyxJQUFJLHVCQUF1QixFQUFFLENBQUM7WUFDNUMsSUFBSSxDQUFDLFNBQVMsRUFBRSxtQkFBbUIsQ0FBQyxLQUFLLEVBQUUsSUFBSSxDQUFDLGNBQWMsRUFBRSxvQkFBb0IsQ0FBQyxDQUFDO1FBQ3hGLENBQUM7SUFDSCxDQUFDO0lBRUQ7Ozs7O09BS0c7SUFDSCxlQUFlLENBQ2IsSUFBaUIsRUFDakIsTUFJQztRQUVELDBFQUEwRTtRQUMxRSxJQUFJLENBQUMsWUFBWSxDQUFDLHNCQUFzQixFQUFFLElBQUksQ0FBQyxvQkFBb0IsRUFBRSxTQUFTLElBQUksRUFBRSxDQUFDLENBQUM7UUFFdEYsaUZBQWlGO1FBQ2pGLElBQUksTUFBTSxDQUFDLFNBQVMsSUFBSSxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsa0JBQWtCLENBQUMsRUFBRSxDQUFDO1lBQy9ELElBQUksQ0FBQyxZQUFZLENBQUMsa0JBQWtCLEVBQUUsTUFBTSxDQUFDLFNBQVMsSUFBSSxFQUFFLENBQUMsQ0FBQztRQUNoRSxDQUFDO1FBRUQsK0NBQStDO1FBQy9DLElBQUksTUFBTSxDQUFDLFFBQVEsRUFBRSxDQUFDO1lBQ3BCLElBQUksQ0FBQyxZQUFZLENBQUMsaUJBQWlCLEVBQUUsRUFBRSxDQUFDLENBQUM7UUFDM0MsQ0FBQztRQUVELElBQUksTUFBTSxDQUFDLFFBQVEsRUFBRSxDQUFDO1lBQ3BCLElBQUksQ0FBQyxZQUFZLENBQUMsaUJBQWlCLEVBQUUsRUFBRSxDQUFDLENBQUM7UUFDM0MsQ0FBQztJQUNILENBQUM7SUFFRCw4REFBOEQ7SUFDOUQsU0FBUyxDQUFDLElBQWlCO1FBQ3pCLE1BQU0sTUFBTSxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsR0FBRyxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQ3JDLE9BQU8sTUFBTSxJQUFJLElBQUksQ0FBQyxhQUFhLENBQUMsSUFBSSxDQUFDLENBQUM7SUFDNUMsQ0FBQztJQUVELDhGQUE4RjtJQUM5RixXQUFXLENBQUMsSUFBaUIsRUFBRSxRQUFpQjtRQUM5QyxNQUFNLE1BQU0sR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUVyQyxnRUFBZ0U7UUFDaEUsSUFBSSxNQUFNLEVBQUUsQ0FBQztZQUNYLE1BQU0sQ0FBQyxRQUFRLEdBQUcsUUFBUSxDQUFDO1lBQzNCLE9BQU87UUFDVCxDQUFDO1FBRUQsa0RBQWtEO1FBQ2xELDJEQUEyRDtRQUMzRCxJQUFJLFFBQVEsRUFBRSxDQUFDO1lBQ2IsSUFBSSxDQUFDLFlBQVksQ0FBQyxpQkFBaUIsRUFBRSxFQUFFLENBQUMsQ0FBQztRQUMzQyxDQUFDO2FBQU0sQ0FBQztZQUNOLElBQUksQ0FBQyxlQUFlLENBQUMsaUJBQWlCLENBQUMsQ0FBQztRQUMxQyxDQUFDO0lBQ0gsQ0FBQztJQXFCRCwrREFBK0Q7SUFDdkQsYUFBYSxDQUFDLElBQWlCO1FBQ3JDLElBQUksQ0FBQyxJQUFJLENBQUMsU0FBUyxFQUFFLENBQUM7WUFDcEIsT0FBTztRQUNULENBQUM7UUFFRCxNQUFNLGNBQWMsR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUM3QyxJQUFJLGNBQWMsRUFBRSxDQUFDO1lBQ25CLE9BQU8sY0FBYyxDQUFDO1FBQ3hCLENBQUM7UUFFRCw2QkFBNkI7UUFDN0IsSUFBSSxDQUFDLGFBQWEsQ0FBQyxhQUFhLENBQUMsRUFBRSxNQUFNLEVBQUUsQ0FBQztRQUM1QyxNQUFNLFFBQVEsR0FBRyxJQUFJLENBQUMsU0FBUyxDQUFDLGFBQWEsQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUN0RCxRQUFRLENBQUMsU0FBUyxDQUFDLEdBQUcsQ0FBQyxZQUFZLEVBQUUsSUFBSSxDQUFDLFlBQVksQ0FBQyxrQkFBa0IsQ0FBRSxDQUFDLENBQUM7UUFDN0UsSUFBSSxDQUFDLE1BQU0sQ0FBQyxRQUFRLENBQUMsQ0FBQztRQUV0Qix3QkFBd0I7UUFDeEIsTUFBTSxNQUFNLEdBQUcsSUFBSSxTQUFTLENBQzFCLElBQUksVUFBVSxDQUFDLFFBQVEsQ0FBQyxFQUN4QixJQUFJLENBQUMsT0FBTyxFQUNaLElBQUksQ0FBQyxTQUFTLEVBQ2QsSUFBSSxDQUFDLG9CQUFvQixDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsb0JBQW9CLENBQUMsQ0FBQyxDQUFDLFNBQVMsRUFDakUsSUFBSSxDQUFDLGNBQWMsQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDLGNBQWMsQ0FBQyxDQUFDLENBQUMsU0FBUyxDQUN0RCxDQUFDO1FBQ0YsTUFBTSxDQUFDLGNBQWMsR0FBRyxJQUFJLENBQUM7UUFDN0IsTUFBTSxDQUFDLE9BQU8sR0FBRyxJQUFJLENBQUM7UUFDdEIsTUFBTSxDQUFDLFFBQVEsR0FBRyxJQUFJLENBQUMsWUFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7UUFDdkQsTUFBTSxDQUFDLFFBQVEsR0FBRyxJQUFJLENBQUMsWUFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7UUFDdkQsSUFBSSxDQUFDLFlBQVksQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLENBQUM7UUFDaEMsT0FBTyxNQUFNLENBQUM7SUFDaEIsQ0FBQztJQUVELFlBQVksQ0FBQyxJQUFpQixFQUFFLE1BQWlCO1FBQy9DLElBQUksQ0FBQyxlQUFlLENBQUMsc0JBQXNCLENBQUMsQ0FBQztRQUM3QyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLENBQUM7SUFDaEMsQ0FBQztJQUVELGFBQWEsQ0FBQyxJQUFpQjtRQUM3QixNQUFNLE1BQU0sR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUVyQyxJQUFJLE1BQU0sRUFBRSxDQUFDO1lBQ1gsbUZBQW1GO1lBQ25GLG1EQUFtRDtZQUNuRCxNQUFNLENBQUMsV0FBVyxFQUFFLENBQUM7WUFDckIsSUFBSSxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDM0IsQ0FBQztJQUNILENBQUM7OEdBdkpVLGVBQWU7a0hBQWYsZUFBZSxjQURILE1BQU07OzJGQUNsQixlQUFlO2tCQUQzQixVQUFVO21CQUFDLEVBQUMsVUFBVSxFQUFFLE1BQU0sRUFBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge0RPQ1VNRU5UfSBmcm9tICdAYW5ndWxhci9jb21tb24nO1xuaW1wb3J0IHtcbiAgQU5JTUFUSU9OX01PRFVMRV9UWVBFLFxuICBFbGVtZW50UmVmLFxuICBJbmplY3RhYmxlLFxuICBOZ1pvbmUsXG4gIE9uRGVzdHJveSxcbiAgaW5qZWN0LFxufSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7TUFUX1JJUFBMRV9HTE9CQUxfT1BUSU9OUywgTWF0UmlwcGxlfSBmcm9tICcuLi9yaXBwbGUnO1xuaW1wb3J0IHtQbGF0Zm9ybSwgX2dldEV2ZW50VGFyZ2V0fSBmcm9tICdAYW5ndWxhci9jZGsvcGxhdGZvcm0nO1xuXG4vKiogVGhlIG9wdGlvbnMgZm9yIHRoZSBNYXRSaXBwbGVMb2FkZXIncyBldmVudCBsaXN0ZW5lcnMuICovXG5jb25zdCBldmVudExpc3RlbmVyT3B0aW9ucyA9IHtjYXB0dXJlOiB0cnVlfTtcblxuLyoqXG4gKiBUaGUgZXZlbnRzIHRoYXQgc2hvdWxkIHRyaWdnZXIgdGhlIGluaXRpYWxpemF0aW9uIG9mIHRoZSByaXBwbGUuXG4gKiBOb3RlIHRoYXQgd2UgdXNlIGBtb3VzZWRvd25gLCByYXRoZXIgdGhhbiBgY2xpY2tgLCBmb3IgbW91c2UgZGV2aWNlcyBiZWNhdXNlXG4gKiB3ZSBjYW4ndCByZWx5IG9uIGBtb3VzZWVudGVyYCBpbiB0aGUgc2hhZG93IERPTSBhbmQgYGNsaWNrYCBoYXBwZW5zIHRvbyBsYXRlLlxuICovXG5jb25zdCByaXBwbGVJbnRlcmFjdGlvbkV2ZW50cyA9IFsnZm9jdXMnLCAnbW91c2Vkb3duJywgJ21vdXNlZW50ZXInLCAndG91Y2hzdGFydCddO1xuXG4vKiogVGhlIGF0dHJpYnV0ZSBhdHRhY2hlZCB0byBhIGNvbXBvbmVudCB3aG9zZSByaXBwbGUgaGFzIG5vdCB5ZXQgYmVlbiBpbml0aWFsaXplZC4gKi9cbmNvbnN0IG1hdFJpcHBsZVVuaW5pdGlhbGl6ZWQgPSAnbWF0LXJpcHBsZS1sb2FkZXItdW5pbml0aWFsaXplZCc7XG5cbi8qKiBBZGRpdGlvbmFsIGNsYXNzZXMgdGhhdCBzaG91bGQgYmUgYWRkZWQgdG8gdGhlIHJpcHBsZSB3aGVuIGl0IGlzIHJlbmRlcmVkLiAqL1xuY29uc3QgbWF0UmlwcGxlQ2xhc3NOYW1lID0gJ21hdC1yaXBwbGUtbG9hZGVyLWNsYXNzLW5hbWUnO1xuXG4vKiogV2hldGhlciB0aGUgcmlwcGxlIHNob3VsZCBiZSBjZW50ZXJlZC4gKi9cbmNvbnN0IG1hdFJpcHBsZUNlbnRlcmVkID0gJ21hdC1yaXBwbGUtbG9hZGVyLWNlbnRlcmVkJztcblxuLyoqIFdoZXRoZXIgdGhlIHJpcHBsZSBzaG91bGQgYmUgZGlzYWJsZWQuICovXG5jb25zdCBtYXRSaXBwbGVEaXNhYmxlZCA9ICdtYXQtcmlwcGxlLWxvYWRlci1kaXNhYmxlZCc7XG5cbi8qKlxuICogSGFuZGxlcyBhdHRhY2hpbmcgcmlwcGxlcyBvbiBkZW1hbmQuXG4gKlxuICogVGhpcyBzZXJ2aWNlIGFsbG93cyB1cyB0byBhdm9pZCBlYWdlcmx5IGNyZWF0aW5nICYgYXR0YWNoaW5nIE1hdFJpcHBsZXMuXG4gKiBJdCB3b3JrcyBieSBjcmVhdGluZyAmIGF0dGFjaGluZyBhIHJpcHBsZSBvbmx5IHdoZW4gYSBjb21wb25lbnQgaXMgZmlyc3QgaW50ZXJhY3RlZCB3aXRoLlxuICpcbiAqIEBkb2NzLXByaXZhdGVcbiAqL1xuQEluamVjdGFibGUoe3Byb3ZpZGVkSW46ICdyb290J30pXG5leHBvcnQgY2xhc3MgTWF0UmlwcGxlTG9hZGVyIGltcGxlbWVudHMgT25EZXN0cm95IHtcbiAgcHJpdmF0ZSBfZG9jdW1lbnQgPSBpbmplY3QoRE9DVU1FTlQsIHtvcHRpb25hbDogdHJ1ZX0pO1xuICBwcml2YXRlIF9hbmltYXRpb25Nb2RlID0gaW5qZWN0KEFOSU1BVElPTl9NT0RVTEVfVFlQRSwge29wdGlvbmFsOiB0cnVlfSk7XG4gIHByaXZhdGUgX2dsb2JhbFJpcHBsZU9wdGlvbnMgPSBpbmplY3QoTUFUX1JJUFBMRV9HTE9CQUxfT1BUSU9OUywge29wdGlvbmFsOiB0cnVlfSk7XG4gIHByaXZhdGUgX3BsYXRmb3JtID0gaW5qZWN0KFBsYXRmb3JtKTtcbiAgcHJpdmF0ZSBfbmdab25lID0gaW5qZWN0KE5nWm9uZSk7XG4gIHByaXZhdGUgX2hvc3RzID0gbmV3IE1hcDxIVE1MRWxlbWVudCwgTWF0UmlwcGxlPigpO1xuXG4gIGNvbnN0cnVjdG9yKCkge1xuICAgIHRoaXMuX25nWm9uZS5ydW5PdXRzaWRlQW5ndWxhcigoKSA9PiB7XG4gICAgICBmb3IgKGNvbnN0IGV2ZW50IG9mIHJpcHBsZUludGVyYWN0aW9uRXZlbnRzKSB7XG4gICAgICAgIHRoaXMuX2RvY3VtZW50Py5hZGRFdmVudExpc3RlbmVyKGV2ZW50LCB0aGlzLl9vbkludGVyYWN0aW9uLCBldmVudExpc3RlbmVyT3B0aW9ucyk7XG4gICAgICB9XG4gICAgfSk7XG4gIH1cblxuICBuZ09uRGVzdHJveSgpIHtcbiAgICBjb25zdCBob3N0cyA9IHRoaXMuX2hvc3RzLmtleXMoKTtcblxuICAgIGZvciAoY29uc3QgaG9zdCBvZiBob3N0cykge1xuICAgICAgdGhpcy5kZXN0cm95UmlwcGxlKGhvc3QpO1xuICAgIH1cblxuICAgIGZvciAoY29uc3QgZXZlbnQgb2YgcmlwcGxlSW50ZXJhY3Rpb25FdmVudHMpIHtcbiAgICAgIHRoaXMuX2RvY3VtZW50Py5yZW1vdmVFdmVudExpc3RlbmVyKGV2ZW50LCB0aGlzLl9vbkludGVyYWN0aW9uLCBldmVudExpc3RlbmVyT3B0aW9ucyk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIENvbmZpZ3VyZXMgdGhlIHJpcHBsZSB0aGF0IHdpbGwgYmUgcmVuZGVyZWQgYnkgdGhlIHJpcHBsZSBsb2FkZXIuXG4gICAqXG4gICAqIFN0b3JlcyB0aGUgZ2l2ZW4gaW5mb3JtYXRpb24gYWJvdXQgaG93IHRoZSByaXBwbGUgc2hvdWxkIGJlIGNvbmZpZ3VyZWQgb24gdGhlIGhvc3RcbiAgICogZWxlbWVudCBzbyB0aGF0IGl0IGNhbiBsYXRlciBiZSByZXRyaXZlZCAmIHVzZWQgd2hlbiB0aGUgcmlwcGxlIGlzIGFjdHVhbGx5IGNyZWF0ZWQuXG4gICAqL1xuICBjb25maWd1cmVSaXBwbGUoXG4gICAgaG9zdDogSFRNTEVsZW1lbnQsXG4gICAgY29uZmlnOiB7XG4gICAgICBjbGFzc05hbWU/OiBzdHJpbmc7XG4gICAgICBjZW50ZXJlZD86IGJvb2xlYW47XG4gICAgICBkaXNhYmxlZD86IGJvb2xlYW47XG4gICAgfSxcbiAgKTogdm9pZCB7XG4gICAgLy8gSW5kaWNhdGVzIHRoYXQgdGhlIHJpcHBsZSBoYXMgbm90IHlldCBiZWVuIHJlbmRlcmVkIGZvciB0aGlzIGNvbXBvbmVudC5cbiAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVVbmluaXRpYWxpemVkLCB0aGlzLl9nbG9iYWxSaXBwbGVPcHRpb25zPy5uYW1lc3BhY2UgPz8gJycpO1xuXG4gICAgLy8gU3RvcmUgdGhlIGFkZGl0aW9uYWwgY2xhc3MgbmFtZShzKSB0aGF0IHNob3VsZCBiZSBhZGRlZCB0byB0aGUgcmlwcGxlIGVsZW1lbnQuXG4gICAgaWYgKGNvbmZpZy5jbGFzc05hbWUgfHwgIWhvc3QuaGFzQXR0cmlidXRlKG1hdFJpcHBsZUNsYXNzTmFtZSkpIHtcbiAgICAgIGhvc3Quc2V0QXR0cmlidXRlKG1hdFJpcHBsZUNsYXNzTmFtZSwgY29uZmlnLmNsYXNzTmFtZSB8fCAnJyk7XG4gICAgfVxuXG4gICAgLy8gU3RvcmUgd2hldGhlciB0aGUgcmlwcGxlIHNob3VsZCBiZSBjZW50ZXJlZC5cbiAgICBpZiAoY29uZmlnLmNlbnRlcmVkKSB7XG4gICAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVDZW50ZXJlZCwgJycpO1xuICAgIH1cblxuICAgIGlmIChjb25maWcuZGlzYWJsZWQpIHtcbiAgICAgIGhvc3Quc2V0QXR0cmlidXRlKG1hdFJpcHBsZURpc2FibGVkLCAnJyk7XG4gICAgfVxuICB9XG5cbiAgLyoqIFJldHVybnMgdGhlIHJpcHBsZSBpbnN0YW5jZSBmb3IgdGhlIGdpdmVuIGhvc3QgZWxlbWVudC4gKi9cbiAgZ2V0UmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50KTogTWF0UmlwcGxlIHwgdW5kZWZpbmVkIHtcbiAgICBjb25zdCByaXBwbGUgPSB0aGlzLl9ob3N0cy5nZXQoaG9zdCk7XG4gICAgcmV0dXJuIHJpcHBsZSB8fCB0aGlzLl9jcmVhdGVSaXBwbGUoaG9zdCk7XG4gIH1cblxuICAvKiogU2V0cyB0aGUgZGlzYWJsZWQgc3RhdGUgb24gdGhlIHJpcHBsZSBpbnN0YW5jZSBjb3JyZXNwb25kaW5nIHRvIHRoZSBnaXZlbiBob3N0IGVsZW1lbnQuICovXG4gIHNldERpc2FibGVkKGhvc3Q6IEhUTUxFbGVtZW50LCBkaXNhYmxlZDogYm9vbGVhbik6IHZvaWQge1xuICAgIGNvbnN0IHJpcHBsZSA9IHRoaXMuX2hvc3RzLmdldChob3N0KTtcblxuICAgIC8vIElmIHRoZSByaXBwbGUgaGFzIGFscmVhZHkgYmVlbiBpbnN0YW50aWF0ZWQsIGp1c3QgZGlzYWJsZSBpdC5cbiAgICBpZiAocmlwcGxlKSB7XG4gICAgICByaXBwbGUuZGlzYWJsZWQgPSBkaXNhYmxlZDtcbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICAvLyBPdGhlcndpc2UsIHNldCBhbiBhdHRyaWJ1dGUgc28gd2Uga25vdyB3aGF0IHRoZVxuICAgIC8vIGRpc2FibGVkIHN0YXRlIHNob3VsZCBiZSB3aGVuIHRoZSByaXBwbGUgaXMgaW5pdGlhbGl6ZWQuXG4gICAgaWYgKGRpc2FibGVkKSB7XG4gICAgICBob3N0LnNldEF0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCwgJycpO1xuICAgIH0gZWxzZSB7XG4gICAgICBob3N0LnJlbW92ZUF0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIEhhbmRsZXMgY3JlYXRpbmcgYW5kIGF0dGFjaGluZyBjb21wb25lbnQgaW50ZXJuYWxzXG4gICAqIHdoZW4gYSBjb21wb25lbnQgaXMgaW5pdGlhbGx5IGludGVyYWN0ZWQgd2l0aC5cbiAgICovXG4gIHByaXZhdGUgX29uSW50ZXJhY3Rpb24gPSAoZXZlbnQ6IEV2ZW50KSA9PiB7XG4gICAgY29uc3QgZXZlbnRUYXJnZXQgPSBfZ2V0RXZlbnRUYXJnZXQoZXZlbnQpO1xuXG4gICAgaWYgKGV2ZW50VGFyZ2V0IGluc3RhbmNlb2YgSFRNTEVsZW1lbnQpIHtcbiAgICAgIC8vIFRPRE8od2FnbmVybWFjaWVsKTogQ29uc2lkZXIgYmF0Y2hpbmcgdGhlc2UgZXZlbnRzIHRvIGltcHJvdmUgcnVudGltZSBwZXJmb3JtYW5jZS5cbiAgICAgIGNvbnN0IGVsZW1lbnQgPSBldmVudFRhcmdldC5jbG9zZXN0KFxuICAgICAgICBgWyR7bWF0UmlwcGxlVW5pbml0aWFsaXplZH09XCIke3RoaXMuX2dsb2JhbFJpcHBsZU9wdGlvbnM/Lm5hbWVzcGFjZSA/PyAnJ31cIl1gLFxuICAgICAgKTtcblxuICAgICAgaWYgKGVsZW1lbnQpIHtcbiAgICAgICAgdGhpcy5fY3JlYXRlUmlwcGxlKGVsZW1lbnQgYXMgSFRNTEVsZW1lbnQpO1xuICAgICAgfVxuICAgIH1cbiAgfTtcblxuICAvKiogQ3JlYXRlcyBhIE1hdFJpcHBsZSBhbmQgYXBwZW5kcyBpdCB0byB0aGUgZ2l2ZW4gZWxlbWVudC4gKi9cbiAgcHJpdmF0ZSBfY3JlYXRlUmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50KTogTWF0UmlwcGxlIHwgdW5kZWZpbmVkIHtcbiAgICBpZiAoIXRoaXMuX2RvY3VtZW50KSB7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgY29uc3QgZXhpc3RpbmdSaXBwbGUgPSB0aGlzLl9ob3N0cy5nZXQoaG9zdCk7XG4gICAgaWYgKGV4aXN0aW5nUmlwcGxlKSB7XG4gICAgICByZXR1cm4gZXhpc3RpbmdSaXBwbGU7XG4gICAgfVxuXG4gICAgLy8gQ3JlYXRlIHRoZSByaXBwbGUgZWxlbWVudC5cbiAgICBob3N0LnF1ZXJ5U2VsZWN0b3IoJy5tYXQtcmlwcGxlJyk/LnJlbW92ZSgpO1xuICAgIGNvbnN0IHJpcHBsZUVsID0gdGhpcy5fZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc3BhbicpO1xuICAgIHJpcHBsZUVsLmNsYXNzTGlzdC5hZGQoJ21hdC1yaXBwbGUnLCBob3N0LmdldEF0dHJpYnV0ZShtYXRSaXBwbGVDbGFzc05hbWUpISk7XG4gICAgaG9zdC5hcHBlbmQocmlwcGxlRWwpO1xuXG4gICAgLy8gQ3JlYXRlIHRoZSBNYXRSaXBwbGUuXG4gICAgY29uc3QgcmlwcGxlID0gbmV3IE1hdFJpcHBsZShcbiAgICAgIG5ldyBFbGVtZW50UmVmKHJpcHBsZUVsKSxcbiAgICAgIHRoaXMuX25nWm9uZSxcbiAgICAgIHRoaXMuX3BsYXRmb3JtLFxuICAgICAgdGhpcy5fZ2xvYmFsUmlwcGxlT3B0aW9ucyA/IHRoaXMuX2dsb2JhbFJpcHBsZU9wdGlvbnMgOiB1bmRlZmluZWQsXG4gICAgICB0aGlzLl9hbmltYXRpb25Nb2RlID8gdGhpcy5fYW5pbWF0aW9uTW9kZSA6IHVuZGVmaW5lZCxcbiAgICApO1xuICAgIHJpcHBsZS5faXNJbml0aWFsaXplZCA9IHRydWU7XG4gICAgcmlwcGxlLnRyaWdnZXIgPSBob3N0O1xuICAgIHJpcHBsZS5jZW50ZXJlZCA9IGhvc3QuaGFzQXR0cmlidXRlKG1hdFJpcHBsZUNlbnRlcmVkKTtcbiAgICByaXBwbGUuZGlzYWJsZWQgPSBob3N0Lmhhc0F0dHJpYnV0ZShtYXRSaXBwbGVEaXNhYmxlZCk7XG4gICAgdGhpcy5hdHRhY2hSaXBwbGUoaG9zdCwgcmlwcGxlKTtcbiAgICByZXR1cm4gcmlwcGxlO1xuICB9XG5cbiAgYXR0YWNoUmlwcGxlKGhvc3Q6IEhUTUxFbGVtZW50LCByaXBwbGU6IE1hdFJpcHBsZSk6IHZvaWQge1xuICAgIGhvc3QucmVtb3ZlQXR0cmlidXRlKG1hdFJpcHBsZVVuaW5pdGlhbGl6ZWQpO1xuICAgIHRoaXMuX2hvc3RzLnNldChob3N0LCByaXBwbGUpO1xuICB9XG5cbiAgZGVzdHJveVJpcHBsZShob3N0OiBIVE1MRWxlbWVudCkge1xuICAgIGNvbnN0IHJpcHBsZSA9IHRoaXMuX2hvc3RzLmdldChob3N0KTtcblxuICAgIGlmIChyaXBwbGUpIHtcbiAgICAgIC8vIFNpbmNlIHRoaXMgZGlyZWN0aXZlIGlzIGNyZWF0ZWQgbWFudWFsbHksIGl0IG5lZWRzIHRvIGJlIGRlc3Ryb3llZCBtYW51YWxseSB0b28uXG4gICAgICAvLyB0c2xpbnQ6ZGlzYWJsZS1uZXh0LWxpbmU6bm8tbGlmZWN5Y2xlLWludm9jYXRpb25cbiAgICAgIHJpcHBsZS5uZ09uRGVzdHJveSgpO1xuICAgICAgdGhpcy5faG9zdHMuZGVsZXRlKGhvc3QpO1xuICAgIH1cbiAgfVxufVxuIl19                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         *
+        Scroller.prototype.render = function () {
+            var props = this.props;
+            var liquid = props.liquid, liquidIsAbsolute = props.liquidIsAbsolute;
+            var isAbsolute = liquid && liquidIsAbsolute;
+            var className = ['fc-scroller'];
+            if (liquid) {
+                if (liquidIsAbsolute) {
+                    className.push('fc-scroller-liquid-absolute');
+                }
+                else {
+                    className.push('fc-scroller-liquid');
+                }
+            }
+            return (createElement("div", { ref: this.handleEl, className: className.join(' '), style: {
+                    overflowX: props.overflowX,
+                    overflowY: props.overflowY,
+                    left: (isAbsolute && -(props.overcomeLeft || 0)) || '',
+                    right: (isAbsolute && -(props.overcomeRight || 0)) || '',
+                    bottom: (isAbsolute && -(props.overcomeBottom || 0)) || '',
+                    marginLeft: (!isAbsolute && -(props.overcomeLeft || 0)) || '',
+                    marginRight: (!isAbsolute && -(props.overcomeRight || 0)) || '',
+                    marginBottom: (!isAbsolute && -(props.overcomeBottom || 0)) || '',
+                    maxHeight: props.maxHeight || '',
+                } }, props.children));
+        };
+        Scroller.prototype.needsXScrolling = function () {
+            if (VISIBLE_HIDDEN_RE.test(this.props.overflowX)) {
+                return false;
+            }
+            // testing scrollWidth>clientWidth is unreliable cross-browser when pixel heights aren't integers.
+            // much more reliable to see if children are taller than the scroller, even tho doesn't account for
+            // inner-child margins and absolute positioning
+            var el = this.el;
+            var realClientWidth = this.el.getBoundingClientRect().width - this.getYScrollbarWidth();
+            var children = el.children;
+            for (var i = 0; i < children.length; i += 1) {
+                var childEl = children[i];
+                if (childEl.getBoundingClientRect().width > realClientWidth) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Scroller.prototype.needsYScrolling = function () {
+            if (VISIBLE_HIDDEN_RE.test(this.props.overflowY)) {
+                return false;
+            }
+            // testing scrollHeight>clientHeight is unreliable cross-browser when pixel heights aren't integers.
+            // much more reliable to see if children are taller than the scroller, even tho doesn't account for
+            // inner-child margins and absolute positioning
+            var el = this.el;
+            var realClientHeight = this.el.getBoundingClientRect().height - this.getXScrollbarWidth();
+            var children = el.children;
+            for (var i = 0; i < children.length; i += 1) {
+                var childEl = children[i];
+                if (childEl.getBoundingClientRect().height > realClientHeight) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Scroller.prototype.getXScrollbarWidth = function () {
+            if (VISIBLE_HIDDEN_RE.test(this.props.overflowX)) {
+                return 0;
+            }
+            return this.el.offsetHeight - this.el.clientHeight; // only works because we guarantee no borders. TODO: add to CSS with important?
+        };
+        Scroller.prototype.getYScrollbarWidth = function () {
+            if (VISIBLE_HIDDEN_RE.test(this.props.overflowY)) {
+                return 0;
+            }
+            return this.el.offsetWidth - this.el.clientWidth; // only works because we guarantee no borders. TODO: add to CSS with important?
+        };
+        return Scroller;
+    }(BaseComponent));
+
+    /*
     TODO: somehow infer OtherArgs from masterCallback?
     TODO: infer RefType from masterCallback if provided
     */

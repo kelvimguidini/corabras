@@ -65,7 +65,7 @@ return array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
                 'paths' => array(
-                    __DIR__ . "/src/Application/Model"
+                    __DIR__ . "/../src/Application/Model"
                 ),
             ),
             // default metadata driver, aggregates all other drivers into a single one.
