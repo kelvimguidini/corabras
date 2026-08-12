@@ -1,30 +1,47 @@
-# Composer files
-composer.phar
+# Composer & Vendor
+**/vendor/
 vendor/
+composer.phar
 
+# NPM / Node
+**/node_modules/
+node_modules/
+package-lock.json
 
-# Binary gettext files
+# Local and environment configurations
+**/*.local.php
+**/config/autoload/*.local.php
+**/config/autoload/doctrine.local.php
+.env
+**/.env
+
+# Temporary and Cache files
+**/data/logs/
+**/data/cache/
+**/data/sessions/
+**/data/tmp/
+**/temp/
+**/sessions/
+**/log
+**/*.log
+
+# Doctrine 2
+**/data/DoctrineORMModule/Proxy/
+**/data/DoctrineORMModule/cache/
+
+# Binary & translation files
 *.mo
 
-# Local config
-config/autoload/*.local.php
-telhas.code-workspace
+# Backups & Eclipse/IDE files
 .git_corrupt_backup/
+**/.git_corrupt_backup/
+.settings/
+**/.settings/
+.vscode/
+**/.vscode/
+*.sln
+*.buildpath
+*.project
 
-# Data
-data/logs/
-data/cache/
-data/sessions/
-data/tmp/
-temp/
-
-sessions
-
-#Doctrine 2
-data/DoctrineORMModule/Proxy/
-data/DoctrineORMModule/cache/
-
-# Legacy ZF1
-demos/
-extras/documentation
-log
+# Backup / legacy folders
+dfTelhas/

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORABRAS - Central de Pedidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #57a900;
+            --primary-light: #70d900;
+            --primary-dark: #3f7b00;
+            --primary-glow: rgba(87, 169, 0, 0.25);
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --telhas-accent: #f59e0b;
+            --blocos-accent: #38bdf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Elementos de fundo decorativos */
+        .bg-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Cabeçalho */
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(87, 169, 0, 0.15);
+            border: 1px solid rgba(112, 217, 0, 0.3);
+            color: #84cc16;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .brand-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            box-shadow: 0 0 10px var(--primary-light);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.15;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, #70d900 0%, #57a900 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Grade de Módulos / Opções */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, transparent);
+            transition: background 0.3s ease;
+        }
+
+        .module-card.telhas:hover::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .module-card.blocos:hover::before {
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+        }
+
+        .module-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+        }
+
+        .module-card.telhas:hover {
+            box-shadow: 0 20px 40px -15px rgba(245, 158, 11, 0.2);
+        }
+
+        .module-card.blocos:hover {
+            box-shadow: 0 20px 40px -15px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Ícone */
+        .icon-container {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .module-card:hover .icon-container {
+            transform: scale(1.08);
+        }
+
+        .module-card.telhas .icon-container {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fbbf24;
+        }
+
+        .module-card.blocos .icon-container {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: #38bdf8;
+        }
+
+        .icon-container svg {
+            width: 34px;
+            height: 34px;
+        }
+
+        /* Textos do Card */
+        .card-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .module-card.telhas .card-tag {
+            color: #f59e0b;
+        }
+
+        .module-card.blocos .card-tag {
+            color: #38bdf8;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 28px;
+            flex-grow: 1;
+        }
+
+        /* Botão de Ação */
+        .card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 20px;
+            border-radius: 12px;
+            width: 100%;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .module-card.telhas .card-action {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .module-card.telhas:hover .card-action {
+            background: #f59e0b;
+            color: #0f172a;
+            border-color: #f59e0b;
+            font-weight: 700;
+        }
+
+        .module-card.blocos .card-action {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .module-card.blocos:hover .card-action {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .card-action svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        .module-card:hover .card-action svg {
+            transform: translateX(4px);
+        }
+
+        /* Rodapé */
+        footer {
+            margin-top: 56px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 680px) {
+            body {
+                padding: 20px 16px;
+                justify-content: flex-start;
+            }
+
+            header {
+                margin-top: 20px;
+                margin-bottom: 32px;
+            }
+
+            .module-card {
+                padding: 28px 20px;
+            }
+
+            footer {
+                margin-top: 40px;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="brand-badge">
+                <span class="brand-badge-dot"></span>
+                Portal de Vendas
+            </div>
+            <h1>CORABRAS <span>PEDIDOS</span></h1>
+            <p class="subtitle">Selecione o módulo para iniciar o cadastro ou gestão de vendas.</p>
+        </header>
+
+        <main class="modules-grid">
+            <!-- Módulo Telhas -->
+            <a href="https://telhas.pedidocorabras.com.br" class="module-card telhas" id="link-telhas" title="Acessar Pedidos de Telhas">
+                <div class="icon-container">
+                    <!-- Ícone de Telhado / Telha -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </div>
+                <div class="card-tag">Módulo Telhas</div>
+                <h2 class="card-title">Pedidos de Telhas</h2>
+                <p class="card-description">Cadastre novos pedidos, consulte status de carregamento, entrega e gerencie vendas de telhas.</p>
+                <div class="card-action">
+                    <span>Acessar Telhas</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Módulo Blocos -->
+            <a href="https://blocos.pedidocorabras.com.br" class="module-card blocos" id="link-blocos" title="Acessar Pedidos de Blocos">
+                <div class="icon-container">
+                    <!-- Ícone de Bloco / Construção -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="5" rx="1"/>
+                        <rect x="2" y="10" width="9" height="5" rx="1"/>
+                        <rect x="13" y="10" width="9" height="5" rx="1"/>
+                        <rect x="2" y="17" width="20" height="5" rx="1"/>
+                    </svg>
+                </div>
+                <div class="card-tag">Módulo Blocos</div>
+                <h2 class="card-title">Pedidos de Blocos</h2>
+                <p class="card-description">Cadastre novos pedidos, consulte status de carregamento, entrega e gerencie vendas de blocos.</p>
+                <div class="card-action">
+                    <span>Acessar Blocos</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </a>
+        </main>
+
+        <footer>
+            <p>&copy; CORABRAS - Todos os direitos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>

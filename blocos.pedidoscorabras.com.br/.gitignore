@@ -1,0 +1,30 @@
+# Composer files
+composer.phar
+vendor/
+
+
+# Binary gettext files
+*.mo
+
+# Local config
+config/autoload/*.local.php
+blocos.code-workspace
+
+# Data
+data/logs/
+data/cache/
+data/sessions/
+data/tmp/
+temp/
+
+sessions
+
+#Doctrine 2
+data/DoctrineORMModule/Proxy/
+data/DoctrineORMModule/cache/
+
+# Legacy ZF1
+demos/
+extras/documentation
+log
+

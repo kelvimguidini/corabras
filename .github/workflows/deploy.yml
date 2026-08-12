@@ -1,4 +1,4 @@
-name: Deploy ZF2 via FTP
+name: Deploy Corabras (Monorepo) via FTP
 
 on:
   push:
@@ -11,11 +11,11 @@ jobs:
 
     steps:
       # 1 — Checkout do repositório
-      - name: Checkout repository 
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2 — Upload do Projeto via FTP
-      - name: Upload Files via FTP
+      # 2 — Upload de Telhas via FTP
+      - name: Deploy Telhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -24,8 +24,8 @@ jobs:
           port: 21
           protocol: ftp
           timeout: 60000
-          local-dir: ./
-          server-dir: /
+          local-dir: ./telhas.pedidoscorabras.com.br/
+          server-dir: /telhas.pedidoscorabras.com.br/
           exclude: |
             **/.git**
             **/.git/**
@@ -46,3 +46,86 @@ jobs:
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
             **/vendor/**
+
+      # 3 — Upload de Blocos via FTP
+      - name: Deploy Blocos via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          timeout: 60000
+          local-dir: ./blocos.pedidoscorabras.com.br/
+          server-dir: /blocos.pedidoscorabras.com.br/
+          exclude: |
+            **/.git**
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/tests/**
+            **/storage/**
+            **/public/storage/**
+            **/tmp/**
+            **/.env**
+            **vite.config.js**
+            **nginx.conf**
+            **docker-compose.yml**
+            **Dockerfile**
+            **docker/**
+            **.dockerignore**
+            **blocos.code-workspace**
+            **/config/autoload/*.local.php
+            **/config/autoload/doctrine.local.php
+            **/vendor/**
+
+      # 4 — Upload Portal (index.html) para Raiz /
+      - name: Deploy Portal Landing Page para Raiz /
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          timeout: 60000
+          local-dir: ./
+          server-dir: /
+          exclude: |
+            **/telhas.pedidoscorabras.com.br/**
+            **/blocos.pedidoscorabras.com.br/**
+            **/dfTelhas/**
+            **/.git**
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/vendor/**
+            **/*.code-workspace
+            **/.vscode/**
+            **/.settings/**
+
+      # 5 — Upload Portal (index.html) para /pedidos.corabras.com.br/
+      - name: Deploy Portal Landing Page para /pedidos.corabras.com.br/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          timeout: 60000
+          local-dir: ./
+          server-dir: /pedidos.corabras.com.br/
+          exclude: |
+            **/telhas.pedidoscorabras.com.br/**
+            **/blocos.pedidoscorabras.com.br/**
+            **/dfTelhas/**
+            **/.git**
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/vendor/**
+            **/*.code-workspace
+            **/.vscode/**
+            **/.settings/**
