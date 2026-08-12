@@ -22,25 +22,25 @@ jobs:
           extensions: mbstring, intl, zip, pdo_mysql, gd
           tools: composer:v2
 
-      # 3 — Instalação limpa de dependências (Composer) para Telhas
-      - name: Composer Install Telhas
+      # 3 — Instalação e empacotamento das dependências para Telhas
+      - name: Build e Zip Vendor Telhas
         run: |
           cd telhas
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+          cd vendor
+          zip -r -q ../public/vendor.zip .
+          cd ../..
 
-      # 4 — Instalação limpa de dependências (Composer) para Blocos
-      - name: Composer Install Blocos
+      # 4 — Instalação e empacotamento das dependências para Blocos
+      - name: Build e Zip Vendor Blocos
         run: |
           cd blocos
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+          cd vendor
+          zip -r -q ../public/vendor.zip .
+          cd ../..
 
-      # 5 — Instalação de dependências (Composer) para dfTelhas
-      - name: Composer Install dfTelhas
-        run: |
-          cd dftelhas
-          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs || true
-
-      # 6 — Upload de Telhas via FTP (com vendor limpo)
+      # 5 — Upload de Telhas via FTP
       - name: Deploy Telhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -71,8 +71,9 @@ jobs:
             **telhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
+            **/vendor/**
 
-      # 7 — Upload de Blocos via FTP (com vendor limpo)
+      # 6 — Upload de Blocos via FTP
       - name: Deploy Blocos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -103,8 +104,9 @@ jobs:
             **blocos.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
+            **/vendor/**
 
-      # 8 — Upload de dfTelhas via FTP (com vendor limpo)
+      # 7 — Upload de dfTelhas via FTP
       - name: Deploy dfTelhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -136,8 +138,9 @@ jobs:
             **dfTelhas.code-workspace**
             **/config/autoload/*.local.php
             **/config/autoload/doctrine.local.php
+            **/vendor/**
 
-      # 9 — Upload Portal (index.html) para /public_html/
+      # 8 — Upload Portal (index.html) para /public_html/
       - name: Deploy Portal Landing Page para /public_html/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -163,3 +166,11 @@ jobs:
             **/*.code-workspace
             **/.vscode/**
             **/.settings/**
+
+      # 9 — Extrai o Vendor automaticamente na hospedagem
+      - name: Auto-Extrair Vendor no Servidor
+        run: |
+          echo "Extraindo vendor em Telhas..."
+          curl -s -f "https://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || echo "Aviso: Nao foi possivel acionar extract_vendor para Telhas."
+          echo "Extraindo vendor em Blocos..."
+          curl -s -f "https://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || echo "Aviso: Nao foi possivel acionar extract_vendor para Blocos."
