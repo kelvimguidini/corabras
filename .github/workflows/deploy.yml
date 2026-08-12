@@ -141,8 +141,8 @@ jobs:
             **/.vscode/**
             **/.settings/**
 
-      # 6 — Upload Portal (index.html) para /pedidos.corabras.com.br/
-      - name: Deploy Portal Landing Page para /pedidos.corabras.com.br/
+      # 6 — Upload Portal (index.html) para /pedidoscorabras.com.br/
+      - name: Deploy Portal Landing Page para /pedidoscorabras.com.br/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -152,7 +152,7 @@ jobs:
           protocol: ftp
           timeout: 60000
           local-dir: ./
-          server-dir: /pedidos.corabras.com.br/
+          server-dir: /public_html/
           exclude: |
             **/telhas/**
             **/blocos/**
