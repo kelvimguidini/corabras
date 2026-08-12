@@ -40,7 +40,18 @@ jobs:
           zip -r -q ../public/packages.zip .
           cd ../..
 
-      # 5 — Upload de Telhas via FTP
+      # 5 — Instalação e empacotamento das dependências para dfTelhas
+      - name: Build e Zip Vendor dfTelhas
+        run: |
+          cd dftelhas
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs || true
+          if [ -d "vendor" ]; then
+            cd vendor
+            zip -r -q ../public/packages.zip .
+            cd ../..
+          fi
+
+      # 6 — Upload de Telhas via FTP
       - name: Deploy Telhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -73,7 +84,7 @@ jobs:
             **/config/autoload/doctrine.local.php
             **/vendor/**
 
-      # 6 — Upload de Blocos via FTP
+      # 7 — Upload de Blocos via FTP
       - name: Deploy Blocos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -106,7 +117,7 @@ jobs:
             **/config/autoload/doctrine.local.php
             **/vendor/**
 
-      # 7 — Upload de dfTelhas via FTP
+      # 8 — Upload de dfTelhas via FTP
       - name: Deploy dfTelhas via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -140,7 +151,7 @@ jobs:
             **/config/autoload/doctrine.local.php
             **/vendor/**
 
-      # 8 — Upload Portal (index.html) para /public_html/
+      # 9 — Upload Portal (index.html) para /public_html/
       - name: Deploy Portal Landing Page para /public_html/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -167,10 +178,12 @@ jobs:
             **/.vscode/**
             **/.settings/**
 
-      # 9 — Extrai o Vendor automaticamente na hospedagem
+      # 10 — Extrai o Vendor automaticamente na hospedagem
       - name: Auto-Extrair Vendor no Servidor
         run: |
           echo "Extraindo vendor em Telhas..."
-          curl -k -sL "https://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026"
+          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "telhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || curl -k -sL "http://corabras.frii.site/extract_vendor.php?token=corabras_deploy_secret_2026" || true
           echo "Extraindo vendor em Blocos..."
-          curl -k -sL "https://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026"
+          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "blocos.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
+          echo "Extraindo vendor em dfTelhas..."
+          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "dftelhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://dftelhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
