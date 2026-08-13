@@ -933,14 +933,14 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 		});
 
 		$('#salvar_cargas').click(function() {
-			var motorista = $("#motorista_carga").val().trim();
-			var saida = $("#saida").val().trim();
-			var saidah = $("#saidah").val().trim();
-			var retornoh = $("#retornoh").val().trim();
-			var isEntrega = $("#situacao_carga").is(':checked');
+			var motorista = ($("#motorista_carga").val() ? String($("#motorista_carga").val()).trim() : '');
+			var saida = ($("#saida").val() ? String($("#saida").val()).trim() : '');
+			var saidah = ($("#saidah").val() ? String($("#saidah").val()).trim() : '');
+			var retornoh = ($("#retornoh").length && $("#retornoh").val() ? String($("#retornoh").val()).trim() : '');
+			var isEntrega = $("#situacao_carga").length ? $("#situacao_carga").is(':checked') : false;
 
 			if (!motorista || !saida || !saidah) {
-				alert("Todos os campos obrigatórios devem ser preenchidos!");
+				alert("Todos os campos obrigatórios (Motorista, Data e Hora Saída) devem ser preenchidos!");
 				return false;
 			}
 
@@ -955,7 +955,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				},
 				url: "<?php echo $this->url('cadastrarcarga'); ?>",
 				success: function(data) {
-					var idNovo = data.trim();
+					var idNovo = String(data || '').trim();
+					if (!idNovo) {
+						alert("Erro ao cadastrar carga. Tente novamente.");
+						return;
+					}
 					var situacao = isEntrega ? 'Entrega' : 'Carregamento';
 
 					$('#carga-modal').modal('hide');
@@ -978,9 +982,12 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					$("#motorista_carga").val('');
 					$("#saida").val('');
 					$("#saidah").val('');
-					$("#retornoh").val('');
+					if ($("#retornoh").length) $("#retornoh").val('');
 
 					$("#msg").addClass("alert alert-success").text("Carga cadastrada com sucesso e selecionada!");
+				},
+				error: function(xhr, status, error) {
+					alert("Erro ao comunicar com o servidor ao cadastrar carga: " + error);
 				}
 			});
 		});
