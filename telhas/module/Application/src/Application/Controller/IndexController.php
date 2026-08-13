@@ -572,36 +572,63 @@ class IndexController extends AbstractActionController
 
   public function cadastrarcargaAction()
   {
-    session_start();
-    if (!isset($_SESSION['usuarioNome'])) {
-      return $this->redirect()->toRoute('login');
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
     }
-    $em = $this->em;
+    if (!isset($_SESSION['usuarioNome'])) {
+      $response = $this->getResponse();
+      $response->setStatusCode(401);
+      $response->setContent('Não autorizado');
+      return $response;
+    }
 
+    $em = $this->em;
     $request = $this->getRequest();
 
     if ($request->isPost()) {
-      $motorista = $request->getPost("motorista");
-      $data = $request->getPost("saida");
-      $saida = $request->getPost("saidah");
-      $retorno = $request->getPost("retornoh");
-      $situacao = $request->getPost("situacao") == "true" ? "Entrega" : "Carregamento";
+      try {
+        $motorista = trim((string)$request->getPost("motorista"));
+        $data = trim((string)$request->getPost("saida"));
+        $saida = trim((string)$request->getPost("saidah"));
+        $retorno = trim((string)$request->getPost("retornoh"));
+        $situacaoPost = $request->getPost("situacao");
+        $situacao = ($situacaoPost === true || $situacaoPost === 'true' || $situacaoPost === 'Entrega') ? "Entrega" : "Carregamento";
 
-      $carga = new \Application\Model\Carga();
+        if (empty($motorista) || empty($data) || empty($saida)) {
+          $response = $this->getResponse();
+          $response->setStatusCode(400);
+          $response->setContent('Campos obrigatórios ausentes');
+          return $response;
+        }
 
-      $carga->setMotorista(trim($motorista));
-      $carga->setData(trim($data));
-      $carga->setSaida(trim($saida));
-      $carga->setRetorno(trim($retorno));
-      $carga->setSituacao($situacao);
+        $carga = new \Application\Model\Carga();
 
-      $em->persist($carga);
-      $em->flush();
+        $carga->setMotorista($motorista);
+        $carga->setData($data);
+        $carga->setSaida($saida);
+        if (!empty($retorno)) {
+          $carga->setRetorno($retorno);
+        }
+        $carga->setSituacao($situacao);
 
-      $view = new ViewModel(array('id' => $carga->getId()));
-      $view->setTerminal(true);
-      return $view;
+        $em->persist($carga);
+        $em->flush();
+
+        $response = $this->getResponse();
+        $response->setContent((string)$carga->getId());
+        return $response;
+      } catch (\Exception $e) {
+        $response = $this->getResponse();
+        $response->setStatusCode(500);
+        $response->setContent('Erro ao salvar carga: ' . $e->getMessage());
+        return $response;
+      }
     }
+
+    $response = $this->getResponse();
+    $response->setStatusCode(400);
+    $response->setContent('Requisição inválida');
+    return $response;
   }
 
   public function carregarcargasAction()

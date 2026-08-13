@@ -75,10 +75,16 @@ class Carga
     }
 
     public function setSaida($hora) {
-        if($hora != null){
-            //$hora= substr($data, 0, 2);
-            //$min= substr($data, 3);
-            $this->saida =  new \DateTime($hora);
+        if (!empty($hora)) {
+            if ($hora instanceof \DateTimeInterface) {
+                $this->saida = $hora;
+            } else {
+                try {
+                    $this->saida = new \DateTime(trim((string)$hora));
+                } catch (\Exception $e) {
+                    $this->saida = new \DateTime("00:00:00");
+                }
+            }
         }
     }
 
@@ -87,8 +93,18 @@ class Carga
     }
 
     public function setRetorno($hora) {
-        if($hora != null){
-            $this->retorno =  new \DateTime($hora);
+        if (!empty($hora)) {
+            if ($hora instanceof \DateTimeInterface) {
+                $this->retorno = $hora;
+            } else {
+                try {
+                    $this->retorno = new \DateTime(trim((string)$hora));
+                } catch (\Exception $e) {
+                    $this->retorno = null;
+                }
+            }
+        } else {
+            $this->retorno = null;
         }
     }
 
@@ -97,12 +113,21 @@ class Carga
     }
 
     public function setData($data) {
-        if($data != null){
-            $ano= substr($data, 6);
-            $mes= substr($data, 3,-5);
-            $dia= substr($data, 0,-8);
-            $data = $ano."-".$mes."-".$dia;
-            $this->data =  new \DateTime($data);
+        if (!empty($data)) {
+            if ($data instanceof \DateTimeInterface) {
+                $this->data = $data;
+            } else {
+                $data = trim((string)$data);
+                if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $data, $matches)) {
+                    $this->data = new \DateTime(sprintf('%04d-%02d-%02d', $matches[3], $matches[2], $matches[1]));
+                } else {
+                    try {
+                        $this->data = new \DateTime($data);
+                    } catch (\Exception $e) {
+                        $this->data = new \DateTime();
+                    }
+                }
+            }
         }
     }
 
