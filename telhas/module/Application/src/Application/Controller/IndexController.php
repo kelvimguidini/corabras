@@ -562,11 +562,13 @@ class IndexController extends AbstractActionController
       $cidades = $em->getRepository("Application\Model\Cidade")
         ->findBy([], ['nome' => 'ASC']);
 
+      $hoje = date("Y-m-d");
       $queryCargasCombo = $em->createQuery(
         "SELECT c FROM Application\Model\Carga c 
          WHERE c.situacao IN ('Carregamento','Entrega')
+         AND c.data >= :hoje
          ORDER BY c.id DESC"
-      );
+      )->setParameter('hoje', $hoje);
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
       $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c ORDER BY c.id DESC')
