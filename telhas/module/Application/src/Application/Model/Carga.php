@@ -27,7 +27,7 @@ class Carga
     public $saida;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="time", nullable=true)
      */
     public $retorno;
 
