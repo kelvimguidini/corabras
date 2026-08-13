@@ -230,10 +230,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					<?php if ($this->filtro['situacao'] != "Recebido") {
 						echo "<option value=\"Recebido\" >Pedido Novo</option>";
 					} ?>
-					<?php if ($this->filtro['situacao'] != "Carregamento" && $this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados"  && $this->filtro['situacao'] != "Entrega") {
+					<?php if ($this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
 						echo "<option value=\"Carregamento\" >Carregamento</option>";
 					} ?>
-					<?php if ($this->filtro['situacao'] != "Entrega" && $this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
+					<?php if ($this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
 						echo "<option value=\"Entrega\" >Entrega</option>";
 					} ?>
 					<?php if ($this->filtro['situacao'] != "Finalizados" && $this->filtro['situacao'] != "Excluidos") {
@@ -915,10 +915,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 		}
 
 		$('#situacao').change(function() {
-			$('#select_carga').val('');
-			if ($(this).val() == "Carregamento" || ($(this).val() == "Entrega" && <?php echo ($this->filtro['situacao'] ?? '') == 'Carregamento' ? 'false' : 'true' ?>)) {
-				$('#select_carga').attr("disabled", false);
-				var temp = $(this).val();
+			var sit = $(this).val();
+			if (sit == "Carregamento" || sit == "Entrega") {
+				$('#select_carga').prop("disabled", false);
+				var temp = sit;
 				$("#select_carga option").each(function() {
 					if ($(this).attr("data-situ") == temp || $(this).val() == '') {
 						$(this).show();
@@ -927,74 +927,96 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					}
 				});
 			} else {
-				$('#select_carga').attr("disabled", true);
+				$('#select_carga').val('');
+				$('#select_carga').prop("disabled", true);
 			}
 		});
 
 		$('#salvar_cargas').click(function() {
-			if ($("#motorista_carga").val() == "" || $("#saida").val() == "" || $("#saidah").val() == "") {
-				alert("Todos os campos foram obrigatórios!");
+			var motorista = $("#motorista_carga").val().trim();
+			var saida = $("#saida").val().trim();
+			var saidah = $("#saidah").val().trim();
+			var retornoh = $("#retornoh").val().trim();
+			var isEntrega = $("#situacao_carga").is(':checked');
+
+			if (!motorista || !saida || !saidah) {
+				alert("Todos os campos obrigatórios devem ser preenchidos!");
 				return false;
 			}
 
 			$.ajax({
 				type: "POST",
 				data: {
-					'motorista': $("#motorista_carga").val(),
-					'saida': $("#saida").val(),
-					'saidah': $("#saidah").val(),
-					'retornoh': $("#retornoh").val(),
-					'situacao': $("#situacao_carga").is(':checked')
+					'motorista': motorista,
+					'saida': saida,
+					'saidah': saidah,
+					'retornoh': retornoh,
+					'situacao': isEntrega
 				},
 				url: "<?php echo $this->url('cadastrarcarga'); ?>",
 				success: function(data) {
-					var situacao = $("#situacao_carga").is(':checked') ? 'Entrega' : 'Carregamento';
+					var idNovo = data.trim();
+					var situacao = isEntrega ? 'Entrega' : 'Carregamento';
+
 					$('#carga-modal').modal('hide');
 					$('.modal-backdrop').remove();
-					$('#select_carga').append($('<option>', {
-						value: data.trim(),
-						text: $("#motorista_carga").val() + " - " + $("#saida").val() + " " + $("#saidah").val() + " - " + situacao,
+
+					// Define a situação e habilita o select de cargas
+					$('#situacao').val(situacao);
+					$('#select_carga').prop("disabled", false);
+
+					// Adiciona e seleciona automaticamente a carga recém-criada
+					var novaOpcao = $('<option>', {
+						value: idNovo,
+						text: motorista + " - " + saida + " " + saidah + " - " + situacao,
 						'data-situ': situacao
-					}));
-					$("#msg").addClass("alert alert-success").text("Carga cadastrada com sucesso!");
+					});
+					$('#select_carga').append(novaOpcao);
+					$('#select_carga').val(idNovo);
+
+					// Limpa os campos do modal
+					$("#motorista_carga").val('');
+					$("#saida").val('');
+					$("#saidah").val('');
+					$("#retornoh").val('');
+
+					$("#msg").addClass("alert alert-success").text("Carga cadastrada com sucesso e selecionada!");
 				}
 			});
 		});
 
-		$('#btn_tramitar').click(function() {
-
-			var checado = false;
-
-			if ($('#situacao').val() == "") {
+		$('#btn_tramitar').click(function(e) {
+			var sit = $('#situacao').val();
+			if (!sit) {
 				alert("Selecione a situação!");
-			}
-
-			if (($('#situacao').val() == "Entrega" || $('#situacao').val() == "Finalizados") && <?php echo (($this->filtro['situacao'] ?? '') == 'Carregamento' || ($this->filtro['situacao'] ?? '') == 'Entrega') ? 'true' : 'false' ?>) {
-				if ($('#select_carga').val()) {
-					alert("Selecione um carregamento!");
-				}
-				$(".carga_tramitar").each(function() {
-					if ($(this).is(':checked'))
-						checado = true;
-				});
-				if (!checado) {
-					alert("Deve ser selecionado alguma carga para entregar!");
-				}
-			} else {
-				$('.item_tramitar').each(function() {
-					if ($(this).is(':checked'))
-						checado = true;
-				});
-				if (!checado) {
-					alert("Deve ser selecionado algum pedido para tramitar!");
-				}
-			}
-
-			if (!checado) {
 				return false;
-			} else {
-				$('#tramitar').submit();
 			}
+
+			var checadoCarga = false;
+			$(".carga_tramitar:checked").each(function() {
+				checadoCarga = true;
+			});
+
+			var checadoItem = false;
+			$('.item_tramitar:checked').each(function() {
+				checadoItem = true;
+			});
+
+			if (!checadoCarga && !checadoItem) {
+				alert("Deve ser selecionado pelo menos um pedido ou uma carga para tramitar!");
+				return false;
+			}
+
+			// Se selecionou pedidos individuais para Carregamento ou Entrega, exige seleção da Carga
+			if (checadoItem && (sit == "Carregamento" || sit == "Entrega")) {
+				if (!$('#select_carga').val()) {
+					alert("Por favor, selecione uma carga no campo 'Cargas' para vincular aos pedidos!");
+					$('#select_carga').focus();
+					return false;
+				}
+			}
+
+			$('#tramitar').submit();
 		});
 
 		$('body').on('click', ".venda", function() {
