@@ -35,33 +35,45 @@
             },
 
             events: [
-
                 <?php
-                foreach ($this->carregamentos as $carregamento) {
-                    echo "{";
-                    echo "title: '" . $carregamento["motorista"] . "',";
-                    echo "description: '" . $carregamento["id"] . "',";
-                    echo "start: '" . $carregamento["data"]->format('Y-m-d') . "T" . $carregamento["saida"]->format('H:i:s') . "',";
-                    echo "end: '" . $carregamento["data"]->format('Y-m-d') . "T" . $carregamento["retorno"]->format('H:i:s') . "',";
-                    switch ($carregamento["motorista"]) {
-                        case 'Fábio':
-                            echo "color: 'blue'";
-                            break;
-                        case 'Jairo':
-                            echo "color: 'pink'";
-                            break;
-                        case 'Cesar':
-                            echo "color: 'red'";
-                            break;
-                        case 'Robson':
-                            echo "color: 'green'";
-                            break;
-                        default:
-                            echo "color: 'black'";
-                            break;
-                    }
+                if (!empty($this->carregamentos) && is_iterable($this->carregamentos)) {
+                    foreach ($this->carregamentos as $carregamento) {
+                        $data = $carregamento["data"] ?? null;
+                        $saida = $carregamento["saida"] ?? null;
+                        $retorno = $carregamento["retorno"] ?? null;
+                        $motorista = $carregamento["motorista"] ?? 'Sem motorista';
+                        $id = $carregamento["id"] ?? '';
 
-                    echo "},";
+                        if (!$data) {
+                            continue;
+                        }
+
+                        $dataStr = ($data instanceof \DateTimeInterface) ? $data->format('Y-m-d') : (is_string($data) ? date('Y-m-d', strtotime($data)) : '');
+                        if (!$dataStr) {
+                            continue;
+                        }
+
+                        $saidaStr = ($saida instanceof \DateTimeInterface) ? $saida->format('H:i:s') : (is_string($saida) && !empty($saida) ? $saida : '00:00:00');
+                        $retornoStr = ($retorno instanceof \DateTimeInterface) ? $retorno->format('H:i:s') : (is_string($retorno) && !empty($retorno) ? $retorno : $saidaStr);
+
+                        $cores = [
+                            'Fábio'  => 'blue',
+                            'Jairo'  => 'pink',
+                            'Cesar'  => 'red',
+                            'Robson' => 'green',
+                        ];
+                        $cor = $cores[$motorista] ?? 'black';
+
+                        $eventData = [
+                            'title'       => $motorista,
+                            'description' => (string) $id,
+                            'start'       => $dataStr . 'T' . $saidaStr,
+                            'end'         => $dataStr . 'T' . $retornoStr,
+                            'color'       => $cor,
+                        ];
+
+                        echo json_encode($eventData) . ",\n";
+                    }
                 }
                 ?>
             ]

@@ -595,14 +595,10 @@ class IndexController extends AbstractActionController
         ->findBy([], ['nome' => 'ASC']);
 
       $queryCargasCombo = $this->em->createQuery(
-        "SELECT c FROM Application\Model\Carga c 
-         WHERE (c.situacao IN ('Carregamento','Entrega'))
-         AND c.id IN (
-             SELECT DISTINCT IDENTITY(v.carga)
-             FROM Application\Model\Venda v
-             WHERE v.carga IS NOT NULL
-             AND v.situacao <> 'Excluidos'
-         )"
+        "SELECT DISTINCT c FROM Application\Model\Carga c 
+         JOIN c.vendas v
+         WHERE c.situacao IN ('Carregamento','Entrega')
+         AND v.situacao != 'Excluidos'"
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
@@ -629,13 +625,16 @@ class IndexController extends AbstractActionController
 
   public function carregamentoAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+    if (!isset($_SESSION['usuarioNome'])) {
+      return $this->redirect()->toRoute('login');
+    }
 
     $db = $this->em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
-    $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 
-    //\Laminas\Debug\Debug::dump($cargas);
     return new ViewModel(array('carregamentos' => $cargas));
   }
 
@@ -712,8 +711,8 @@ class IndexController extends AbstractActionController
     $view = new ViewModel([
       'produtos' => $produtos,
       'venda'    => $produtos[0]->venda,
-      'imgLogo1' => $this->baseUrl . '/img/logo-1.jpg',
-      'imgLogo2' => $this->baseUrl . '/img/Corabras_Selo-1.jpg',
+      'imgLogo1' => $this->getImageBase64('/img/logo-1.png'),
+      'imgLogo2' => $this->getImageBase64('/img/Corabras_Selo-1.png'),
     ]);
 
     // Caminho da view: module/Application/view/application/index/comprovante.phtml
@@ -755,7 +754,7 @@ class IndexController extends AbstractActionController
     $view = new \Laminas\View\Model\ViewModel([
       'pedido' => $pedido,
       'dataAtual' => date("d/m/Y"),
-      'logo' => $this->baseUrl . '/img/logo-1.jpg',
+      'logo' => $this->getImageBase64('/img/corabras.png'),
     ]);
     $view->setTemplate('application/index/imprimir');
 
@@ -814,7 +813,7 @@ class IndexController extends AbstractActionController
       'qtd_total'      => $qtd_total,
       'valor_total_g'  => $valor_total_g,
       'valor_extenso'  => $valor_extenso,
-      'logo' => $this->baseUrl . '/img/logo-1.jpg',
+      'logo' => $this->getImageBase64('/img/corabras.png'),
     ]);
 
     // --- GERA O PDF ---
@@ -981,5 +980,28 @@ class IndexController extends AbstractActionController
     $rt = mb_substr($rt, 1);
 
     return ($rt ? trim($rt) : "zero");
+  }
+
+  private function getImageBase64(string $imagePath): string
+  {
+    $possiblePaths = [
+      $imagePath,
+      __DIR__ . '/../../../../../public' . $imagePath,
+      __DIR__ . '/../../../../public' . $imagePath,
+      __DIR__ . '/../../../public' . $imagePath,
+      getcwd() . '/public' . $imagePath,
+      '/var/www/html/public' . $imagePath,
+    ];
+
+    foreach ($possiblePaths as $path) {
+      if (file_exists($path) && is_file($path) && filesize($path) > 0) {
+        $type = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mime = $type === 'svg' ? 'svg+xml' : ($type === 'jpg' ? 'jpeg' : $type);
+        $data = file_get_contents($path);
+        return 'data:image/' . $mime . ';base64,' . base64_encode($data);
+      }
+    }
+
+    return '';
   }
 }

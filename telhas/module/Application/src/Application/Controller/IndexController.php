@@ -287,7 +287,7 @@ class IndexController extends AbstractActionController
           $em->persist($venda);
           $em->flush();
         } else if ($situacao == 'Recebido') {
-          $cargaTemp = $venda->getCarga()->getId();
+          $cargaTemp = $venda->getCarga() ? $venda->getCarga()->getId() : null;
           $venda->setCarga(null);
 
           $em->persist($venda);
@@ -559,14 +559,10 @@ class IndexController extends AbstractActionController
         ->findBy([], ['nome' => 'ASC']);
 
       $queryCargasCombo = $em->createQuery(
-        "SELECT c FROM Application\Model\Carga c 
-         WHERE (c.situacao IN ('Carregamento','Entrega'))
-         AND c.id IN (
-             SELECT DISTINCT IDENTITY(v.carga)
-             FROM Application\Model\Venda v
-             WHERE v.carga IS NOT NULL
-             AND v.situacao <> 'Excluidos'
-         )"
+        "SELECT DISTINCT c FROM Application\Model\Carga c 
+         JOIN c.vendas v
+         WHERE c.situacao IN ('Carregamento','Entrega')
+         AND v.situacao != 'Excluidos'"
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
@@ -594,14 +590,17 @@ class IndexController extends AbstractActionController
 
   public function carregamentoAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+    if (!isset($_SESSION['usuarioNome'])) {
+      return $this->redirect()->toRoute('login');
+    }
 
     $em = $this->em;
     $db = $em->createQuery('select c from Application\Model\Carga c order By c.id DESC');
-    $db->setMaxResults(10);
     $cargas = $db->getArrayResult();
 
-    //\Zend\Debug\Debug::dump($cargas);
     return new ViewModel(array('carregamentos' => $cargas));
   }
 
@@ -676,6 +675,8 @@ class IndexController extends AbstractActionController
     $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
 
     if (isset($produtos[0]->venda)) {
+      $imgLogo1 = $this->getImageBase64('/img/logo-1.png');
+      $imgLogo2 = $this->getImageBase64('/img/Corabras_Selo-1.png');
 
       $html = "
       <style type=\"text/css\">
@@ -692,9 +693,9 @@ class IndexController extends AbstractActionController
             <th colspan=\"5\"><table width='100%'>
                 <tbody>
                   <tr>
-                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/logo-1.png') . "\" alt=\"Image\" width=\"150\" height=\"60\"></td>
+                    <td width='170px' style='text-align:left;vertical-align:middle'><img src=\"" . $imgLogo1 . "\" alt=\"Logo\" width=\"150\" height=\"60\"></td>
                     <td style='text-align:center;vertical-align:middle'><span style=\"font-weight:bold; font-size:19px\">CORABRAS TELHAS DE CONCRETO</span><br><br><span style=\"font-weight:bold\">CNPJ </span> 82.888.702/0001-18<br>Lote 02 - Gleba 02 - ICAGE Alexandre Gusmão - Brazlândia-DF<br><span style=\"color:#3166FF; font-size:18px\">www.corabras.com.br</span></td>
-                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/Corabras_Selo-1.png') . "\" width=\"150\" height=\"112\"></td>
+                    <td width='150px' style='text-align:left;vertical-align:middle'><img src=\"" . $imgLogo2 . "\" alt=\"Selo\" width=\"150\" height=\"112\"></td>
                   </tr>
                 </tbody>
                 </table>
@@ -872,6 +873,7 @@ class IndexController extends AbstractActionController
     $pedido = $db->getArrayResult()[0];
     //\Zend\Debug\Debug::dump($pedido);
     $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
+    $imgCorabras = $this->getImageBase64('/img/corabras.png');
 
     $html = "
         <style type=\"text/css\">
@@ -893,7 +895,7 @@ class IndexController extends AbstractActionController
             <table class=\"tg\">
             <tbody>
               <tr>
-                <td class=\"tg-9wq8\" colspan=\"2\"><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" ></td>
+                <td class=\"tg-9wq8\" colspan=\"2\"><img src=\"" . $imgCorabras . "\" alt=\"Corabras\"></td>
                 <td class=\"tg-9wq8\" colspan=\"3\"><span style=\"font-weight:bold\">DECLARAÇÃO</span></td>
               </tr>
               <tr>
@@ -997,6 +999,7 @@ class IndexController extends AbstractActionController
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
     $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
+    $imgCorabras = $this->getImageBase64('/img/corabras.png');
 
 
     $qtd_total = 0;
@@ -1032,7 +1035,7 @@ class IndexController extends AbstractActionController
       $html2 .= "<table class=\"tg\" cellspacing=\"0\" cellpadding=\"0\">
                 <tbody>
                     <tr>
-                        <td class=\"tg-5wxp\" ><img src=\"" . __DIR__ . "/../../../../../public" . $renderer->basePath('/img/corabras.png') . "\" width=\"100px\" height=\"80px\"; ></td>
+                        <td class=\"tg-5wxp\" ><img src=\"" . $imgCorabras . "\" alt=\"Corabras\" width=\"100px\" height=\"80px\"></td>
                         <td class=\"tg-9wxp\" colspan=\"2\"><span style=\"font-weight:bold\">CORABRAS</span></td>
                     </tr>
                     <tr>
@@ -1231,5 +1234,28 @@ class IndexController extends AbstractActionController
     $rt = mb_substr($rt, 1);
 
     return ($rt ? trim($rt) : "zero");
+  }
+
+  private function getImageBase64(string $imagePath): string
+  {
+    $possiblePaths = [
+      $imagePath,
+      __DIR__ . '/../../../../../public' . $imagePath,
+      __DIR__ . '/../../../../public' . $imagePath,
+      __DIR__ . '/../../../public' . $imagePath,
+      getcwd() . '/public' . $imagePath,
+      '/var/www/html/public' . $imagePath,
+    ];
+
+    foreach ($possiblePaths as $path) {
+      if (file_exists($path) && is_file($path) && filesize($path) > 0) {
+        $type = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mime = $type === 'svg' ? 'svg+xml' : ($type === 'jpg' ? 'jpeg' : $type);
+        $data = file_get_contents($path);
+        return 'data:image/' . $mime . ';base64,' . base64_encode($data);
+      }
+    }
+
+    return '';
   }
 }
