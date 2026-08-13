@@ -230,10 +230,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					<?php if ($this->filtro['situacao'] != "Recebido") {
 						echo "<option value=\"Recebido\" >Pedido Novo</option>";
 					} ?>
-					<?php if ($this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
+					<?php if ($this->filtro['situacao'] != "Carregamento" && $this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
 						echo "<option value=\"Carregamento\" >Carregamento</option>";
 					} ?>
-					<?php if ($this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
+					<?php if ($this->filtro['situacao'] != "Entrega" && $this->filtro['situacao'] != "Excluidos" && $this->filtro['situacao'] != "Finalizados") {
 						echo "<option value=\"Entrega\" >Entrega</option>";
 					} ?>
 					<?php if ($this->filtro['situacao'] != "Finalizados" && $this->filtro['situacao'] != "Excluidos") {
@@ -258,7 +258,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 							$situacaoCarga = $c['situacao'] ?? '';
 							$idCarga = $c['id'] ?? '';
 
-							$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? date('d/m/Y', strtotime($dataCarga)) : '');
+							$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($dataCarga)) ? trim($dataCarga) : date('d/m/Y', strtotime($dataCarga))) : '');
 							$saidaStr = ($saidaCarga instanceof \DateTimeInterface) ? $saidaCarga->format('H:i') : (is_string($saidaCarga) ? $saidaCarga : '');
 							?>
 							<option data-situ="<?= $situacaoCarga; ?>" value="<?= $idCarga; ?>">
@@ -351,7 +351,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 										}
 										?>">
 								<td>
-									<?php if ($this->filtro['situacao'] == 'Carregamento' || $this->filtro['situacao'] == 'Entrega') { ?>
+									<?php if (($this->filtro['situacao'] == 'Carregamento' || $this->filtro['situacao'] == 'Entrega') && $idCargaAtual !== null) { ?>
 										<input type="checkbox" class="carga_tramitar" name="carga_tramitar[]" value="<?= $idCargaKey ?>" />
 									<?php } ?>
 								</td>
@@ -364,7 +364,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 										} else {
 											$dataCarga = $c['data'] ?? null;
 											$saidaCarga = $c['saida'] ?? null;
-											$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? date('d/m/Y', strtotime($dataCarga)) : '');
+											$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($dataCarga)) ? trim($dataCarga) : date('d/m/Y', strtotime($dataCarga))) : '');
 											$saidaStr = ($saidaCarga instanceof \DateTimeInterface) ? $saidaCarga->format('H:i') : (is_string($saidaCarga) ? $saidaCarga : '');
 											echo ($c['motorista'] ?? '') . ($dataStr ? " - " . $dataStr : "") . ($saidaStr ? " " . $saidaStr : "");
 										}
@@ -916,6 +916,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 		$('#situacao').change(function() {
 			var sit = $(this).val();
+			$('#select_carga').val('');
 			if (sit == "Carregamento" || sit == "Entrega") {
 				$('#select_carga').prop("disabled", false);
 				var temp = sit;
@@ -927,7 +928,6 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					}
 				});
 			} else {
-				$('#select_carga').val('');
 				$('#select_carga').prop("disabled", true);
 			}
 		});

@@ -240,17 +240,25 @@ class IndexController extends AbstractActionController
       $em = $this->em;
 
       // Se tramitou cargas inteiras
-      if (($situacao == "Entrega" || $situacao == "Finalizados") && count($array_tramitar_carga) > 0) {
+      if (count($array_tramitar_carga) > 0) {
         foreach ($array_tramitar_carga as $item_tramitar_carga) {
           $cargaObj = $em->getRepository("Application\Model\Carga")->find($item_tramitar_carga);
           if ($cargaObj) {
-            $cargaObj->setSituacao($situacao);
-            $em->persist($cargaObj);
-
             $vendasCarga = $em->getRepository("Application\Model\Venda")->findBy(['carga' => $cargaObj]);
-            foreach ($vendasCarga as $vendaC) {
-              $vendaC->setSituacao($situacao);
-              $em->persist($vendaC);
+            if ($situacao == 'Recebido') {
+              foreach ($vendasCarga as $vendaC) {
+                $vendaC->setSituacao('Recebido');
+                $vendaC->setCarga(null);
+                $em->persist($vendaC);
+              }
+              $em->remove($cargaObj);
+            } else {
+              $cargaObj->setSituacao($situacao);
+              $em->persist($cargaObj);
+              foreach ($vendasCarga as $vendaC) {
+                $vendaC->setSituacao($situacao);
+                $em->persist($vendaC);
+              }
             }
             $em->flush();
           }
@@ -406,7 +414,9 @@ class IndexController extends AbstractActionController
   {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
@@ -415,11 +425,13 @@ class IndexController extends AbstractActionController
       $em = $this->em;
       $request = $this->getRequest();
 
-      $offSet = $this->params()->fromRoute("offset", 0);
+      $offSet = (int)$this->params()->fromRoute("offset", 0);
       $situ = $this->params()->fromRoute("situacao", "Recebido");
 
-      $limitePadrao = 50;
+      // If situation is 'Recebido' show all records (no limit)
+      $limitePadrao = ($situ === 'Recebido') ? 0 : 100;
       $limite = $request->isPost() ? (int) $request->getPost("limite", $limitePadrao) : $limitePadrao;
+      $filtro = [];
 
       // Define a ordenação conforme a situação
       $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
@@ -431,25 +443,14 @@ class IndexController extends AbstractActionController
         ->where('v.situacao = :situacao')
         ->setParameter('situacao', $situ)
         ->orderBy('v.ja_aberto', 'ASC')
-        ->addOrderBy($direcao, 'ASC')
-        ->setFirstResult($offSet)
-        ->setMaxResults($limite);
-
-      $filtro = [
-        'offset' => (int)$offSet,
-        'next' => (int)($offSet + $limite),
-        'preview' => (int)($offSet - $limite),
-        'situacao' => $situ,
-        'limite' => (int)$limite,
-        'total' => 0,
-      ];
+        ->addOrderBy($direcao, 'ASC');
 
       // -------------------- FILTROS (POST) --------------------
       if ($request->isPost()) {
 
         $cliente   = mb_strtoupper($request->getPost("nome"), $encoding);
         $cpfCnpj   = $request->getPost("cpfcnpj");
-        $cidade    = $request->getPost("cidade");
+        $cidade    = (array) $request->getPost("cidade", []);
         $dataEnt   = $request->getPost("data_entrega");
         $vendedor  = mb_strtoupper($request->getPost("vendedor"), $encoding);
         $modelo    = $request->getPost("modelo");
@@ -478,8 +479,8 @@ class IndexController extends AbstractActionController
         if ($cpfCnpj) {
           $qb->andWhere('v.cpfcnpj = :cpfCnpj')->setParameter('cpfCnpj', $cpfCnpj);
         }
-        if ($cidade) {
-          $qb->andWhere('v.cidade = :cidade')->setParameter('cidade', $cidade);
+        if (!empty($cidade)) {
+          $qb->andWhere('v.cidade IN (:cidades)')->setParameter('cidades', $cidade);
         }
         if ($vendedor) {
           $qb->andWhere('UPPER(v.nome_vendedor) LIKE :vendedor')->setParameter('vendedor', "%$vendedor%");
@@ -513,6 +514,34 @@ class IndexController extends AbstractActionController
       }
 
       // -------------------- EXECUÇÃO --------------------
+      // Compute total number of matching records (without pagination)
+      $qbCount = clone $qb;
+      $qbCount->select('COUNT(DISTINCT v.id)');
+      $qbCount->resetDQLPart('orderBy');
+      $qbCount->setFirstResult(null);
+      $qbCount->setMaxResults(null);
+      $total = (int) $qbCount->getQuery()->getSingleScalarResult();
+
+      // Apply pagination only when $limite > 0. A $limite of 0 means "no limit" (return all).
+      if ($limite > 0) {
+        $qb->setFirstResult($offSet)
+          ->setMaxResults($limite);
+        $next = $offSet + $limite;
+        $preview = max(0, $offSet - $limite);
+      } else {
+        $next = 0;
+        $preview = 0;
+      }
+
+      $filtro += [
+        'next' => $next,
+        'preview' => $preview,
+        'situacao' => $situ,
+        'limite' => $limite,
+        'offset' => $offSet,
+        'total'  => $total,
+      ];
+
       $vendas = $qb->getQuery()->getArrayResult();
 
       // -------------------- PRODUTOS RELACIONADOS --------------------
@@ -534,19 +563,16 @@ class IndexController extends AbstractActionController
         ->findBy([], ['nome' => 'ASC']);
 
       $queryCargasCombo = $em->createQuery(
-        "SELECT DISTINCT c FROM Application\Model\Carga c 
-         LEFT JOIN c.vendas v
+        "SELECT c FROM Application\Model\Carga c 
          WHERE c.situacao IN ('Carregamento','Entrega')
-         AND (v.id IS NULL OR v.situacao != 'Excluidos')
          ORDER BY c.id DESC"
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
-      $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c')
+      $cargas = $em->createQuery('SELECT c FROM Application\Model\Carga c ORDER BY c.id DESC')
         ->getArrayResult();
 
       $data_atual = date("Y/m/d");
-      $filtro['total'] = count($vendas);
 
       return new ViewModel([
         'vendas' => $vendas,
@@ -558,9 +584,9 @@ class IndexController extends AbstractActionController
         'data_atual' => $data_atual,
       ]);
     } catch (\Exception $e) {
-      \Zend\Debug\Debug::dump($e->getMessage());
-      \Zend\Debug\Debug::dump($e->getTraceAsString());
-      exit;
+      error_log($e->getMessage());
+      error_log($e->getTraceAsString());
+      throw $e;
     }
   }
 

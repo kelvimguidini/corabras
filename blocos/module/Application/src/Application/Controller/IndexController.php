@@ -270,17 +270,25 @@ class IndexController extends AbstractActionController
       $em = $this->em;
 
       // Se tramitou cargas inteiras
-      if (($situacao == "Entrega" || $situacao == "Finalizados") && count($array_tramitar_carga) > 0) {
+      if (count($array_tramitar_carga) > 0) {
         foreach ($array_tramitar_carga as $item_tramitar_carga) {
           $cargaObj = $em->getRepository("Application\Model\Carga")->find($item_tramitar_carga);
           if ($cargaObj) {
-            $cargaObj->setSituacao($situacao);
-            $em->persist($cargaObj);
-
             $vendasCarga = $em->getRepository("Application\Model\Venda")->findBy(['carga' => $cargaObj]);
-            foreach ($vendasCarga as $vendaC) {
-              $vendaC->setSituacao($situacao);
-              $em->persist($vendaC);
+            if ($situacao == 'Recebido') {
+              foreach ($vendasCarga as $vendaC) {
+                $vendaC->setSituacao('Recebido');
+                $vendaC->setCarga(null);
+                $em->persist($vendaC);
+              }
+              $em->remove($cargaObj);
+            } else {
+              $cargaObj->setSituacao($situacao);
+              $em->persist($cargaObj);
+              foreach ($vendasCarga as $vendaC) {
+                $vendaC->setSituacao($situacao);
+                $em->persist($vendaC);
+              }
             }
             $em->flush();
           }
@@ -575,15 +583,13 @@ class IndexController extends AbstractActionController
         ->findBy([], ['nome' => 'ASC']);
 
       $queryCargasCombo = $this->em->createQuery(
-        "SELECT DISTINCT c FROM Application\Model\Carga c 
-         LEFT JOIN c.vendas v
+        "SELECT c FROM Application\Model\Carga c 
          WHERE c.situacao IN ('Carregamento','Entrega')
-         AND (v.id IS NULL OR v.situacao != 'Excluidos')
          ORDER BY c.id DESC"
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
-      $cargas = $this->em->createQuery('SELECT c FROM Application\Model\Carga c')
+      $cargas = $this->em->createQuery('SELECT c FROM Application\Model\Carga c ORDER BY c.id DESC')
         ->getArrayResult();
 
       $data_atual = date("Y/m/d");
