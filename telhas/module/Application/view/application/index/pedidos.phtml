@@ -1035,13 +1035,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 				var id_venda = $(this).attr("id");
 				$('.asterisk').each(function() {
-					console.log(id_venda);
-					console.log($(this).attr('data-id'));
 					if ($(this).attr('data-id') == id_venda) {
 						$(this).hide();
 						$.ajax({
 							type: "GET",
-							url: "<?php echo $this->url('abrir'); ?>/" + id_venda + "/",
+							url: "<?php echo rtrim($this->url('abrir'), '/'); ?>/" + id_venda,
 							success: function(data) {
 
 							}

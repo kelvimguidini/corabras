@@ -184,29 +184,38 @@ class IndexController extends AbstractActionController
       session_start();
     }
     if (!isset($_SESSION['usuarioNome'])) {
-      return $this->redirect()->toRoute('login');
+      $response = $this->getResponse();
+      $response->setStatusCode(401);
+      $response->setContent('Não autorizado');
+      return $response;
     }
 
-    $request = $this->getRequest();
-    $em = $this->em;
     $id = (int)$this->params()->fromRoute("id", 0);
 
     if ($id > 0) {
-      $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
-        ->setMaxResults(1);
-
-      $venda = $db->getSingleResult();
-      if ($venda) {
-        $venda->setAberto(true);
-        $em->persist($venda);
-        $em->flush();
+      try {
+        $venda = $this->em->getRepository("Application\Model\Venda")->find($id);
+        if ($venda) {
+          $venda->setAberto(true);
+          $venda->ja_aberto = true;
+          $this->em->persist($venda);
+          $this->em->flush();
+        }
+        $response = $this->getResponse();
+        $response->setContent('ok');
+        return $response;
+      } catch (\Exception $e) {
+        $response = $this->getResponse();
+        $response->setStatusCode(500);
+        $response->setContent('Erro: ' . $e->getMessage());
+        return $response;
       }
     }
 
-    $view = new ViewModel();
-    $view->setTerminal(true);
-
-    return $view;
+    $response = $this->getResponse();
+    $response->setStatusCode(400);
+    $response->setContent('ID inválido');
+    return $response;
   }
 
   public function tramitarAction()
