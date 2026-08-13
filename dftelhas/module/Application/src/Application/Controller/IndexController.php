@@ -17,9 +17,16 @@ use Zend\Session\Container;
 
 class IndexController extends AbstractActionController
 {
+    private function initSession(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
     public function sairAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -31,7 +38,7 @@ class IndexController extends AbstractActionController
     }
     public function loginAction()
     {
-        session_start();
+        $this->initSession();
         $request = $this->getRequest();
         if($request->isPost())
         {
@@ -52,7 +59,7 @@ class IndexController extends AbstractActionController
     
     public function indexAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -68,7 +75,7 @@ class IndexController extends AbstractActionController
     
     public function cadastrarAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -167,7 +174,7 @@ class IndexController extends AbstractActionController
     
     public function excluirAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -180,7 +187,7 @@ class IndexController extends AbstractActionController
     
     public function cadastrarclienteAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -207,7 +214,7 @@ class IndexController extends AbstractActionController
     
     public function custoAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -270,7 +277,7 @@ class IndexController extends AbstractActionController
     
     public function carregarclientesAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -283,7 +290,7 @@ class IndexController extends AbstractActionController
     
     public function excluircustoAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -300,7 +307,7 @@ class IndexController extends AbstractActionController
 
     public function excluirclienteAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -317,7 +324,7 @@ class IndexController extends AbstractActionController
 
     public function excluirprodutoAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -334,7 +341,7 @@ class IndexController extends AbstractActionController
     
     public function visualizarAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
@@ -349,7 +356,7 @@ class IndexController extends AbstractActionController
     
     public function relatorioAction()
     {
-        session_start();
+        $this->initSession();
         if (!isset($_SESSION['usuarioNome'])) {
             return $this->redirect()->toRoute('login');
         }
