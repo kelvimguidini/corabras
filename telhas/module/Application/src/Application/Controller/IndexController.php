@@ -633,12 +633,14 @@ class IndexController extends AbstractActionController
 
   public function carregarcargasAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
     $em = $this->em;
-    $lista = $em->getRepository("Application\Model\Carga")->findAll();
+    $lista = $em->getRepository("Application\Model\Carga")->findBy([], ['id' => 'DESC']);
     $view = new ViewModel(array('lista' => $lista));
     $view->setTerminal(true);
     return $view;
