@@ -526,9 +526,10 @@ class IndexController extends AbstractActionController
 
       $queryCargasCombo = $em->createQuery(
         "SELECT DISTINCT c FROM Application\Model\Carga c 
-         JOIN c.vendas v
+         LEFT JOIN c.vendas v
          WHERE c.situacao IN ('Carregamento','Entrega')
-         AND v.situacao != 'Excluidos'"
+         AND (v.id IS NULL OR v.situacao != 'Excluidos')
+         ORDER BY c.id DESC"
       );
       $cargas_combo = $queryCargasCombo->getArrayResult();
 
