@@ -240,10 +240,20 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				<select name="carga" id="select_carga" class="form-control" disabled>
 					<option value="">- Selecione -</option>
 					<?php
-					foreach ($this->cargas_combo as $c) {
-						$data_atual = date("Y/m/d");
-						if ($c['data'] >= $data_atual) { ?>
-							<option data-situ="<?php echo $c['situacao']; ?>" value="<?php echo $c['id']; ?>"><?php echo $c['motorista'] . " - " . $c['data']->format('d/m/Y') . " " . $c['saida']->format('H:i') . " - " .  $c['situacao']; ?></option>
+					if (!empty($this->cargas_combo) && is_iterable($this->cargas_combo)) {
+						foreach ($this->cargas_combo as $c) {
+							$dataCarga = $c['data'] ?? null;
+							$saidaCarga = $c['saida'] ?? null;
+							$motorista = $c['motorista'] ?? 'Sem motorista';
+							$situacaoCarga = $c['situacao'] ?? '';
+							$idCarga = $c['id'] ?? '';
+
+							$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? date('d/m/Y', strtotime($dataCarga)) : '');
+							$saidaStr = ($saidaCarga instanceof \DateTimeInterface) ? $saidaCarga->format('H:i') : (is_string($saidaCarga) ? $saidaCarga : '');
+							?>
+							<option data-situ="<?= $situacaoCarga; ?>" value="<?= $idCarga; ?>">
+								<?= $motorista . ($dataStr ? " - " . $dataStr : "") . ($saidaStr ? " " . $saidaStr : "") . " - " . $situacaoCarga; ?>
+							</option>
 					<?php }
 					} ?>
 				</select>
@@ -340,7 +350,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 										if ($x == $qtdCarga) {
 											echo "Pedidos fora de carregamento";
 										} else {
-											echo $c['motorista'] . " - " . $c['data']->format('d/m/Y') . " " . $c['saida']->format('H:i');
+											$dataCarga = $c['data'] ?? null;
+											$saidaCarga = $c['saida'] ?? null;
+											$dataStr = ($dataCarga instanceof \DateTimeInterface) ? $dataCarga->format('d/m/Y') : (is_string($dataCarga) && !empty($dataCarga) ? date('d/m/Y', strtotime($dataCarga)) : '');
+											$saidaStr = ($saidaCarga instanceof \DateTimeInterface) ? $saidaCarga->format('H:i') : (is_string($saidaCarga) ? $saidaCarga : '');
+											echo ($c['motorista'] ?? '') . ($dataStr ? " - " . $dataStr : "") . ($saidaStr ? " " . $saidaStr : "");
 										}
 										?>
 									</b>
@@ -399,8 +413,8 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 									} ?>
 								</td>
 								<td><i class="glyphicon glyphicon-plus venda no_print" id="<?= $v['id']; ?>"></i></td>
-								<td><?= $v['data_cadastro']->format('d/m/Y'); ?></td>
-								<td><?= $v['data_para_entrega']->format('d/m/Y'); ?></td>
+								<td><?= ($v['data_cadastro'] instanceof \DateTimeInterface) ? $v['data_cadastro']->format('d/m/Y') : (is_string($v['data_cadastro']) && !empty($v['data_cadastro']) ? date('d/m/Y', strtotime($v['data_cadastro'])) : ''); ?></td>
+								<td><?= ($v['data_para_entrega'] instanceof \DateTimeInterface) ? $v['data_para_entrega']->format('d/m/Y') : (is_string($v['data_para_entrega']) && !empty($v['data_para_entrega']) ? date('d/m/Y', strtotime($v['data_para_entrega'])) : ''); ?></td>
 
 								<?php
 								$prod = array();

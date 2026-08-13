@@ -239,130 +239,99 @@ class IndexController extends AbstractActionController
 
   public function tramitarAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    /** @var \Laminas\Http\PhpEnvironment\Request $request */
+
     $request = $this->getRequest();
     $situacao = "Recebido";
 
-    $cargaTemp = null;
     if ($request->isPost()) {
-      $situacao = $request->getPost("situacao");
+      $situacao = $request->getPost("situacao") ?: "Recebido";
       $idcarga = $request->getPost("carga");
 
-      if (isset($_POST['item_tramitar'])) {
-        $array_tramitar = $_POST['item_tramitar'];
-      }
+      $array_tramitar = isset($_POST['item_tramitar']) ? (array)$_POST['item_tramitar'] : [];
+      $array_tramitar_carga = isset($_POST['carga_tramitar']) ? (array)$_POST['carga_tramitar'] : [];
 
-      $array_tramitar_carga = isset($_POST['carga_tramitar']) ? $_POST['carga_tramitar'] : array();
+      $em = $this->em;
 
+      // Se tramitou cargas inteiras
       if (($situacao == "Entrega" || $situacao == "Finalizados") && count($array_tramitar_carga) > 0) {
+        foreach ($array_tramitar_carga as $item_tramitar_carga) {
+          $cargaObj = $em->getRepository("Application\Model\Carga")->find($item_tramitar_carga);
+          if ($cargaObj) {
+            $cargaObj->setSituacao($situacao);
+            $em->persist($cargaObj);
 
-        foreach ($array_tramitar_carga as $item_tramitar) {
-
-          $carga = $this->em->getRepository("Application\Model\Carga")->find($item_tramitar);
-          $carga->setSituacao($situacao);
-
-          $db = $this->em->createQuery('select v from Application\Model\Venda v where IDENTITY(v.carga) = ' . $item_tramitar);
-          $vendas = $db->getArrayResult();
-
-          $this->em->persist($carga);
-          $this->em->flush();
-          $array_tramitar = array();
-
-          foreach ($vendas as $venda) {
-            $array_tramitar[] = $venda["id"];
-
-            $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $venda["id"])
-              ->setMaxResults(1);
-
-            $venda = $db->getSingleResult();
-
-
-            $venda->setCarga($carga);
-
-            $this->em->persist($venda);
-            $this->em->flush();
+            $vendasCarga = $em->getRepository("Application\Model\Venda")->findBy(['carga' => $cargaObj]);
+            foreach ($vendasCarga as $vendaC) {
+              $vendaC->setSituacao($situacao);
+              $em->persist($vendaC);
+            }
+            $em->flush();
           }
         }
       }
 
-      if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
-
-        $db = $this->em->createQuery('select c from Application\Model\Carga c where c.id = ' . $idcarga)
-          ->setMaxResults(1);
-
-        $carga = $db->getSingleResult();
+      // Se selecionou uma carga específica para vincular
+      $carga = null;
+      if (($situacao == 'Carregamento' || $situacao == 'Entrega') && !empty($idcarga)) {
+        $carga = $em->getRepository("Application\Model\Carga")->find($idcarga);
       }
-      //\Laminas\Debug\Debug::dump($carga);
+
+      // Tramita os itens/vendas selecionados individualmente
       foreach ($array_tramitar as $item_tramitar) {
+        $venda = $em->getRepository("Application\Model\Venda")->find($item_tramitar);
+        if (!$venda) {
+          continue;
+        }
 
-        $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $item_tramitar)
-          ->setMaxResults(1);
-
-        $venda = $db->getSingleResult();
+        $cargaAnterior = $venda->getCarga();
+        $idCargaAnterior = $cargaAnterior ? $cargaAnterior->getId() : null;
 
         $venda->setSituacao($situacao);
 
-        if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $idcarga != null) {
+        if (($situacao == 'Carregamento' || $situacao == 'Entrega') && $carga != null) {
           $venda->setCarga($carga);
-
-          $this->em->persist($venda);
-          $this->em->flush();
         } else if ($situacao == 'Recebido') {
-          $cargaTemp = $venda->getCarga()->getId();
           $venda->setCarga(null);
-
-          $this->em->persist($venda);
-          $this->em->flush();
-        } else {
-          $this->em->persist($venda);
-          $this->em->flush();
         }
-        //\Laminas\Debug\Debug::dump($cargaTemp );
-        if (($venda->getCarga() != null && $venda->getCarga()->getId() != null) || $cargaTemp != null) {
 
-          $idCargaTemp = $cargaTemp != null ? $cargaTemp : $venda->getCarga()->getId();
+        $em->persist($venda);
+        $em->flush();
 
-          $db = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp);
-          $cargas = $db->getArrayResult();
+        // Se a venda tinha uma carga anterior ou atual, verifica o status dessa carga
+        $idCargaChecar = $idCargaAnterior ?: ($venda->getCarga() ? $venda->getCarga()->getId() : null);
 
+        if ($idCargaChecar) {
+          $vendasRestantes = $em->createQuery(
+            'SELECT v.id FROM Application\Model\Venda v WHERE IDENTITY(v.carga) = :idCarga'
+          )->setParameter('idCarga', $idCargaChecar)->getArrayResult();
 
-          if (count($cargas) == 0) {
-            $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
-            $this->em->remove($c);
-            $this->em->flush();
+          if (count($vendasRestantes) == 0) {
+            $c = $em->getRepository("Application\Model\Carga")->find($idCargaChecar);
+            if ($c) {
+              $em->remove($c);
+              $em->flush();
+            }
           } else {
-            $db2 = $this->em->createQuery('select v.id from Application\Model\Venda v where IDENTITY(v.carga) = ' . $idCargaTemp . ' and v.id in (select IDENTITY(s.venda) from Application\Model\Situacao s where s.id = (select max(s1.id) from Application\Model\Situacao s1 where IDENTITY(s1.venda) = v.id ) and s.situacao = \'Carregamento\' or s.situacao = \'Entrega\')');
-            $carga2 = $db2->getArrayResult();
+            $vendasAtivas = $em->createQuery(
+              "SELECT v.id FROM Application\Model\Venda v WHERE IDENTITY(v.carga) = :idCarga AND v.situacao IN ('Carregamento', 'Entrega')"
+            )->setParameter('idCarga', $idCargaChecar)->getArrayResult();
 
-            //\Laminas\Debug\Debug::dump($carga2);
-            if (count($carga2) == 0) {
-              $c = $this->em->getRepository("Application\Model\Carga")->find($idCargaTemp);
-              $c->setSituacao($situacao);
-
-              $this->em->persist($c);
-              $this->em->flush();
+            if (count($vendasAtivas) == 0) {
+              $c = $em->getRepository("Application\Model\Carga")->find($idCargaChecar);
+              if ($c) {
+                $c->setSituacao($situacao);
+                $em->persist($c);
+                $em->flush();
+              }
             }
           }
         }
-
-
-        // $s = $this->em->createQuery('select s from Application\Model\Situacao s where s.venda = ' . $item_tramitar)->setMaxResults(1)->getSingleResult();
-        // $this->em->remove($s);
-        // $this->em->flush();
-
-        // $situ = new \Application\Model\Situacao();
-
-
-        // $situ->setData(date("d/m/Y"));
-        // $situ->setSituacao($situacao);
-        // $situ->setVenda($venda);
-
-        // $this->em->persist($situ);
-        // $this->em->flush();
       }
 
       $result["resp"] = "Tramitado com sucesso!";
