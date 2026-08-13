@@ -82,7 +82,7 @@
 	    
 		$('#lista_vendas').DataTable({
     		"language": {
-                "url": "https://cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json"
+                "url": "/js/Portuguese-Brasil.json"
     		},
 			"order": [[1, "asc"]],
 		});
@@ -95,7 +95,7 @@
 
 		if(confirm("Deseja realmente excluir esta cidade?"))
 		{
-			window.location.href = "<?php echo $this->url('excluircidade'); ?>"+id;
+			window.location.href = "<?php echo $this->url('excluircidade'); ?>/"+id;
 		}
 
 	}

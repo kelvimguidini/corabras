@@ -809,11 +809,11 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 	}
 	$(document).ready(function() {
 
-		const limite = <?= $filtro['limite']; ?>;
-		const offset = <?= $filtro['offset']; ?>;
-		const total = <?= $filtro['total']; ?>;
-		const next = <?= $filtro['next']; ?>;
-		const preview = <?= $filtro['preview']; ?>;
+		const limite = <?= (int) ($this->filtro['limite'] ?? 50); ?>;
+		const offset = <?= (int) ($this->filtro['offset'] ?? 0); ?>;
+		const total = <?= (int) ($this->filtro['total'] ?? 0); ?>;
+		const next = <?= (int) ($this->filtro['next'] ?? 0); ?>;
+		const preview = <?= (int) ($this->filtro['preview'] ?? 0); ?>;
 
 		$("#carga-modal").on('shown.bs.modal', function() {
 			$.ajax({
@@ -872,7 +872,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 		$('#situacao').change(function() {
 			$('#select_carga').val('');
-			if ($(this).val() == "Carregamento" || ($(this).val() == "Entrega" && <?php echo $this->filtro['situacao'] == 'Carregamento' ? 'false' : 'true' ?>)) {
+			if ($(this).val() == "Carregamento" || ($(this).val() == "Entrega" && <?php echo ($this->filtro['situacao'] ?? '') == 'Carregamento' ? 'false' : 'true' ?>)) {
 				$('#select_carga').attr("disabled", false);
 				var temp = $(this).val();
 				$("#select_carga option").each(function() {
@@ -925,7 +925,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				alert("Selecione a situação!");
 			}
 
-			if (($('#situacao').val() == "Entrega" || $('#situacao').val() == "Finalizados") && <?php echo $this->filtro['situacao'] == 'Carregamento' || $this->filtro['situacao'] == 'Entrega' ? 'true' : 'false' ?>) {
+			if (($('#situacao').val() == "Entrega" || $('#situacao').val() == "Finalizados") && <?php echo (($this->filtro['situacao'] ?? '') == 'Carregamento' || ($this->filtro['situacao'] ?? '') == 'Entrega') ? 'true' : 'false' ?>) {
 				if ($('#select_carga').val()) {
 					alert("Selecione um carregamento!");
 				}
@@ -968,7 +968,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						$(this).hide();
 						$.ajax({
 							type: "GET",
-							url: "<?php echo $this->url('abrir'); ?>" + id_venda + "/",
+							url: "<?php echo $this->url('abrir'); ?>/" + id_venda + "/",
 							success: function(data) {
 
 							}

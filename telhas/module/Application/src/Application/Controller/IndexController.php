@@ -180,25 +180,33 @@ class IndexController extends AbstractActionController
 
   public function abrirAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
 
     $request = $this->getRequest();
     $em = $this->em;
-    $id = $this->params()->fromRoute("id", 0);
+    $id = (int)$this->params()->fromRoute("id", 0);
 
-    $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
-      ->setMaxResults(1);
+    if ($id > 0) {
+      $db = $em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
+        ->setMaxResults(1);
 
-    $venda = $db->getSingleResult();
-    $venda->setAberto(true);
-    $em->persist($venda);
-    $em->flush();
+      $venda = $db->getSingleResult();
+      if ($venda) {
+        $venda->setAberto(true);
+        $em->persist($venda);
+        $em->flush();
+      }
+    }
+
+    $view = new ViewModel();
     $view->setTerminal(true);
 
-    return new ViewModel();
+    return $view;
   }
 
   public function tramitarAction()
@@ -453,10 +461,12 @@ class IndexController extends AbstractActionController
         ->setMaxResults($limite);
 
       $filtro = [
-        'next' => $offSet + $limite,
-        'preview' => $offSet - $limite,
+        'offset' => (int)$offSet,
+        'next' => (int)($offSet + $limite),
+        'preview' => (int)($offSet - $limite),
         'situacao' => $situ,
-        'limite' => $limite,
+        'limite' => (int)$limite,
+        'total' => 0,
       ];
 
       // -------------------- FILTROS (POST) --------------------
@@ -564,6 +574,7 @@ class IndexController extends AbstractActionController
         ->getArrayResult();
 
       $data_atual = date("Y/m/d");
+      $filtro['total'] = count($vendas);
 
       return new ViewModel([
         'vendas' => $vendas,

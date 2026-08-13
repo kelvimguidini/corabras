@@ -13,31 +13,26 @@ $this->plugin('basePath')->setBasePath('');
         ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
     ?>
 
+    <!-- Styles -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- Le styles -->
-    <?= $this->headLink(['rel' => 'shortcut icon', 'href' => $this->basePath('/img/favicon.ico')])
-        ->prependStylesheet($this->basePath('css/style.css'))
-        ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
-        ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
-        ->prependStylesheet($this->basePath('css/jquery-ui.css'))
-        ->prependStylesheet($this->basePath('css/jquery.dataTables.min.css'))
-        ->prependStylesheet($this->basePath('js/timepicker-master/jquery.ui.timepicker.css?v=0.3.3'))
-    ?>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/jquery-ui.css">
+    <link rel="stylesheet" href="/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/css/select2.min.css">
+    <link rel="stylesheet" href="/js/timepicker-master/jquery.ui.timepicker.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/img/favicon.ico">
 
     <!-- Scripts -->
-    <?= $this->headScript()
-        ->prependFile($this->basePath('js/jquery.maskMoney.js'))
-        ->prependFile($this->basePath('js/timepicker-master/jquery.ui.timepicker.js?v=0.3.3'))
-        ->prependFile($this->basePath('js/jquery.mask.min.js'))
-        ->prependFile($this->basePath('js/jquery.dataTables.min.js'))
-        ->prependFile($this->basePath('js/jquery-ui.js'))
-        ->prependFile($this->basePath('js/bootstrap.min.js'))
-        ->prependFile($this->basePath('js/jquery-3.1.0.min.js'))
-        ->prependFile($this->basePath('js/excellentexport/dist/excellentexport.js'))
-    ?>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/jquery.dataTables.min.js"></script>
+    <script src="/js/jquery.mask.min.js"></script>
+    <script src="/js/jquery.maskMoney.js"></script>
+    <script src="/js/select2.min.js"></script>
+    <script src="/js/timepicker-master/jquery.ui.timepicker.js"></script>
+    <script src="/js/excellentexport/dist/excellentexport.js"></script>
 </head>
 
 <body>

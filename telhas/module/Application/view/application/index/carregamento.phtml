@@ -24,7 +24,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo $this->url('carregardadoscarga'); ?>" + event.event.extendedProps.description,
+                    url: "<?php echo $this->url('carregardadoscarga'); ?>/" + event.event.extendedProps.description,
                     success: function(data) {
                         $('#modalTitle').html(event.event.title);
                         $('#modalBody').html(data);

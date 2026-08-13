@@ -210,20 +210,26 @@ class IndexController extends AbstractActionController
 
   public function abrirAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
 
-    $id = $this->params()->fromRoute("id", 0);
+    $id = (int)$this->params()->fromRoute("id", 0);
 
-    $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
-      ->setMaxResults(1);
+    if ($id > 0) {
+      $db = $this->em->createQuery('select v from Application\Model\Venda v where v.id = ' . $id)
+        ->setMaxResults(1);
 
-    $venda = $db->getSingleResult();
-    $venda->setAberto(true);
-    $this->em->persist($venda);
-    $this->em->flush();
+      $venda = $db->getSingleResult();
+      if ($venda) {
+        $venda->setAberto(true);
+        $this->em->persist($venda);
+        $this->em->flush();
+      }
+    }
 
     $view = new ViewModel();
     $view->setTerminal(true);
