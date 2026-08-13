@@ -182,8 +182,8 @@ jobs:
       - name: Auto-Extrair Vendor no Servidor
         run: |
           echo "Extraindo vendor em Telhas..."
-          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "telhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || curl -k -sL "http://corabras.frii.site/extract_vendor.php?token=corabras_deploy_secret_2026" || true
+          curl -k -sL --resolve "telhas.pedidoscorabras.com.br:80:${{ secrets.FTP_SERVER }}" --resolve "telhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://telhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
           echo "Extraindo vendor em Blocos..."
-          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "blocos.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
+          curl -k -sL --resolve "blocos.pedidoscorabras.com.br:80:${{ secrets.FTP_SERVER }}" --resolve "blocos.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://blocos.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
           echo "Extraindo vendor em dfTelhas..."
-          curl -k -sL --resolve "https://corabras.frii.site:80:${{ secrets.FTP_SERVER }}" --resolve "dftelhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://dftelhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
+          curl -k -sL --resolve "dftelhas.pedidoscorabras.com.br:80:${{ secrets.FTP_SERVER }}" --resolve "dftelhas.pedidoscorabras.com.br:443:${{ secrets.FTP_SERVER }}" "http://dftelhas.pedidoscorabras.com.br/extract_vendor.php?token=corabras_deploy_secret_2026" || true
