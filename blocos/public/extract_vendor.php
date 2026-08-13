@@ -37,6 +37,12 @@ if ($zip->open($zipFile) === TRUE) {
     $zip->extractTo($vendorDir);
     $zip->close();
     
+    // Se existir doctrine.local.php antigo no servidor com host 'db', remove para usar global.php
+    $legacyLocal = $baseDir . '/config/autoload/doctrine.local.php';
+    if (file_exists($legacyLocal)) {
+        @unlink($legacyLocal);
+    }
+    
     // Remove o zip após extrair
     @unlink($zipFile);
     
