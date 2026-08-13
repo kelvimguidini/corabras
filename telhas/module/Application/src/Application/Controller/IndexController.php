@@ -891,136 +891,41 @@ class IndexController extends AbstractActionController
 
   public function imprimirAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $encoding = mb_internal_encoding();
+    mb_internal_encoding("UTF-8");
 
     $idVenda = $this->params()->fromRoute("id", 0);
-    $filename = "Declacao_entrega_" . $idVenda;
+    $filename = "Declaracao_entrega_" . $idVenda;
 
     $em = $this->em;
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    //\Zend\Debug\Debug::dump($pedido);
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
-    $imgCorabras = $this->getImageBase64('/img/corabras.png');
 
-    $html = "
-        <style type=\"text/css\">
-            .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
-            .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-              overflow:hidden;padding:5px 5px;word-break:normal;}
-            .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-              font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
-            .tg .tg-1wig{font-weight:bold;text-align:left;vertical-align:top}
-            .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
-            .tg .tg-baqh{text-align:center;vertical-align:top}
-            .tg .tg-c3ow{border-color:inherit;vertical-align:top}
-            .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-            .tg .tg-dvpl{border-color:inherit;text-align:right;vertical-align:top}
-            .tg .tg-fymr{border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
-            .tg .tg-0lax{text-align:left;vertical-align:top}
-            .tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
-            </style>
-            <table class=\"tg\">
-            <tbody>
-              <tr>
-                <td class=\"tg-9wq8\" colspan=\"2\"><img src=\"" . $imgCorabras . "\" alt=\"Corabras\"></td>
-                <td class=\"tg-9wq8\" colspan=\"3\"><span style=\"font-weight:bold\">DECLARAÇÃO</span></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CLIENTE</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-c3ow\"><span style=\"font-weight:bold\">Endereço: </span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['endereco'] . " - " . $pedido['cidade'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">CONTATO</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['contato'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">TELEFONE</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['telefone'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\"><span style=\"font-weight:bold\">VENDEDOR</span></td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $pedido['nome_vendedor'] . "</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\"><span style=\"font-weight:bold\">Declaro ter recebido a mercadoria descrita abaixo:</span></td>
-              </tr>";
-    $qtd_total = 0;
-    foreach ($pedido['produtos'] as $prod) {
-      $qtd_total += $prod['quantidade'];
-      $html .= "<tr>
-              <td class=\"tg-dvpl\"><span style=\"font-weight:bold\">" . $prod['quantidade'] . "</span></td>
-              <td class=\"tg-0pky\" colspan=\"4\">PÇS " . mb_strtoupper($prod['modelo'], $encoding) . " " . mb_strtoupper($prod['cor'], $encoding) . "</td>
-            </tr>";
-    }
+    $view = new \Laminas\View\Model\ViewModel([
+      'pedido' => $pedido,
+      'dataAtual' => date("d/m/Y"),
+      'logo' => $this->getImageBase64('/img/corabras.png'),
+    ]);
+    $view->setTemplate('application/index/imprimir');
 
-    $html .= "<tr>
-                <td class=\"tg-dvpl\" colspan=\"5\"><span style=\"font-weight:bold\">BRASÍLIA-DF " . date("d/m/Y") . "</span></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\">QUEBRAS NO CARREGAMENTO: </td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\" colspan=\"5\">PEÇAS PARA REPOSIÇÃO:</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0pky\">TOTAL DE TELHAS E/OU ACESSÓRIOS: </td>
-                <td class=\"tg-0pky\" colspan=\"4\">" . $qtd_total . " PEÇAS</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-baqh\" colspan=\"4\">Responsável pela descarga</td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-0lax\" colspan=\"4\"><br></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-baqh\" colspan=\"4\">Motorista</td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\" colspan=\"4\"><br><br></td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-baqh\" colspan=\"4\">Nome completo do conferente</td>
-                <td class=\"tg-0lax\"></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-baqh\" colspan=\"4\"><br><br></td>
-              </tr>
-              <tr>
-                <td class=\"tg-0lax\"></td>
-                <td class=\"tg-amwm\" colspan=\"4\">Assinatura do conferente</td>
-              </tr>
-              <tr>
-                <td class=\"tg-1wig\" colspan=\"5\">Afirmo que conferi o carregamento e o pedido, confirmando as quantidades acima descritas, SENDO ENTÃO RESPONSÁVEL pela entrega nas quantidades exatas me passadas pelo romaneio</td>
-              </tr>
-            </tbody>
-        </table>";
+    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('ViewRenderer');
+    $html = $renderer->render($view);
 
-    //echo $html;
-    $this->gerarPdf($html, $filename);
+    return $this->gerarPdf($html, $filename);
   }
 
   public function reciboAction()
   {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
@@ -1031,9 +936,6 @@ class IndexController extends AbstractActionController
 
     $db = $em->createQuery('select v, p, c from Application\Model\Venda v LEFT JOIN v.produtos p LEFT JOIN v.carga c where v.id = ' . $idVenda);
     $pedido = $db->getArrayResult()[0];
-    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('Laminas\View\Renderer\RendererInterface');
-    $imgCorabras = $this->getImageBase64('/img/corabras.png');
-
 
     $qtd_total = 0;
     $valor_total = 0;
@@ -1045,62 +947,21 @@ class IndexController extends AbstractActionController
     $valor_total_g = number_format($valor_total, 2, ',', '.');
     $valor_extenso = $this->valorExtenso($valor_total);
 
-    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-    date_default_timezone_set('America/Sao_Paulo');
+    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
+    $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('ViewRenderer');
 
-    $html2 = "<style type=\"text/css\">
-                .tg  {border: none;margin-top:25px;}
-                .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                  overflow:hidden;padding:5px 5px;word-break:normal;}
-                .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                  font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal;}
-                .tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle;}
-                .tg .tg-9yu8{border-color:inherit;text-align:center;vertical-align:middle;text-decoration: underline;font-size: 20px;}
-                .tg .tg-9wxp{border-color:inherit;text-align:center;vertical-align:middle;font-size:40px;}
-                .tg .tg-5wxp{border-color:inherit;text-align:center;vertical-align:middle;width: 25px;}
-                .tg .tg-c3ow{border-color:inherit;vertical-align:top}
-                .tg .tg-0pky{border-color:inherit;text-align:right;vertical-align:top}
-                .tg .tg-0lax{text-align:left;vertical-align:top}
-                table, tr, td { border: none !important;}
-                </style>";
+    $view = new \Laminas\View\Model\ViewModel([
+      'pedido'         => $pedido,
+      'qtd_total'      => $qtd_total,
+      'valor_total_g'  => $valor_total_g,
+      'valor_extenso'  => $valor_extenso,
+      'logo'           => $this->getImageBase64('/img/corabras.png'),
+    ]);
+    $view->setTemplate('application/index/recibo');
 
-    for ($i = 0; $i < 2; $i++) {
-      $html2 .= "<table class=\"tg\" cellspacing=\"0\" cellpadding=\"0\">
-                <tbody>
-                    <tr>
-                        <td class=\"tg-5wxp\" ><img src=\"" . $imgCorabras . "\" alt=\"Corabras\" width=\"100px\" height=\"80px\"></td>
-                        <td class=\"tg-9wxp\" colspan=\"2\"><span style=\"font-weight:bold\">CORABRAS</span></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-9yu8\" colspan=\"3\"><span style=\"font-weight:bold\">RECIBO</span></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-c3ow\" colspan=\"3\">Recebemos de " . $pedido['nome'] . " a quantia supra algarismada de <span style=\"font-weight:bold\">R$ " . $valor_total_g . " (" . $valor_extenso . ") </span> referente ao pagamento de telhas de concreto.</td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"3\"><br><br></td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-9wq8\" colspan=\"2\"></td>
-                        <td class=\"tg-0pky\">" . strftime('%A, %d de %B de %Y', strtotime('today')) . "</td>
-                    </tr>
-                    <tr>
-                        <td class=\"tg-0lax\" colspan=\"2\"><span style=\"font-weight:bold\">" . $qtd_total . " PEÇAS</span></td>
-                        <td class=\"tg-0pky\"><br><br><br><br>______________________________________________________________</td>
-                    </tr>
-                </tbody>
-            </table>";
-    }
+    $html = $renderer->render($view);
 
-
-    //echo $html2;
-    $this->gerarPdf($html2, $filename);
+    return $this->gerarPdf($html, $filename);
   }
 
   public function sairAction()

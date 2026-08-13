@@ -822,20 +822,23 @@ class IndexController extends AbstractActionController
 
 
 
-    // --- RENDERIZA O TEMPLATE ---
+    /** @var \Laminas\View\Renderer\PhpRenderer $renderer */
     $renderer = $this->getEvent()->getApplication()->getServiceManager()
-      ->get('Laminas\View\Renderer\RendererInterface');
+      ->get('ViewRenderer');
 
-    $html = $renderer->render('application/index/recibo', [
+    $view = new \Laminas\View\Model\ViewModel([
       'pedido'         => $pedido,
       'qtd_total'      => $qtd_total,
       'valor_total_g'  => $valor_total_g,
       'valor_extenso'  => $valor_extenso,
-      'logo' => $this->getImageBase64('/img/corabras.png'),
+      'logo'           => $this->getImageBase64('/img/corabras.png'),
     ]);
+    $view->setTemplate('application/index/recibo');
+
+    $html = $renderer->render($view);
 
     // --- GERA O PDF ---
-    $this->gerarPdf($html, $filename);
+    return $this->gerarPdf($html, $filename);
   }
 
 

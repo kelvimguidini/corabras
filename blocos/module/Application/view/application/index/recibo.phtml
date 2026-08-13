@@ -30,7 +30,7 @@
             <td colspan="3">
                 Recebemos de <?= $pedido['nome'] ?> a quantia supra algarismada de
                 <strong>R$ <?= $valor_total_g ?> (<?= $valor_extenso ?>)</strong>
-                referente ao pagamento de telhas de concreto.
+                referente ao pagamento de blocos de concreto.
             </td>
         </tr>
 
@@ -38,20 +38,33 @@
             <td colspan="3"><br><br></td>
         </tr>
         <?php
-        setlocale(LC_TIME, 'pt_BR.UTF-8');
-        date_default_timezone_set('America/Sao_Paulo');
-        $fmt = new IntlDateFormatter(
-            'pt_BR',
-            IntlDateFormatter::FULL,
-            IntlDateFormatter::NONE,
-            'America/Sao_Paulo',
-            IntlDateFormatter::GREGORIAN,
-            "EEEE, dd 'de' MMMM 'de' yyyy"
-        );
+        $dataPorExtenso = '';
+        if (class_exists('\IntlDateFormatter')) {
+            $fmt = new \IntlDateFormatter(
+                'pt_BR',
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::NONE,
+                'America/Sao_Paulo',
+                \IntlDateFormatter::GREGORIAN,
+                "EEEE, dd 'de' MMMM 'de' yyyy"
+            );
+            if ($fmt) {
+                $dataPorExtenso = ucfirst($fmt->format(new \DateTime()));
+            }
+        }
+        if (empty($dataPorExtenso)) {
+            $dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            $meses = ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+            $w = (int)date('w');
+            $d = (int)date('d');
+            $m = (int)date('n');
+            $y = (int)date('Y');
+            $dataPorExtenso = "{$dias[$w]}, {$d} de {$meses[$m]} de {$y}";
+        }
         ?>
 
         <tr>
-            <td colspan="3" class="right"><?= $fmt->format(new DateTime()) ?></td>
+            <td colspan="3" class="right"><?= $dataPorExtenso ?></td>
         </tr>
 
         <tr>
