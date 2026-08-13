@@ -319,15 +319,15 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					$qtdTotalGeral = 0;
 
 					$qtdCarga = count($this->cargas);
-					if ($qtdCarga == 0) {
-						$qtdCarga = 1;
-					}
-					$vendasSemCarga = false;
 					for ($x = 0; $x <= $qtdCarga; $x++) {
-						$existe = false;
 						$c = isset($this->cargas[$x]) ? $this->cargas[$x] : array('id' => null);
+						$idCargaAtual = isset($c['id']) ? $c['id'] : null;
+						$idCargaKey = $idCargaAtual !== null ? (string)$idCargaAtual : '0';
+
+						$existe = false;
 						foreach ($this->vendas as $v) {
-							if (isset($c) && isset($v) && isset($v["carga"]) && $v["carga"]["id"] == $c["id"]) {
+							$vCargaId = (isset($v['carga']) && is_array($v['carga']) && isset($v['carga']['id'])) ? $v['carga']['id'] : (isset($v['carga']) && is_numeric($v['carga']) ? $v['carga'] : null);
+							if ($vCargaId == $idCargaAtual) {
 								$existe = true;
 								break;
 							}
@@ -352,14 +352,14 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 										?>">
 								<td>
 									<?php if ($this->filtro['situacao'] == 'Carregamento' || $this->filtro['situacao'] == 'Entrega') { ?>
-										<input type="checkbox" class="carga_tramitar" name="carga_tramitar[]" value="<?= $c["id"] ?>" />
+										<input type="checkbox" class="carga_tramitar" name="carga_tramitar[]" value="<?= $idCargaKey ?>" />
 									<?php } ?>
 								</td>
-								<td><i class="glyphicon glyphicon-plus carga no_print" id="carga_<?= $c["id"] ?>"></i></td>
+								<td><i class="glyphicon glyphicon-plus carga no_print" id="carga_<?= $idCargaKey ?>"></i></td>
 								<td colspan="17">
 									<b>
 										<?php
-										if ($x == $qtdCarga) {
+										if ($x == $qtdCarga || $idCargaAtual === null) {
 											echo "Pedidos fora de carregamento";
 										} else {
 											$dataCarga = $c['data'] ?? null;
@@ -372,7 +372,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 									</b>
 								</td>
 							</tr>
-							<tr class="tabela_carga_<?= $c["id"]; ?>" data-id-venda="<?= $v['id']; ?>" <?php if ($this->filtro['situacao'] != 'Recebido') {
+							<tr class="tabela_carga_<?= $idCargaKey; ?>" <?php if ($this->filtro['situacao'] != 'Recebido') {
 																											echo "style=\"display:none\"";
 																										} ?>>
 								<th class="no_print"></th>
@@ -401,12 +401,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 							continue;
 						}
 						foreach ($this->vendas as $v) {
-							if ($v["carga"] == null) {
-								$v["carga"] = array('id' => null);
-							}
-							if ($this->filtro['situacao'] != 'Recebido') {
+							$vCargaId = (isset($v['carga']) && is_array($v['carga']) && isset($v['carga']['id'])) ? $v['carga']['id'] : (isset($v['carga']) && is_numeric($v['carga']) ? $v['carga'] : null);
 
-								if (isset($c) && ($v["carga"]["id"] != $c["id"])) {
+							if ($this->filtro['situacao'] != 'Recebido') {
+								if ($vCargaId != $idCargaAtual) {
 									continue;
 								}
 							}
@@ -416,7 +414,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 							$id = $v['id'];
 							$valorTotalComissao = 0; ?>
 
-							<tr class="linha tabela_carga_<?= $c["id"]; ?>" data-id-venda="<?= $v['id']; ?>" <?php if ($this->filtro['situacao'] != 'Recebido') {
+							<tr class="linha tabela_carga_<?= $idCargaKey; ?>" data-id-venda="<?= $v['id']; ?>" <?php if ($this->filtro['situacao'] != 'Recebido') {
 																													echo "style=\"display:none\"";
 																												} ?>>
 
