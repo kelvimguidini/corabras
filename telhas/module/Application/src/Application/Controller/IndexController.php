@@ -433,17 +433,23 @@ class IndexController extends AbstractActionController
       $limite = $request->isPost() ? (int) $request->getPost("limite", $limitePadrao) : $limitePadrao;
       $filtro = [];
 
-      // Define a ordenação conforme a situação
-      $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
-
       $qb = $em->createQueryBuilder();
       $qb->select('v', 'c')
         ->from('Application\Model\Venda', 'v')
         ->leftJoin('v.carga', 'c')
         ->where('v.situacao = :situacao')
-        ->setParameter('situacao', $situ)
-        ->orderBy('v.ja_aberto', 'ASC')
-        ->addOrderBy($direcao, 'ASC');
+        ->setParameter('situacao', $situ);
+
+      if (in_array($situ, ["Finalizados", "Excluidos", "Finalizado", "Excluido"])) {
+        $qb->orderBy('v.data_cadastro', 'DESC')
+          ->addOrderBy('v.id', 'DESC');
+      } else {
+        // Define a ordenação conforme a situação para as demais abas
+        $direcao = in_array($situ, ["Recebido", "Entrega"]) ? "v.data_para_entrega" : "v.data_cadastro";
+
+        $qb->orderBy('v.ja_aberto', 'ASC')
+          ->addOrderBy($direcao, 'ASC');
+      }
 
       // -------------------- FILTROS (POST) --------------------
       if ($request->isPost()) {
