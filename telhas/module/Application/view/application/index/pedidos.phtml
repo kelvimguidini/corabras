@@ -1010,7 +1010,8 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 					$("#msg").addClass("alert alert-success").text("Carga cadastrada com sucesso e selecionada!");
 				},
 				error: function(xhr, status, error) {
-					alert("Erro ao comunicar com o servidor ao cadastrar carga: " + error);
+					var msg = (xhr.responseText ? xhr.responseText : (error ? error : (status ? status : 'Erro desconhecido')));
+					alert("Erro ao comunicar com o servidor ao cadastrar carga: " + msg);
 				}
 			});
 		});

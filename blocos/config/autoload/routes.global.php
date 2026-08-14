@@ -36,9 +36,9 @@ return [
             ],
 
             'login' => [
-                'type' => \Laminas\Router\Http\Literal::class,
+                'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
-                    'route'    => '/login/',
+                    'route'    => '/login[/]',
                     'defaults' => [
                         'controller' => IndexController::class,
                         'action'     => 'login',
@@ -47,9 +47,9 @@ return [
             ],
 
             'tramitar' => [
-                'type' => \Laminas\Router\Http\Literal::class,
+                'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
-                    'route'    => '/tramitar/',
+                    'route'    => '/tramitar[/]',
                     'defaults' => [
                         'controller' => IndexController::class,
                         'action'     => 'tramitar',
@@ -61,7 +61,6 @@ return [
                 'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
                     'route' => '/pedidos[/:offset][/:situacao][/]',
-                    '"' => '',
                     'constraints' => [
                         'offset' => '[0-9]+',
                         'situacao' => '[a-zA-Z0-9_-]+',
@@ -107,9 +106,9 @@ return [
             ],
 
             'carregarcargas' => [
-                'type' => \Laminas\Router\Http\Literal::class,
+                'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
-                    'route' => '/carregarcargas/',
+                    'route' => '/carregarcargas[/]',
                     'defaults' => [
                         'controller' => IndexController::class,
                         'action' => 'carregarcargas',
@@ -173,9 +172,9 @@ return [
             ],
 
             'sair' => [
-                'type' => \Laminas\Router\Http\Literal::class,
+                'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
-                    'route'    => '/sair/',
+                    'route'    => '/sair[/]',
                     'defaults' => [
                         'controller' => IndexController::class,
                         'action'     => 'sair',
@@ -184,9 +183,9 @@ return [
             ],
 
             'desmembrar' => [
-                'type' => \Laminas\Router\Http\Literal::class,
+                'type' => 'Laminas\\Router\\Http\\Segment',
                 'options' => [
-                    'route'    => '/desmembrar/',
+                    'route'    => '/desmembrar[/]',
                     'defaults' => [
                         'controller' => IndexController::class,
                         'action'     => 'desmembrar',
