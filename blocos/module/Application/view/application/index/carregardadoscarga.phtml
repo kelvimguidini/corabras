@@ -39,6 +39,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						<th>Cidade</th>
 						<th>Vendedor</th>
 						<th>Medida</th>
+						<th>Bloco A</th>
 						<th>Bloco B</th>
 						<th>Bloco C</th>
 						<th>1/2 Bloco</th>
@@ -67,6 +68,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?= $v['data_para_entrega']->format('d/m/Y'); ?></td>
 								<?php 								$prod = array();
 								$quantidadeTotal = 0;
+								$qtdBlocoA = 0;
 								$qtdBlocoB = 0;
 								$qtdBlocoC = 0;
 								$qtdMeioBloco = 0;
@@ -81,6 +83,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 									$quantidadeTotal += $p['quantidade'];
 									$medida = $medida == "" ? ($p['medida'] ?? $p['cor'] ?? '') : $medida;
 									switch ($p['modelo']) {
+										case 'Bloco A':
+											$qtdBlocoA += $p['quantidade'];
+											$peso += 10 * $p['quantidade'];
+											break;
 										case 'Bloco B':
 											$qtdBlocoB += $p['quantidade'];
 											$peso += 10 * $p['quantidade'];
@@ -121,6 +127,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?php echo substr($v['cidade'], 0, 30); ?></td>
 								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
 								<td><?php echo substr($medida, 0, 15); ?></td>
+								<td><?= $qtdBlocoA ?></td>
 								<td><?= $qtdBlocoB ?></td>
 								<td><?= $qtdBlocoC ?></td>
 								<td><?= $qtdMeioBloco ?></td>

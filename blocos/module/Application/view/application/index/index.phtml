@@ -193,6 +193,7 @@
             <label for="modelo_<?php echo $p->getId(); ?>">Produto</label>
             <select class="form-control" name="modelo_<?php echo $p->getId(); ?>">
               <option value="" <?php ($p->getModelo() == '') ? 'Selected' : ''; ?>>- Selecione -</option>
+              <option value="Bloco A" <?php if ($p->getModelo() == 'Bloco A') echo 'selected'; ?>>Bloco A</option>
               <option value="Bloco B" <?php if ($p->getModelo() == 'Bloco B') echo 'selected'; ?>>Bloco B</option>
               <option value="Bloco C" <?php if ($p->getModelo() == 'Bloco C') echo 'selected'; ?>>Bloco C</option>
               <option value="1/2 Bloco" <?php if ($p->getModelo() == '1/2 Bloco') echo 'selected'; ?>>1/2 Bloco</option>
@@ -360,6 +361,7 @@
           required: true
         })
         .append('<option value="">- Selecione -</option>')
+        .append('<option value="Bloco A">Bloco A</option>')
         .append('<option value="Bloco B">Bloco B</option>')
         .append('<option value="Bloco C">Bloco C</option>')
         .append('<option value="1/2 Bloco">1/2 Bloco</option>')

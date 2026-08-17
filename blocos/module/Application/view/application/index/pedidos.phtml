@@ -149,6 +149,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 				<label for="modelo">Modelo</label>
 				<select class="form-control" name="modelo" id="cientes_id">
 					<option value="" <?php if (!isset($this->filtro['modelo']) || (isset($this->filtro['modelo']) && $this->filtro['modelo'] == '')) echo 'selected'; ?>>- Selecione -</option>
+					<option value="Bloco A" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Bloco A') echo 'selected'; ?>>Bloco A</option>
 					<option value="Bloco B" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Bloco B') echo 'selected'; ?>>Bloco B</option>
 					<option value="Bloco C" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == 'Bloco C') echo 'selected'; ?>>Bloco C</option>
 					<option value="1/2 Bloco" <?php if (isset($this->filtro['modelo']) && $this->filtro['modelo'] == '1/2 Bloco') echo 'selected'; ?>>1/2 Bloco</option>
@@ -310,6 +311,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 						<th>Cidade</th>
 						<th>Vendedor</th>
 						<th>Medida</th>
+						<th>Bloco A</th>
 						<th>Bloco B</th>
 						<th>Bloco C</th>
 						<th>1/2 Bloco</th>
@@ -394,6 +396,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<th>Cidade</th>
 								<th>Vendedor</th>
 								<th>Medida</th>
+								<th>Bloco A</th>
 								<th>Bloco B</th>
 								<th>Bloco C</th>
 								<th>1/2 Bloco</th>
@@ -440,6 +443,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<?php
 								$prod = array();
 								$quantidadeTotal = 0;
+								$qtdBlocoA = 0;
 								$qtdBlocoB = 0;
 								$qtdBlocoC = 0;
 								$qtdMeioBloco = 0;
@@ -457,6 +461,10 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 
 										$quantidadeTotal += $p->getQuantidade();
 										switch ($p->getModelo()) {
+											case 'Bloco A':
+												$qtdBlocoA += $p->getQuantidade();
+												$medida = $medida == "" ? $p->getMedida() : $medida;
+												break;
 											case 'Bloco B':
 												$qtdBlocoB += $p->getQuantidade();
 												$medida = $medida == "" ? $p->getMedida() : $medida;
@@ -501,6 +509,7 @@ if (isset($this->result) && count($this->result) > 0) { ?>
 								<td><?php echo substr($v['cidade'], 0, 30); ?></td>
 								<td><?php echo substr($v['nome_vendedor'], 0, 10); ?></td>
 								<td><?php echo substr($medida, 0, 15); ?></td>
+								<td><?= $qtdBlocoA ?></td>
 								<td><?= $qtdBlocoB ?></td>
 								<td><?= $qtdBlocoC ?></td>
 								<td><?= $qtdMeioBloco ?></td>
