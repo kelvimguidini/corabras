@@ -65,7 +65,7 @@
 						<td><?php echo $f->getId(); ?></td>
 						<td><?php echo $f->getNome(); ?></td>
 						<td class="actions">
-							<a class="btn btn-danger btn-xs" href="#" id="excluircliente" onclick="enviarIdcliente(<?php echo $f->getId();?>)">Excluir</a>
+							<a class="btn btn-danger btn-xs" href="<?php echo $this->url('excluircidade', array('id' => $f->getId())); ?>" onclick="return confirm('Deseja realmente excluir esta cidade?');">Excluir</a>
 						</td>
 					</tr>
                 <?php endforeach; ?>
@@ -90,12 +90,11 @@
 
     });
 
-	
 	function enviarIdcliente(id){
 
 		if(confirm("Deseja realmente excluir esta cidade?"))
 		{
-			window.location.href = "<?php echo $this->url('excluircidade'); ?>/"+id;
+			window.location.href = "<?php echo $this->url('cadastrarcidade'); ?>/../excluircidade/"+id;
 		}
 
 	}

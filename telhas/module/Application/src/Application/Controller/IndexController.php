@@ -994,17 +994,31 @@ class IndexController extends AbstractActionController
 
     $request = $this->getRequest();
 
+    $result = null;
+    if (isset($_SESSION['result'])) {
+      $result = $_SESSION['result'];
+      unset($_SESSION['result']);
+    }
+
     if ($request->isPost()) {
-      $nome = $request->getPost("cliente_nome");
-      $cliente = new \Application\Model\Cidade();
+      $nome = trim((string)$request->getPost("cliente_nome"));
+      if (!empty($nome)) {
+        $cliente = new \Application\Model\Cidade();
+        $cliente->setNome(mb_strtoupper($nome, 'UTF-8'));
 
-      $cliente->setNome(mb_strtoupper(trim($nome)), $encoding);
+        $em->persist($cliente);
+        $em->flush();
 
-      $em->persist($cliente);
-      $em->flush();
-
-      $result["resp"] = "Salvo com sucesso!";
-      $result["tipo_mens"] = 'success';
+        $result = [
+          "resp" => "Salvo com sucesso!",
+          "tipo_mens" => 'success'
+        ];
+      } else {
+        $result = [
+          "resp" => "Por favor, informe o nome da cidade.",
+          "tipo_mens" => 'warning'
+        ];
+      }
     }
 
     $lista = $em->getRepository("Application\Model\Cidade")->findBy(
@@ -1012,7 +1026,7 @@ class IndexController extends AbstractActionController
       array('nome' => 'ASC')
     );
 
-    $view = new ViewModel(array('lista' => $lista));
+    $view = new ViewModel(array('lista' => $lista, 'result' => $result));
     return $view;
   }
 
@@ -1022,15 +1036,33 @@ class IndexController extends AbstractActionController
     if (!isset($_SESSION['usuarioNome'])) {
       return $this->redirect()->toRoute('login');
     }
-    $id = $this->params()->fromRoute("id", 0);
+    $id = (int)$this->params()->fromRoute("id", 0);
 
-    $em = $this->em;
-    $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
-    $em->remove($cidade);
-    $em->flush();
+    if ($id > 0) {
+      try {
+        $em = $this->em;
+        $cidade = $em->getRepository("Application\Model\Cidade")->find($id);
+        if ($cidade) {
+          $em->remove($cidade);
+          $em->flush();
 
-    $result["resp"] = "Salvo com sucesso!";
-    $result["tipo_mens"] = 'success';
+          $_SESSION['result'] = [
+            "resp" => "Cidade excluída com sucesso!",
+            "tipo_mens" => 'success'
+          ];
+        } else {
+          $_SESSION['result'] = [
+            "resp" => "Cidade não encontrada!",
+            "tipo_mens" => 'warning'
+          ];
+        }
+      } catch (\Exception $e) {
+        $_SESSION['result'] = [
+          "resp" => "Erro ao excluir cidade: " . $e->getMessage(),
+          "tipo_mens" => 'danger'
+        ];
+      }
+    }
 
     return $this->redirect()->toRoute('cadastrarcidade');
   }
