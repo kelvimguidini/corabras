@@ -59,7 +59,7 @@ return [
                 'params' => [
                     // --- Banco Produção cPanel (Blocos) ---
                     'host'     => 'localhost',
-                    'port'     => '3306',
+                    'port'     => '3307',
                     'user'     => 'fddd5815_blocos',
                     'password' => '3{Vg2J9%5q6O3UzJ',
                     'dbname'   => 'fddd5815_blocos',

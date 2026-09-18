@@ -58,7 +58,7 @@ return [
                 'driverClass' => \Doctrine\DBAL\Driver\PDO\MySQL\Driver::class,
                 'params' => [
                     'host' => 'localhost',
-                    'port' => '3306',
+                    'port' => '3307',
                     'user' => 'fddd5815_corabras',
                     'password' => 'Corabras*2020',
                     'dbname' => 'fddd5815_corabras'
